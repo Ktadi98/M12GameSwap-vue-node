@@ -9,3 +9,40 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum UserRole {
+  client
+  admin
+}
+
+model User {
+  user_id         Int      @id @default(autoincrement())
+  user_email      String   @unique @db.VarChar(255)
+  user_password   String   @db.VarChar(255)
+  user_salt       String   @db.VarChar(255)
+  user_created_at DateTime @default(now()) @db.Timestamptz(6)
+  user_type       UserRole @default(client)
+
+  // 1-1 Relation with the child tables in the hierarchy
+  user_Admin  User_Admin?
+  user_Client User_Client?
+}
+
+model User_Admin {
+  user_id Int @unique
+
+  // 1-1 Relation with User table
+  user User @relation(fields: [user_id], references: [user_id])
+}
+
+model User_Client {
+  user_id      Int     @unique
+  user_ranking Int?
+  user_name    String  @db.VarChar(255)
+  user_status  Boolean @default(true)
+  user_photo   String  @db.VarChar(255)
+  user_phone   String  @db.VarChar(20)
+
+  // 1-1 Relation with User table
+  user User @relation(fields: [user_id], references: [user_id])
+}
