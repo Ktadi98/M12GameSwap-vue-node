@@ -1,11 +1,13 @@
 import express, { json } from "express";
 import cors from "cors";
+import morgan from "morgan";
 import "dotenv/config";
 import { createUserRouter } from "./routes/users.js";
 import { UserModel } from './models/UserModel.js'
 
 const app = express();
 
+app.use(morgan('dev'))
 app.use(cors());
 app.use(json());
 app.disable("x-powered-by");
