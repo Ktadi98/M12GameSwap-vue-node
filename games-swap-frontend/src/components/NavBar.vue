@@ -1,36 +1,53 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
+import { RouterLink } from "vue-router";
 </script>
 <template>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid d-flex align-items-center">
-            <router-link class="logo" to="/">GAMESWAP</router-link>
-            <div class="navbar-nav mb-2">
-                <button class="button access">ACCEDER</button>
-            </div>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid d-flex align-items-center">
+      <div class="d-flex justify-content-center align-items-center">
+        <div>
+          <img
+            class="logo-app d-block overflow-hidden w-100"
+            src="/imgs/logo-app-2.png"
+            alt="logo"
+          />
         </div>
-    </nav>
+
+        <router-link class="logo ms-2 font-weight-bold" to="/">GAMESWAP</router-link>
+      </div>
+
+      <div class="navbar-nav mb-2">
+        <button class="button access">Acceder</button>
+      </div>
+    </div>
+  </nav>
 </template>
 <style scoped>
 nav {
-    border-bottom: 0.5px solid #ABABAB;
-    padding: 5px 10px 5px 10px;
+  border-bottom: 0.2px solid #e4e1e1;
+  padding: 5px 20px 5px 20px;
+  background-color: white !important;
+  position: sticky;
+  top: 0px;
+  z-index: 10;
 }
 
 nav .logo {
-    color: #9F87F5;
-    font-size: 30px;
+  color: #9f87f5;
+  font-size: 2.5rem;
 }
 
 .access {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .logo {
-    font-size: 30px;
+  font-size: 30px;
 }
 
-
+.logo-app {
+  height: 50px;
+}
 /* header {
     line-height: 1.5;
     max-height: 100vh;
