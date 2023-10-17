@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import NavBar from "../components/NavBar.vue";
+import SearchBar from "../components/SearchBar.vue";
 import Categories from "../components/Categories.vue";
 import Footer from "../components/Footer.vue";
+import AppBar from "../components/AppBar.vue";
 </script>
 
 <template>
@@ -15,22 +17,12 @@ import Footer from "../components/Footer.vue";
         <p>Compra y vende juegos y consolas de segunda mano en GameSwap.</p>
       </div>
     </div>
-    <form class="d-flex mb-5 w-75">
-      <div class="search d-flex flex-colum align-items-center justify-content-center me-2">
-        <img src="/imgs/search-icon.svg" alt="magnifying glass" />
-      </div>
-
-      <input
-        class="form-control me-2 rounded-5"
-        type="search"
-        placeholder="Busca un producto"
-        aria-label="Search"
-      />
-
-      <button class="button" type="submit">Buscar</button>
-    </form>
-
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <SearchBar />
+    <div
+      id="carouselExampleIndicators"
+      class="d-sm-none d-md-block carousel slide"
+      data-bs-ride="carousel"
+    >
       <div class="carousel-indicators">
         <button
           type="button"
@@ -89,18 +81,12 @@ import Footer from "../components/Footer.vue";
       </div>
     </div>
   </main>
+  <AppBar></AppBar>
   <Footer></Footer>
 </template>
-<style setup>
+<style scoped>
 main {
   padding: 20px;
-}
-
-.search {
-  background-color: #9f87f5;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
 }
 
 .jumbotron p {
@@ -111,17 +97,5 @@ main {
 .carousel-inner {
   width: 800px;
   max-width: 800px;
-}
-
-input::placeholder {
-  font-size: 1.2rem;
-}
-
-input:focus,
-input[type]:focus,
-.uneditable-input:focus {
-  border: 2px solid black;
-  outline: none !important;
-  box-shadow: none;
 }
 </style>

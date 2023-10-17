@@ -3,8 +3,10 @@ import { RouterLink } from "vue-router";
 </script>
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid d-flex align-items-center">
-      <div class="d-flex justify-content-center align-items-center">
+    <div class="row container-fluid d-flex align-items-center">
+      <div
+        class="d-flex col-12 col-md-10 align-items-center justify-content-center justify-content-md-start"
+      >
         <div>
           <img
             class="logo-app d-block overflow-hidden w-100"
@@ -16,13 +18,19 @@ import { RouterLink } from "vue-router";
         <router-link class="logo ms-2 font-weight-bold" to="/">GAMESWAP</router-link>
       </div>
 
-      <div class="navbar-nav mb-2">
+      <div class="col-md-2 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
         <button class="button access">Acceder</button>
       </div>
     </div>
   </nav>
 </template>
 <style scoped>
+@media (max-width: 568px) {
+  .button {
+    display: none;
+  }
+}
+
 nav {
   border-bottom: 0.2px solid #e4e1e1;
   padding: 5px 20px 5px 20px;
@@ -47,6 +55,8 @@ nav .logo {
 
 .logo-app {
   height: 50px;
+  min-height: 50px;
+  min-width: 50px;
 }
 /* header {
     line-height: 1.5;
