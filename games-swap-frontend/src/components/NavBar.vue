@@ -1,5 +1,34 @@
 <script setup lang="ts">
+import { useModal } from 'vue-final-modal';
 import { RouterLink } from "vue-router";
+import LoginModal from './Login.vue';
+import RegisterModal from './Register.vue';
+
+const { open, close } = useModal({
+    component: LoginModal,
+    attrs: {
+      onConfirm() {
+        close()
+      },
+      onCancel() {
+        close()
+        openRegister()
+      },
+    }
+  })
+
+  const { open: openRegister, close: closeRegister } = useModal({
+    component: RegisterModal,
+    attrs: {
+      onConfirm() {
+        closeRegister()
+      },
+      onCancel() {
+        closeRegister()
+      },
+    }
+  })
+
 </script>
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -19,7 +48,7 @@ import { RouterLink } from "vue-router";
       </div>
 
       <div class="col-md-2 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
-        <button class="button access">Acceder</button>
+        <button class="button access" @click="open">Acceder</button>
       </div>
     </div>
   </nav>
