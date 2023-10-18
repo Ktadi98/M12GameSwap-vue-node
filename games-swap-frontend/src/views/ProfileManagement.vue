@@ -1,54 +1,50 @@
+  
 <template>
     <div>
-        <header class="header">
-            <router-link to="/HomeView.vue" class="back-button">
-                <img src="@/assets/arrow.svg" alt="Back">
-            </router-link>
-            <div class="profile-info">
-                <div class="profile-image">
-                    <img src="@/assets/avatar-profile.svg" alt="Profile Image">
-                </div>
-                <div class="profile-name">userName</div>
-            </div>
-        </header>
-        <main class="main-content">
-            <div id="ProfileManagement">
-                <div class="button-container">
-                    <button class="rounded-button">Recuperar Contraseña</button>
-                    <button class="rounded-button">Cambiar Datos del Perfil</button>
-                    <button class="rounded-button">Eliminar Cuenta</button>
-                    <button class="rounded-button" @click="toggleSuggestionBox">Buzón de Sugerencias</button>
-                </div>
-            </div>
-            <div v-if="showSuggestionBox" class="suggestion-box">
-                <button class="close-button" @click="toggleSuggestionBox">X</button>
-                <h2>Deja tus sugerencias</h2>
-                <form @submit="submitSuggestion">
-                    <textarea v-model="suggestion" placeholder="Escribe tu sugerencia aquí"></textarea>
-                    <button type="submit" class="rounded-button">Enviar Sugerencia</button>
-                </form>
-            </div>
-        </main>
+      <header class="header">
+        <router-link to="/HomeView" class="back-button">
+          <img src="@/assets/arrow.svg" alt="Back">
+        </router-link>
+        <div class="profile-info">
+          <div class="profile-image">
+            <img src="@/assets/avatar-profile.svg" alt="Profile Image">
+          </div>
+          <div class="profile-name">userName</div>
+        </div>
+      </header>
+      <main class="main-content">
+        <div id="ProfileManagement">
+          <div class="button-container">
+            <button class="rounded-button">Recuperar Contraseña</button>
+            <button class="rounded-button">Cambiar Datos del Perfil</button>
+            <button class="rounded-button">Eliminar Cuenta</button>
+            <button class="rounded-button" @click="toggleSuggestionBox">Buzón de Sugerencias</button>
+          </div>
+        </div>
+      </main>
+      <Footer></Footer>
     </div>
-</template>
-
-<script>
-export default {
-    data() {
-        return {
-            suggestion: "",
-        };
-    },
-    methods: {
-        submitSuggestion() {
-            console.log("Sugerencia enviada:", this.suggestion);
-            this.suggestion = "";
-        },
-    },
-};
-</script>
+  </template>
+  
+  <script setup lang="ts">
+  import Footer from "../components/Footer.vue";
+  import { RouterLink, RouterView } from "vue-router";
+  
+  let suggestion = "";
+  let showSuggestionBox = false;
+  
+  const submitSuggestion = () => {
+    console.log("Sugerencia enviada:", suggestion);
+    suggestion = "";
+  };
+  
+  const toggleSuggestionBox = () => {
+    showSuggestionBox = !showSuggestionBox;
+  };
+  </script>
   
 <style scoped>
+/* Estilos comunes */
 .header {
     background-color: #9f87f5;
     display: flex;
@@ -104,6 +100,7 @@ export default {
     text-align: center;
 }
 
+/* Estilo de los botones */
 .rounded-button {
     display: block;
     margin: 40px;
@@ -113,7 +110,7 @@ export default {
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    transition: color 0.3s, box-shadow 0.3s;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .rounded-button:hover {
@@ -125,57 +122,4 @@ export default {
     width: 100%;
     text-align: center;
 }
-
-
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-    color: #9f87f5;
-}
-
-.close-button:hover {
-    color: #8a6cf6;
-}
-
-.suggestion-box {
-    position: relative;
-    text-align: center;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-}
-
-.suggestion-box h2 {
-    color: #9f87f5;
-}
-
-.suggestion-box textarea {
-    width: 100%;
-    height: 100px;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.suggestion-box button {
-    background-color: #9f87f5;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.suggestion-box button:hover {
-    background-color: #8a6cf6;
-}
 </style>
-  
