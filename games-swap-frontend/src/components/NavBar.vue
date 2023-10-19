@@ -3,52 +3,57 @@ import { useModal } from 'vue-final-modal';
 import { RouterLink } from "vue-router";
 import LoginModal from './Login.vue';
 import RegisterModal from './Register.vue';
+import { nextTick, ref, watch } from 'vue';
 
 const { open, close } = useModal({
-    component: LoginModal,
-    attrs: {
-      onConfirm() {
-        close()
-      },
-      onCancel() {
-        close()
-        openRegister()
-      },
-    }
-  })
+  component: LoginModal,
+  attrs: {
+    onConfirm() {
+      close()
+    },
+    onCancel() {
+      close()
+      openRegister()
+    },
+  }
+})
 
-  const { open: openRegister, close: closeRegister } = useModal({
-    component: RegisterModal,
-    attrs: {
-      onConfirm() {
-        closeRegister()
-      },
-      onCancel() {
-        closeRegister()
-      },
-    }
-  })
+const { open: openRegister, close: closeRegister } = useModal({
+  component: RegisterModal,
+  attrs: {
+    onConfirm() {
+      closeRegister()
+    },
+    onCancel() {
+      closeRegister()
+    },
+  }
+})
+
+const userRegistered = ref(localStorage.getItem("id") !== null ? true : false);
+
+const logOut = () => {
+  localStorage.removeItem("id");
+}
 
 </script>
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="row container-fluid d-flex align-items-center">
-      <div
-        class="d-flex col-12 col-md-10 align-items-center justify-content-center justify-content-md-start"
-      >
+      <div class="d-flex col-12 col-md-10 align-items-center justify-content-center justify-content-md-start">
         <div>
-          <img
-            class="logo-app d-block overflow-hidden w-100"
-            src="/imgs/logo-app-2.png"
-            alt="logo"
-          />
+          <img class="logo-app d-block overflow-hidden w-100" src="/imgs/logo-app-2.png" alt="logo" />
         </div>
 
         <router-link class="logo ms-2 font-weight-bold" to="/">GAMESWAP</router-link>
       </div>
 
       <div class="col-md-2 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
-        <button class="button access" @click="open">Acceder</button>
+        <button v-if="!userRegistered" class="button access" @click="open">Acceder</button>
+        <router-link to="/profileManagement" role="button" class="button access" v-if="userRegistered">Configuración
+          Perfil</router-link>
+        <button v-if="userRegistered">Subir anuncio</button>
+        <button @click="logOut" v-if="userRegistered">Cerrar sesión</button>
       </div>
     </div>
   </nav>
@@ -87,6 +92,7 @@ nav .logo {
   min-height: 50px;
   min-width: 50px;
 }
+
 /* header {
     line-height: 1.5;
     max-height: 100vh;

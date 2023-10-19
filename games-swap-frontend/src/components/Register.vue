@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
+import { nextTick, ref, type Ref } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
 
 
@@ -37,7 +37,9 @@ const sendData = () => {
     })
   })
     .then(res => res.json())
-    .then(data => console.log(data))
+    .then(data => {
+      console.log(data);
+    })
     .catch(error => console.error(error))
 }
 

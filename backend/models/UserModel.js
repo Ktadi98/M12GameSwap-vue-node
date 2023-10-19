@@ -86,15 +86,14 @@ export class UserModel {
     static async delete(user_data) {
         try {
 
-            console.log(typeof user_data.userId);
+            //console.log(user_data.userId);
 
-            const deletedUser = prismadb.user.delete({
+            const deletedUser = await prismadb.user.delete({
                 where: {
-                    user_id: Number(user_data.userId)
+                    user_id: user_data.userId
                 }
             })
 
-            console.log(deletedUser);
 
             if (deletedUser === null) {
                 throw new Error("Non existent user.");

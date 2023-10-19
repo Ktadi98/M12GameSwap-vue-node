@@ -1,7 +1,7 @@
 <template>
     <div>
         <header class="header">
-            <router-link to="/HomeView.vue" class="back-button">
+            <router-link to="/" class="back-button">
                 <img src="@/assets/arrow.svg" alt="Back">
             </router-link>
             <div class="profile-info">
@@ -36,6 +36,9 @@
 
 <script setup lang="ts">
 import { type Ref, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 // export default {
 //     data() {
@@ -63,13 +66,17 @@ const sendData = () => {
             "Accept": "application/json"
         },
         body: JSON.stringify({
-            userId: localStorage.getItem("id")
+            //??: Coalescense operator, if the value is null we put a valueby default
+            userId: JSON.parse(localStorage.getItem("id") ?? "1")
         })
     })
         .then(res => res.json())
         .then(data => {
             console.log(data);
             localStorage.removeItem("id");
+
+            //If the deletion was resolved, we redirect to the home page.
+            router.push({ name: 'home' });
         })
         .catch(error => console.error(error))
 }
