@@ -16,36 +16,64 @@
                 <div class="button-container">
                     <button class="rounded-button">Recuperar Contraseña</button>
                     <button class="rounded-button">Cambiar Datos del Perfil</button>
-                    <button class="rounded-button">Eliminar Cuenta</button>
-                    <button class="rounded-button" @click="toggleSuggestionBox">Buzón de Sugerencias</button>
+                    <form @submit.prevent="sendData">
+                        <button type="submit" class="rounded-button">Eliminar Cuenta</button>
+                    </form>
+                    <!-- <button class="rounded-button" @click="toggleSuggestionBox">Buzón de Sugerencias</button> -->
                 </div>
             </div>
-            <div v-if="showSuggestionBox" class="suggestion-box">
+            <!-- <div v-if="showSuggestionBox" class="suggestion-box">
                 <button class="close-button" @click="toggleSuggestionBox">X</button>
                 <h2>Deja tus sugerencias</h2>
                 <form @submit="submitSuggestion">
                     <textarea v-model="suggestion" placeholder="Escribe tu sugerencia aquí"></textarea>
                     <button type="submit" class="rounded-button">Enviar Sugerencia</button>
                 </form>
-            </div>
+            </div> -->
         </main>
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            suggestion: "",
-        };
-    },
-    methods: {
-        submitSuggestion() {
-            console.log("Sugerencia enviada:", this.suggestion);
-            this.suggestion = "";
+<script setup lang="ts">
+import { type Ref, ref } from 'vue';
+
+// export default {
+//     data() {
+//         return {
+//             suggestion: "",
+//         };
+//     },
+//     methods: {
+//         submitSuggestion() {
+//             console.log("Sugerencia enviada:", this.suggestion);
+//             this.suggestion = "";
+//         },
+//     },
+// };
+
+// const formData: Ref<number> = ref({
+//     id: ,
+// })
+
+const sendData = () => {
+    fetch("http://localhost:8080/users/delete", {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
         },
-    },
-};
+        body: JSON.stringify({
+            userId: localStorage.getItem("id")
+        })
+    })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            localStorage.removeItem("id");
+        })
+        .catch(error => console.error(error))
+}
+
 </script>
   
 <style scoped>

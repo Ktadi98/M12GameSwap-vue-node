@@ -75,11 +75,35 @@ export class UserModel {
                 throw new Error("Passwords do not match!");
             }
 
-            return 1;
+            return [1, user.user_id];
 
         } catch (error) {
             console.log(error);
         }
 
+    }
+
+    static async delete(user_data) {
+        try {
+
+            console.log(typeof user_data.userId);
+
+            const deletedUser = prismadb.user.delete({
+                where: {
+                    user_id: Number(user_data.userId)
+                }
+            })
+
+            console.log(deletedUser);
+
+            if (deletedUser === null) {
+                throw new Error("Non existent user.");
+            }
+
+            return 1;
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 }

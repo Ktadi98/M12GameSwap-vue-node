@@ -9,6 +9,7 @@ export const createUserRouter = (userModel) => {
   userRouter.get("/", userController.getAll);
   userRouter.post("/register", userController.register);
   userRouter.post("/login", userController.login);
+  userRouter.delete("/delete", userController.delete);
 
   return userRouter;
 };

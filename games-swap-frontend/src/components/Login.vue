@@ -34,7 +34,7 @@ const sendData = () => {
     .then(res => res.json())
     .then(data => {
       console.log(data);
-      localStorage.setItem("id", JSON.stringify(1));
+      localStorage.setItem("id", JSON.stringify(data[1]));
     })
     .catch(error => console.error(error))
 }
