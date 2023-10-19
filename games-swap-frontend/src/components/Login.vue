@@ -32,7 +32,10 @@ const sendData = () => {
     })
   })
     .then(res => res.json())
-    .then(data => console.log(data))
+    .then(data => {
+      console.log(data);
+      localStorage.setItem("id", JSON.stringify(1));
+    })
     .catch(error => console.error(error))
 }
 
@@ -43,8 +46,8 @@ const sendData = () => {
     content-transition="vfm-fade">
     <form @submit.prevent="sendData">
       <h1>INICIO SESIÓN</h1>
-      <input type="email" name="email" id="email" placeholder="Correo">
-      <input type="password" name="password" id="password" placeholder="Contraseña">
+      <input v-model="formData.email" type="email" name="email" id="email" placeholder="Correo">
+      <input v-model="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
       <button @click="emit('confirm')">ENTRAR</button>
       <button class="register-btn" @click="emit('cancel')">¿No tienes cuenta? Regístrate</button>
     </form>
