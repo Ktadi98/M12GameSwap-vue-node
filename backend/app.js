@@ -3,7 +3,9 @@ import cors from "cors";
 import morgan from "morgan";
 import "dotenv/config";
 import { createUserRouter } from "./routes/users.js";
-import { UserModel } from './models/UserModel.js'
+import { createPostRouter } from "./routes/posts.js";
+import { UserModel } from './models/UserModel.js';
+import { PostModel } from './models/PostModel.js';
 
 const app = express();
 
@@ -13,6 +15,7 @@ app.use(json());
 app.disable("x-powered-by");
 
 app.use("/users", createUserRouter(UserModel));
+app.use("/posts", createPostRouter(PostModel));
 
 const PORT = process.env.PORT ?? 1234;
 
