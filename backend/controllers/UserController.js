@@ -18,9 +18,12 @@ export class UserController {
       return res.status(422).json({ error: JSON.parse(userValidated.error.message) })
     }
 
+    const [returnState, token] = await this.userModel.register(req.body);
     //Pass validated data to model to create user
-    if (await this.userModel.register(req.body) === 1) {
-      return res.json("User registered successfully!");
+    if (returnState === 1) {
+      console.log("User registered successfully");
+      console.log("TOKEN: " + token);
+      return res.json({ message: "user registered successfully", token: token });
     }
 
     return res.status(500).json({ error: "User could not be registered!" })
@@ -36,12 +39,12 @@ export class UserController {
     }
 
     //Pass validated data to authenticate user.
-    const [logInStatus, userId] = await this.userModel.login(req.body);
+    const [logInStatus, token] = await this.userModel.login(req.body);
     // console.log(logInStatus);
     // console.log(userId);
 
     if (logInStatus === 1) {
-      return res.status(200).json(["User logged in successfully!", userId]);
+      return res.status(200).json({ message: "User logged in successfully!", token: token });
     }
 
     return res.status(500).json({ error: "User could not log in!" })

@@ -1,12 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-const prismadb = new PrismaClient();
+import jwt from "jsonwebtoken";
+
+const prismadb = new PrismaClient(); //Move to external module
 
 export class UserModel {
 
     static async register(user_data) {
 
         try {
+
+            let returnState = 1;
 
             //Check if the user email is already registered in the database.
             const user = await prismadb.user.findFirst({
@@ -16,15 +20,16 @@ export class UserModel {
             })
 
             if (user !== null) {
-                throw new Error("The user already exists!");
+                console.log("User already exists!");
+                returnState = -1;
+                return [returnState, null];
             }
 
             //If the user does not exist in the database we proceed to insert the request data
-            console.log(user_data.password);
+
             //Password encryption with salt
             const salt = await bcrypt.genSalt(2);
 
-            console.log(salt);
             const hashedPassword = await bcrypt.hash(user_data.password, salt);
 
             //Inserting the user
@@ -45,7 +50,12 @@ export class UserModel {
                 }
             })
 
-            return 1;
+            //We sign the JWT token to send it to the client.
+            let token_generated = jwt.sign({ user_id: newClient.user_id, user_email: newClient.user_email, user_role: "client" },
+                process.env.TOKEN_SECRET, { expiresIn: '1h' });
+
+
+            return [returnState, token_generated];
 
         } catch (error) {
             console.log(error);
@@ -56,6 +66,8 @@ export class UserModel {
     static async login(user_data) {
         try {
 
+            let returnState = 1;
+
             //Check if the user email exists in the database.
             const user = await prismadb.user.findFirst({
                 where: {
@@ -65,17 +77,27 @@ export class UserModel {
 
             //If the user does not exist in the database we return an error.
             if (user === null) {
-                throw new Error("Non existent user.");
+                console.log("User does not exist!");
+                returnState = -1;
+                return [returnState, null];
             }
+
 
             //Check if the received password is equal to the one stored in the database for this user
             const passwordValidation = await bcrypt.compare(user_data.password, user.user_password);
 
             if (!passwordValidation) {
-                throw new Error("Passwords do not match!");
+                console.log("passwords do not match!");
+                returnState = -1;
+                return [returnState, null];
             }
 
-            return [1, user.user_id];
+
+            //We sign the JWT token to send it to the client.
+            let token_generated = jwt.sign({ user_id: user.user_id, user_email: user.user_email, user_role: "client" },
+                process.env.TOKEN_SECRET, { expiresIn: '1h' });
+
+            return [returnState, token_generated];
 
         } catch (error) {
             console.log(error);
