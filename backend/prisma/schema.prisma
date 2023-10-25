@@ -15,6 +15,12 @@ enum UserRole {
   admin
 }
 
+enum PostCondition {
+  new
+  good
+  satisfactory
+}
+
 model User {
   user_id         Int      @id @default(autoincrement())
   user_email      String   @unique @db.VarChar(255)
@@ -44,5 +50,47 @@ model User_Client {
   user_phone   String  @db.VarChar(20)
 
   // 1-1 Relation with User table
-  user User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  user User   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  post Post[]
+}
+
+model Platform {
+  platform_id   Int              @id @default(autoincrement())
+  platform_name String           @unique @db.VarChar(255)
+  genres        Platform_Genre[]
+  post          Post[]
+}
+
+model Genre {
+  genre_id   Int              @id @default(autoincrement())
+  genre_name String           @unique @db.VarChar(255)
+  platforms  Platform_Genre[]
+  post       Post[]
+}
+
+model Platform_Genre {
+  platform_genre_id Int      @id @default(autoincrement())
+  platform_id       Int      @unique
+  platform          Platform @relation(fields: [platform_id], references: [platform_id])
+  genre_id          Int      @unique
+  genre             Genre    @relation(fields: [genre_id], references: [genre_id])
+}
+
+model Post {
+  post_id          Int           @id @default(autoincrement())
+  user_id          Int
+  platform_id      Int
+  genre_id         Int
+  post_title       String        @db.VarChar(255)
+  post_photos      String[]      @db.VarChar(100)
+  post_description String        @db.Text
+  post_keep        Boolean       @default(true)
+  post_condition   PostCondition
+  post_created_at  DateTime      @default(now()) @db.Timestamptz(6)
+  post_price       Int
+  post_status      Boolean       @default(true)
+
+  user_client User_Client @relation(fields: [user_id], references: [user_id])
+  platform    Platform    @relation(fields: [platform_id], references: [platform_id])
+  genre       Genre       @relation(fields: [genre_id], references: [genre_id])
 }
