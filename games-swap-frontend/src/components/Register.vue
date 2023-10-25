@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { nextTick, ref, type Ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
-
+import { useAuthStore } from "@/stores/auth";
 
 const emit = defineEmits<{
   (e: 'confirm'): void
 }>()
+
+const authStore = useAuthStore();
 
 interface RegisterType {
   username: string,
@@ -39,6 +41,8 @@ const sendData = () => {
     .then(res => res.json())
     .then(data => {
       console.log(data);
+      //authStore.setToken() TODO
+      //localStorage.setItem("id", JSON.stringify(data[1]));
     })
     .catch(error => console.error(error))
 }

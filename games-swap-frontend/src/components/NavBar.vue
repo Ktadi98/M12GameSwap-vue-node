@@ -3,7 +3,11 @@ import { useModal } from 'vue-final-modal';
 import { RouterLink } from "vue-router";
 import LoginModal from './Login.vue';
 import RegisterModal from './Register.vue';
-import { nextTick, ref, watch } from 'vue';
+import { ref } from 'vue';
+
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 const { open, close } = useModal({
   component: LoginModal,
@@ -30,10 +34,8 @@ const { open: openRegister, close: closeRegister } = useModal({
   }
 })
 
-const userRegistered = ref(localStorage.getItem("id") !== null ? true : false);
-
 const logOut = () => {
-  localStorage.removeItem("id");
+  authStore.deleteToken();
 }
 
 </script>
@@ -49,11 +51,12 @@ const logOut = () => {
       </div>
 
       <div class="col-md-2 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
-        <button v-if="!userRegistered" class="button access" @click="open">Acceder</button>
-        <router-link to="/profileManagement" role="button" class="button access" v-if="userRegistered">Configuración
+        <button v-if="!authStore.userIsLoggedIn" class="button access" @click="open">Acceder</button>
+        <router-link to="/profileManagement" role="button" class="button access"
+          v-if="authStore.userIsLoggedIn">Configuración
           Perfil</router-link>
-        <button v-if="userRegistered">Subir anuncio</button>
-        <button @click="logOut" v-if="userRegistered">Cerrar sesión</button>
+        <button v-if="authStore.userIsLoggedIn">Subir anuncio</button>
+        <button @click="logOut" v-if="authStore.userIsLoggedIn">Cerrar sesión</button>
       </div>
     </div>
   </nav>

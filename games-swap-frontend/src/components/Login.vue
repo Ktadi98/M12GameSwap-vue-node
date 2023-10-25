@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { type Ref, ref } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
-
+import { useAuthStore } from "@/stores/auth";
 
 const emit = defineEmits<{
   (e: 'confirm'): void,
   (e: 'cancel'): void
 }>()
 
+const authStore = useAuthStore();
 
 interface LoginType {
   email: string,
@@ -34,6 +35,7 @@ const sendData = () => {
     .then(res => res.json())
     .then(data => {
       console.log(data);
+      //authStore.setToken() >TODO
       localStorage.setItem("id", JSON.stringify(data[1]));
     })
     .catch(error => console.error(error))
