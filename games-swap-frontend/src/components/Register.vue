@@ -9,6 +9,8 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore();
 
+const error: Ref<Error | string> = ref("");
+
 interface RegisterType {
   username: string,
   email: string,
@@ -25,26 +27,71 @@ const formData: Ref<RegisterType> = ref({
   checkbox: false
 })
 
-const sendData = () => {
-  fetch("http://localhost:8080/users/register", {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      username: formData.value.username,
-      email: formData.value.email,
-      password: formData.value.password
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      //authStore.setToken() TODO
-      //localStorage.setItem("id", JSON.stringify(data[1]));
-    })
-    .catch(error => console.error(error))
+interface TokenType {
+  message: string,
+  token: string
+}
+
+// OLD FETCH
+// const sendData = () => {
+//   fetch("http://localhost:8080/users/register", {
+//     method: 'POST',
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Accept": "application/json"
+//     },
+//     body: JSON.stringify({
+//       username: formData.value.username,
+//       email: formData.value.email,
+//       password: formData.value.password
+//     })
+//   })
+//     .then((res: Response) => {
+
+//       if (!res.ok) {
+//         error.value = `Error: ${res.status} `;
+//         return;
+//       }
+//       return res.json() as Promise<TokenType>;
+//     }
+//     )
+//     .then((data) => {
+//       error.value = "";
+//       console.log(data);
+//       //authStore.setToken(data.token)
+//       //localStorage.setItem("id", JSON.stringify(data[1]));
+//     })
+//     .catch((error) => error.value = error as string)
+// }
+
+const sendData = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/users/register", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        username: formData.value.username,
+        email: formData.value.email,
+        password: formData.value.password
+      })
+    });
+
+    if (!response.ok) {
+      error.value = `Error: ${response.status}`;
+      return;
+    }
+
+    const data: TokenType = await response.json();
+    error.value = "";
+    console.log(data);
+
+    authStore.setToken(data.token);
+  } catch (err) {
+    error.value = err as string;
+  }
 }
 
 </script>
@@ -68,6 +115,7 @@ const sendData = () => {
       </div>
       <button type="submit">REGISTRARSE </button>
     </form>
+    <div v-if="error !== ''">{{ error }}</div>
   </VueFinalModal>
 </template>
 
