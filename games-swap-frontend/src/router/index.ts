@@ -36,6 +36,11 @@ const router = createRouter({
           next('/home'); // Redirigir al usuario a la página de inicio 
         }
       }
+    },
+    {
+      path: '/protected/uploadPost',
+      name: 'uploadPost',
+      component: () => import('../views/UploadPostView.vue')
     }
   ]
 })

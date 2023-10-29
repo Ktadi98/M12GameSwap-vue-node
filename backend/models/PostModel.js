@@ -5,7 +5,7 @@ const prismadb = new PrismaClient(); //Move to external module
 
 export class PostModel {
 
-    static async register(user_data) {
+    static async create(post_data) {
 
         try {
 
