@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Icon from '@/components/Icons/BackArrow.vue';
 import Footer from './Footer.vue';
+import StarRating from './Icons/StarRating.vue';
 </script>
 
 <template>
@@ -16,17 +17,22 @@ import Footer from './Footer.vue';
                 <div class="profile-name">userName</div>
             </div>
         </header>
-        <div id="ad-container">
-            <router-link to="/" class="back-button">
-               <div style="color: red">
+        <div style="color: #8a6cf6">
                 <Icon />
                </div>
-            </router-link>
-           
-            <div id="photo-ad">
-                <img src="" alt="">
+        <main class="ad-container">
+            <div class="profile-vendor">
+                <div class="profile-image">
+                    <img src="@/assets/avatar-profile.svg" alt="Profile Image">
+                </div>
+                <div class="profile-name">userName</div>
+                <div style="color: #8a6cf6;" class="rating">
+                   <StarRating/> (16)
+                </div>
             </div>
+        
             <div id="ad-info">
+                <img class="photo-ad" src="https://cdn.wallapop.com/images/10420/fp/vu/__/c10420p950469346/i3569368343.jpg?pictureSize=W640" alt="spiderman videojuego">
                 <h1>
                     price €
                 </h1>
@@ -40,7 +46,7 @@ import Footer from './Footer.vue';
                     <span class="category-Tag">tag3</span>
                 </div>
             </div>
-        </div>
+        </main>
         <Footer/>
 </template>
 
@@ -88,89 +94,27 @@ width: 50px;
 
 }
 
-.main-content {
-    flex: 1;
+main{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
 }
 
-.button-container {
-    text-align: center;
+.ad-container{
+    border: 1px solid #8a6cf6;
+    border-radius: 3%;
+    height: 50rem;
+    width: 70rem;
+    flex-direction: column;
+    padding-top: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin: auto;
+    border-bottom: 1px solid #8a6cf6;
+
 }
 
-.rounded-button {
-    display: block;
-    margin: 40px;
-    padding: 15px 60px;
-    background-color: #9f87f5;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: color 0.3s, box-shadow 0.3s;
+img.photo-ad{
+height: 500px;
+width: 850px;
 }
 
-.rounded-button:hover {
-    background-color: #8a6cf6;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.button-container button {
-    width: 100%;
-    text-align: center;
-}
-
-
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-    color: #9f87f5;
-}
-
-.close-button:hover {
-    color: #8a6cf6;
-}
-
-.suggestion-box {
-    position: relative;
-    text-align: center;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-}
-
-.suggestion-box h2 {
-    color: #9f87f5;
-}
-
-.suggestion-box textarea {
-    width: 100%;
-    height: 100px;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.suggestion-box button {
-    background-color: #9f87f5;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.suggestion-box button:hover {
-    background-color: #8a6cf6;
-}
 </style>
