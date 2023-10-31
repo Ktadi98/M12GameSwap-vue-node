@@ -5,9 +5,12 @@ const prismadb = new PrismaClient(); //Move to external module
 
 export class PostModel {
 
-    static async create(post_data) {
+    static async create(post_data, post_file, user_id) {
 
         try {
+
+            console.log(post_data);
+            console.log(post_file);
 
             //Fetch category id by name provided in request
             const platform = await prismadb.platform.findFirst({
@@ -32,18 +35,22 @@ export class PostModel {
             console.log(platform, genre);
             //Create post
 
-            // const newPost = await prismadb.post.create({
-            //     data: {
-            //         post_title: post_data.title,
-            //         post_description: post_data.description,
-            //         post_condition: post_data.state,
-            //         user_id: post_data.user_id,
-            //         platform_id: platform.platform_id,
-            //         genre_id: genre.genre_id,
-            //         post_photos: [],
-            //         post_price: post_data.price
-            //     }
-            // })
+            const newPost = await prismadb.post.create({
+                data: {
+                    post_title: post_data.title,
+                    post_description: post_data.description,
+                    post_condition: post_data.state.toLowerCase(),
+                    user_id: user_id,
+                    platform_id: platform.platform_id,
+                    genre_id: genre.genre_id,
+                    post_photos: [post_file.filename],
+                    post_price: post_data.price
+                }
+            })
+
+            console.log(newPost);
+
+            return 1;
 
         } catch (error) {
             console.log(error);

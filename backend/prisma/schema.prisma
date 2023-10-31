@@ -16,9 +16,9 @@ enum UserRole {
 }
 
 enum PostCondition {
-  new
-  good
-  satisfactory
+  nuevo
+  bueno
+  satisfactorio
 }
 
 model User {
@@ -90,7 +90,7 @@ model Post {
   post_price       Int
   post_status      Boolean       @default(true)
 
-  user_client User_Client @relation(fields: [user_id], references: [user_id])
-  platform    Platform    @relation(fields: [platform_id], references: [platform_id])
-  genre       Genre       @relation(fields: [genre_id], references: [genre_id])
+  user_client User_Client? @relation(fields: [user_id], references: [user_id])
+  platform    Platform?    @relation(fields: [platform_id], references: [platform_id])
+  genre       Genre?       @relation(fields: [genre_id], references: [genre_id])
 }
