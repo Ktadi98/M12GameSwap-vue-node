@@ -2,6 +2,19 @@
 import NavBar from '@/components/NavBar.vue';
 import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+
+interface PostType {
+    title: string,
+    description: string,
+    category: string,
+    genre: string,
+    price: number,
+    images: any[],
+    state: string
+}
+
+const authStore = useAuthStore();
 
 const formState: Ref<any> = ref({
     title: "",
@@ -14,7 +27,7 @@ const formState: Ref<any> = ref({
 })
 
 function selectFile(event: any) {
-    formState.value.images = event.target.files;
+    formState.value.images = event.target.files[0];
 }
 
 async function sendPost() {
@@ -29,31 +42,34 @@ async function sendPost() {
     postFormData.append("images", formState.value.images);
     postFormData.append("state", formState.value.state);
 
+    //console.log(formState.value.images);
 
-    // try {
-    //     // const response = await fetch("http://localhost:8080/posts/upload", {
-    //     //     method: 'POST',
-    //     //     headers: {
-    //     //         "Content-Type": "multipart/form-data",
-    //     //         "Accept": "application/json"
-    //     //     },
-    //     //     body: postFormData
-    //     //     })
-    //     // });
+    console.log(postFormData);
 
-    //     // if (!response.ok) {
-    //     //     error.value = `Error: ${response.status}`;
-    //     //     return;
-    //     // }
 
-    //     // const data: TokenType = await response.json();
-    //     // error.value = "";
-    //     // console.log(data);
+    try {
+        const response = await fetch("http://localhost:8080/posts/upload", {
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${authStore.getToken()}`
+            },
+            body: postFormData
+        }
+        );
 
-    //     // authStore.setToken(data.token);
-    // } catch (err) {
-    //     error.value = err as string;
-    // }
+        if (!response.ok) {
+            //error.value = `Error: ${response.status}`;
+            return;
+        }
+
+        const data: any = await response.json();
+        //error.value = "";
+        console.log(data);
+
+    } catch (err: any) {
+        err.value = err as string;
+    }
 
 }
 </script>
