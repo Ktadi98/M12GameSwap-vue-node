@@ -23,7 +23,7 @@ async function sendPost() {
 
     postFormData.append("title", formState.value.title);
     postFormData.append("description", formState.value.description);
-    postFormData.append("category", formState.value.category);
+    postFormData.append("platform", formState.value.category);
     postFormData.append("genre", formState.value.genre);
     postFormData.append("price", formState.value.price);
     postFormData.append("images", formState.value.images);
@@ -167,7 +167,7 @@ select {
 input,
 select,
 option {
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .upload-btn {
@@ -205,7 +205,7 @@ option {
     select,
     option {
         width: 100%;
-        font-size: 20px;
+        font-size: 21px;
     }
 
     .responsive-text {

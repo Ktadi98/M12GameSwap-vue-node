@@ -13,6 +13,9 @@ export class PostController {
     //Method to store a new post in the DB.
     create = async (req, res) => {
 
+        //Transfrom price to number
+        req.body.price = Math.floor(Number(req.body.price));
+
         //Apply validation schema to the data received
         const postValidated = validateUploadedPost(req.body);
 
@@ -20,7 +23,7 @@ export class PostController {
             return res.status(422).json({ error: JSON.parse(postValidated.error.message) })
         }
 
-        //this.postModel.create
+        this.postModel.create(req.body);
 
     }
 

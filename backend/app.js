@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import cors from "cors";
 import morgan from "morgan";
+
 import "dotenv/config";
 import { createUserRouter } from "./routes/users.js";
 import { createPostRouter } from "./routes/posts.js";
@@ -11,7 +12,8 @@ const app = express();
 
 app.use(morgan('dev'))
 app.use(cors());
-app.use(json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.disable("x-powered-by");
 
 app.use("/users", createUserRouter(UserModel));
@@ -26,3 +28,23 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`server listening on port http://localhost:${PORT}`);
 });
+
+
+// app.post('/upload', upload.single('images'), (req, res, next) => {
+
+//   const file = req.file
+
+//   if (!file) {
+
+//     const error = new Error('Please upload a file')
+
+//     error.httpStatusCode = 400
+
+//     return next(error)
+
+//   }
+
+//   res.send(file)
+
+// })
+
