@@ -36,6 +36,20 @@ const router = createRouter({
           next('/home'); // Redirigir al usuario a la página de inicio 
         }
       }
+    },
+    {
+      path: '/adView',
+      name: 'adView',
+      component: () => import('../views/AdView.vue'),
+      // beforeEnter: (to, from, next) => {
+      //   const authStore = useAuthStore();
+      //   // Verificar si el usuario tiene un token válido
+      //   if (authStore.userIsLoggedIn) {
+      //     next();
+      //   } else {
+      //     next('/home'); // Redirigir al usuario a la página de inicio 
+      //   }
+      // }
     }
   ]
 })
