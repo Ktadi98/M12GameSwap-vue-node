@@ -8,6 +8,7 @@ export const createPostRouter = (postModel) => {
     const postController = new PostController(postModel);
 
     postRouter.get("/", postController.getAll);
+    postRouter.get("/:id", postController.getById)
 
 
     return postRouter;

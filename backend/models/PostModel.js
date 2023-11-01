@@ -15,4 +15,18 @@ export class PostModel {
 
     }
 
+    static async getById(id) {
+        try {
+            const result = await prismadb.post.findFirst({
+                where: {
+                    post_id: +id
+                }
+            })
+
+            return result
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
 }
