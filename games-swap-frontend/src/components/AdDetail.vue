@@ -144,7 +144,6 @@ h1 {
     border-radius: 3%;
     background-color: #EFEFEF;
     display: inline-block;
-
     padding-top: 20px;
     padding-left: 50px;
     padding-right: 50px;

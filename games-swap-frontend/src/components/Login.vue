@@ -9,6 +9,7 @@ const emit = defineEmits<{
 }>()
 
 const authStore = useAuthStore();
+const error: Ref<Error | string> = ref("");
 
 interface LoginType {
   email: string,
@@ -20,39 +21,76 @@ const formData: Ref<LoginType> = ref({
   password: "",
 })
 
-const sendData = () => {
-  fetch("http://localhost:8080/users/login", {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      email: formData.value.email,
-      password: formData.value.password
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      //authStore.setToken() >TODO
-      localStorage.setItem("id", JSON.stringify(data[1]));
-    })
-    .catch(error => console.error(error))
+
+interface TokenType {
+  message: string,
+  token: string
 }
+
+const sendData = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/users/login", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        email: formData.value.email,
+        password: formData.value.password
+      })
+    });
+
+    if (!response.ok) {
+      error.value = `Error: ${response.status}`;
+      return;
+    }
+
+    const data: TokenType = await response.json();
+    error.value = "";
+    console.log(data);
+
+    authStore.setToken(data.token);
+  } catch (err) {
+    error.value = err as string;
+  }
+}
+
+// OLD
+// const sendData = () => {
+//   fetch("http://localhost:8080/users/login", {
+//     method: 'POST',
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Accept": "application/json"
+//     },
+//     body: JSON.stringify({
+//       email: formData.value.email,
+//       password: formData.value.password
+//     })
+//   })
+//     .then(res => res.json())
+//     .then(data => {
+//       console.log(data);
+//       //authStore.setToken() >TODO
+//       localStorage.setItem("id", JSON.stringify(data[1]));
+//     })
+//     .catch(error => console.error(error))
+// }
 
 </script>
 
 <template>
   <VueFinalModal class="confirm-modal" content-class="confirm-modal-content" overlay-transition="vfm-fade"
     content-transition="vfm-fade">
-    <form @submit.prevent="sendData">
+    <form @submit.prevent="sendData()">
       <h1>INICIO SESIÓN</h1>
       <input v-model="formData.email" type="email" name="email" id="email" placeholder="Correo">
       <input v-model="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
       <button @click="emit('confirm')">ENTRAR</button>
       <button class="register-btn" @click="emit('cancel')">¿No tienes cuenta? Regístrate</button>
     </form>
+    <div v-if="error !== ''">{{ error }}</div>
   </VueFinalModal>
 </template>
 
