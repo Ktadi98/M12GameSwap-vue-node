@@ -52,7 +52,7 @@ async function sendPost() {
             method: 'POST',
             headers: {
                 "Accept": "application/json",
-                "Authorization": `Bearer ${authStore.getToken()}`
+                "Authorization": `Bearer ${JSON.parse(authStore.getToken())}`
             },
             body: postFormData
         }
