@@ -27,7 +27,7 @@
     methods: {
       addToFavorites() {
         this.isFavorited = !this.isFavorited;
-        // Puedes implementar la lógica para agregar o quitar de favoritos aquí
+        
       },
     },
   };

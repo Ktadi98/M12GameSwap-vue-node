@@ -43,7 +43,7 @@ export default {
         const products = ref([]);
 
         onMounted(async () => {
-            // Cambia categoryId con el ID de la categoría deseada o pasa el valor desde las rutas, por ejemplo, usando Vue Router.
+            // Que no me olvide de cambiar categoryId con el ID de la categoría deseada o pasa el valor desde las rutas, por ejemplo, usando Vue Router.
             const categoryId = 1;
 
             try {
