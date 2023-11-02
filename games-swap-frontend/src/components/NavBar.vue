@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useModal } from 'vue-final-modal';
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import LoginModal from './Login.vue';
 import RegisterModal from './Register.vue';
 import { ref } from 'vue';
@@ -8,6 +8,7 @@ import { ref } from 'vue';
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
+const router = useRouter();
 
 const { open, close } = useModal({
   component: LoginModal,
@@ -36,6 +37,7 @@ const { open: openRegister, close: closeRegister } = useModal({
 
 const logOut = () => {
   authStore.deleteToken();
+  router.push("/");
 }
 
 </script>
@@ -55,7 +57,9 @@ const logOut = () => {
         <router-link to="/profileManagement" role="button" class="button access"
           v-if="authStore.userIsLoggedIn">Configuración
           Perfil</router-link>
-        <button v-if="authStore.userIsLoggedIn">Subir anuncio</button>
+        <button v-if="authStore.userIsLoggedIn">
+          <router-link to="/protected/uploadPost">Subir anuncio</router-link>
+        </button>
         <button @click="logOut" v-if="authStore.userIsLoggedIn">Cerrar sesión</button>
       </div>
     </div>

@@ -7,7 +7,7 @@ import AdDetail from './components/AdDetail.vue';
 <template>
   <ModalsContainer />
   <RouterView />
-  <AdDetail ad-id="2" />
+  <!-- <AdDetail ad-id="2" /> -->
 </template>
 
 <style scoped></style>

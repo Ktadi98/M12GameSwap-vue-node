@@ -61,10 +61,10 @@ onMounted(async () => {
             </div>
         </div>
     </main>
-    <Footer />
+    <Footer></Footer>
 </template>
 
-<style>
+<style scoped>
 header {
     display: flex;
     justify-content: space-between;

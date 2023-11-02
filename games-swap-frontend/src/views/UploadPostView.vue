@@ -165,7 +165,7 @@ form {
 }
 
 label {
-    font-size: 2.3rem;
+    font-size: 1.5rem;
     color: #9f87f5;
     font-weight: 500;
 }
