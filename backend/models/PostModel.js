@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-
+import fs from 'fs/promises';
+import sharp from 'sharp';
 
 const prismadb = new PrismaClient(); //Move to external module
 
@@ -69,6 +70,17 @@ export class PostModel {
             return result
         } catch (err) {
             console.error(err)
+        }
+    }
+
+    static async getImages(postImage) {
+        try {
+            console.log(postImage)
+            await sharp(postImage.path).toFile(`./public/static/images/${postImage.originalname}`);
+            await fs.unlink(postImage.path);
+            return 1;
+        } catch (error) {
+            console.log(error);
         }
     }
 

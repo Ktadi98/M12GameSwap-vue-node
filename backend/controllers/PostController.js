@@ -1,5 +1,6 @@
 import { validateUploadedPost } from '../schemas/posts.js'
 
+
 export class PostController {
     constructor(postModel) {
         this.postModel = postModel;
@@ -37,6 +38,18 @@ export class PostController {
         }
 
         return res.status(500).json({ error: "User could not be registered!" })
+
+    }
+
+    getImages = async (req, res) => {
+
+
+        const status = await this.postModel.getImages(req.file);
+
+        if (status === 1) {
+            console.log("Éxito!!")
+            res.json({ file: `http://localhost:8080/public/static/images/${req.file.originalname}` });
+        }
 
     }
 

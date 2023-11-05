@@ -11,7 +11,7 @@ export const createPostRouter = (postModel) => {
     postRouter.get("/", postController.getAll);
     postRouter.get("/:id", postController.getById)
     postRouter.post("/upload", authenticateToken, upload.single('images'), postController.create);
-
+    postRouter.post("/images", authenticateToken, upload.single('images'), postController.getImages);
 
     return postRouter;
 };

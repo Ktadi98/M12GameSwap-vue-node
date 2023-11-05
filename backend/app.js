@@ -7,10 +7,23 @@ import { createUserRouter } from "./routes/users.js";
 import { createPostRouter } from "./routes/posts.js";
 import { UserModel } from './models/UserModel.js';
 import { PostModel } from './models/PostModel.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
 
 const app = express();
 
-app.use(morgan('dev'))
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// app.use("/static", express.static(path.join(__dirname, "static")));
+//console.log(__dirname);
+//app.use(express.static(__dirname + "/static"));
+//app.use("/static", express.static(path.join(__dirname, "public")));
+//app.use(express.static(__dirname + "/public")); //archivos estáticos
+app.use('/public', express.static(path.join(__dirname, 'public')))
+
+
+app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,6 +31,7 @@ app.disable("x-powered-by");
 
 app.use("/users", createUserRouter(UserModel));
 app.use("/posts", createPostRouter(PostModel));
+
 
 const PORT = process.env.PORT ?? 1234;
 

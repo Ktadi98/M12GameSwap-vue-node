@@ -41,15 +41,15 @@ const router = createRouter({
       path: '/protected/uploadPost',
       name: 'uploadPost',
       component: () => import('../views/UploadPostView.vue'),
-      beforeEnter: (to, from, next) => {
-        const authStore = useAuthStore();
-        // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
-          next();
-        } else {
-          next('/'); // Redirigir al usuario a la página de inicio 
-        }
-      }
+      // beforeEnter: (to, from, next) => {
+      //   const authStore = useAuthStore();
+      //   // Verificar si el usuario tiene un token válido
+      //   if (authStore.userIsLoggedIn) {
+      //     next();
+      //   } else {
+      //     next('/'); // Redirigir al usuario a la página de inicio 
+      //   }
+      // }
     }
   ]
 })

@@ -26,8 +26,41 @@ const formState: Ref<any> = ref({
     state: ""
 })
 
+const uploadedImages: Ref<any> = ref([]);
+
 function selectFile(event: any) {
     formState.value.images = event.target.files[0];
+    getPhotosPosted();
+}
+
+async function getPhotosPosted() {
+    try {
+        const postImages = new FormData();
+
+        postImages.append("images", formState.value.images);
+
+        const response = await fetch("http://localhost:8080/posts/images", {
+            method: 'POST',
+            headers: {
+                "Authorization": `Bearer ${JSON.parse(authStore.getToken())}`
+            },
+            body: postImages
+        }
+        );
+
+        if (!response.ok) {
+            //error.value = `Error: ${response.status}`;
+            return;
+        }
+
+        const data: any = await response.json();
+        //error.value = "";
+        console.log(data);
+        uploadedImages.value.push(data.file);
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 async function sendPost() {
@@ -111,12 +144,18 @@ async function sendPost() {
             <label for="price">Precio</label>
             <input v-model="formState.price" type="number" name="price" id="price" step="1" min="1" max="999">
             <label for="images">Imágenes</label>
-            <input @change="selectFile($event)" type="file" placeholder="Sube las fotos de tu producto" multiple
+            <input @change="selectFile($event)" type="file" placeholder="Sube las fotos de tu producto"
                 accept="image/png, image/jpeg, image/jpg" name="images" id="images">
             <template v-for="image in formState.images">
                 <p>{{ image.name }}</p>
             </template>
-
+            <div class="row">
+                <div v-for="image in uploadedImages" :key="image" class="col-4">
+                    <figure>
+                        <img :src="image" alt="product_photo">
+                    </figure>
+                </div>
+            </div>
             <label for="images">Estado</label>
             <select v-model="formState.state" name="state" id="state">
                 <optgroup>
