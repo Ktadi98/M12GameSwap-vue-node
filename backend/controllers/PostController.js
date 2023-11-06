@@ -59,4 +59,8 @@ export class PostController {
         return res.json({ message: "Categories retrieved successfully!", categories: categories });
     };
 
+    getPostByCategory = async (req, res) => {
+       
+    };
+
 }

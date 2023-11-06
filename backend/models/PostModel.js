@@ -95,4 +95,13 @@ export class PostModel {
         }
     }
 
+    static async getPostByCategory(reqBody) {
+        try {
+
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
 }

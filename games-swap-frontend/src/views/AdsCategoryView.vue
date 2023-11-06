@@ -4,7 +4,7 @@
 
         <SearchBar />
 
-        <Categories />
+     
 
         <!-- <div class="product-grid">
             <PostCard
@@ -42,7 +42,7 @@ export default {
             const categoryId = 1;
 
             try {
-                const response = await fetch(`rutaApiPerAlsProductes${categoryId}`);
+                const response = await fetch(`http://localhost:8080/posts/category/${categoryId}`);
                 if (response.ok) {
                     const data = await response.json();
                     // la respuesta de la API es un array de productos.
