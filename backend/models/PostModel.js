@@ -34,8 +34,15 @@ export class PostModel {
             })
 
             console.log(platform, genre);
-            //Create post
 
+
+
+            //Mount image in public directory
+            await sharp(post_file.path).toFile(`./public/static/images/${post_file.originalname}`);
+            await fs.unlink(post_file.path);
+
+
+            //Create post
             const newPost = await prismadb.post.create({
                 data: {
                     post_title: post_data.title,
@@ -44,7 +51,7 @@ export class PostModel {
                     user_id: user_id,
                     platform_id: platform.platform_id,
                     genre_id: genre.genre_id,
-                    post_photos: [post_file.filename],
+                    post_photos: [`http://localhost:8080/public/static/images/${post_file.originalname}`],
                     post_price: post_data.price
                 }
             })
