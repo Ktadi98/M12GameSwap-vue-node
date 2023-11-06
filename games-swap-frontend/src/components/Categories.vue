@@ -1,10 +1,47 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
+import PS4 from "./Icons/PS4.vue";
+import PS5 from "./Icons/PS5.vue";
+import PS3 from "./Icons/PS3.vue";
+import Switch from "./Icons/Switch.vue";
+import XONE from "./Icons/XONE.vue";
+import SeriesXS from "./Icons/SeriesXS.vue";
+import Retro from "./Icons/Retro.vue";
+
+interface Platform {
+  platform_id: number,
+  platform_name: string
+}
+
+const props = defineProps<{
+  categories: Platform[]
+}>();
+
+const nameToIcons: any = {
+  "PS4": PS4,
+  "PS5": PS5,
+  "PS3": PS3,
+  "Nintendo Switch": Switch,
+  "Xbox One": XONE,
+  "Xbox Series X/S": SeriesXS,
+  "Retro": Retro
+}
+
 </script>
 <template>
   <section class="categories py-4 w-100">
     <ul class="d-flex flex-column flex-md-row w-100 gap-4 justify-content-center align-items-center">
-      <li>
+      <li v-for="category in props.categories" :key="category.platform_id">
+
+        <!-- <RouterLink :to={ path: "" , parameters: {p1:1}} class="svg-link">
+          {{ nameToIcons[category.platform_name] }}
+        </RouterLink> -->
+        <RouterLink class="svg-link" to="/">
+          <component :is="nameToIcons[category.platform_name]"></component>
+        </RouterLink>
+
+      </li>
+      <!-- <li>
         <RouterLink to="/" class="svg-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="265.88" height="60.17" viewBox="0 0 265.88 60.17"
             style="max-width: 98px; min-width: 48px; height: auto">
@@ -95,7 +132,7 @@ import { RouterLink } from "vue-router";
               fill="#000"></path>
           </svg>
         </RouterLink>
-      </li>
+      </li> -->
     </ul>
   </section>
 </template>
@@ -104,13 +141,5 @@ import { RouterLink } from "vue-router";
 .categories {
   border-bottom: 0.5px solid #e4e1e1;
   padding: 5px 10px 5px 10px;
-}
-
-.svg-link {
-  transition: all 0.3 ease-in;
-}
-
-.svg-link:hover svg path {
-  fill: #9f87f5;
 }
 </style>

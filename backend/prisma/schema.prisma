@@ -55,26 +55,24 @@ model User_Client {
 }
 
 model Platform {
-  platform_id   Int              @id @default(autoincrement())
-  platform_name String           @unique @db.VarChar(255)
-  genres        Platform_Genre[]
+  platform_id   Int    @id @default(autoincrement())
+  platform_name String @unique @db.VarChar(255)
   post          Post[]
 }
 
 model Genre {
-  genre_id   Int              @id @default(autoincrement())
-  genre_name String           @unique @db.VarChar(255)
-  platforms  Platform_Genre[]
+  genre_id   Int    @id @default(autoincrement())
+  genre_name String @unique @db.VarChar(255)
   post       Post[]
 }
 
-model Platform_Genre {
-  platform_genre_id Int      @id @default(autoincrement())
-  platform_id       Int      @unique
-  platform          Platform @relation(fields: [platform_id], references: [platform_id])
-  genre_id          Int      @unique
-  genre             Genre    @relation(fields: [genre_id], references: [genre_id])
-}
+// model Platform_Genre {
+//   platform_genre_id Int      @id @default(autoincrement())
+//   platform_id       Int      @unique
+//   platform          Platform @relation(fields: [platform_id], references: [platform_id])
+//   genre_id          Int      @unique
+//   genre             Genre    @relation(fields: [genre_id], references: [genre_id])
+// }
 
 model Post {
   post_id          Int           @id @default(autoincrement())

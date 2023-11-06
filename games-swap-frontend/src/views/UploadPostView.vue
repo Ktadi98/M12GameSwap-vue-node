@@ -36,7 +36,7 @@ function selectFile(event: any) {
 async function getPhotosPosted() {
     try {
         const postImages = new FormData();
-
+        uploadedImages.value = [];
         postImages.append("images", formState.value.images);
 
         const response = await fetch("http://localhost:8080/posts/images", {

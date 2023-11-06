@@ -48,9 +48,15 @@ export class PostController {
 
         if (status === 1) {
             console.log("Éxito!!")
-            res.json({ file: `http://localhost:8080/public/static/images/${req.file.originalname}` });
+            return res.json({ file: `http://localhost:8080/public/static/images/${req.file.originalname}` });
         }
+        return res.status(500).json({ error: "Images could not be retrieved" });
+    };
 
-    }
+    getCategories = async (req, res) => {
+        const [status, categories] = await this.postModel.getCategories(req.body);
+
+        return res.json({ message: "Categories retrieved successfully!", categories: categories });
+    };
 
 }

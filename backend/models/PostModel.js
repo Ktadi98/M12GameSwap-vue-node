@@ -84,4 +84,15 @@ export class PostModel {
         }
     }
 
+    static async getCategories(reqBody) {
+        try {
+            const categories = await prismadb.platform.findMany();
+            //console.log(categories);
+            return [1, categories]
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
 }

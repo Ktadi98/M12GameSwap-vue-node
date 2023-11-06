@@ -9,9 +9,11 @@ export const createPostRouter = (postModel) => {
     const postController = new PostController(postModel);
 
     postRouter.get("/", postController.getAll);
+    postRouter.get("/categories", postController.getCategories);
     postRouter.get("/:id", postController.getById)
     postRouter.post("/upload", authenticateToken, upload.single('images'), postController.create);
     postRouter.post("/images", authenticateToken, upload.single('images'), postController.getImages);
+
 
     return postRouter;
 };
