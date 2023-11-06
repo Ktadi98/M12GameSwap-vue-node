@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Icon from '@/components/Icons/BackArrow.vue';
-import Footer from './Footer.vue';
-import StarRating from './Icons/StarRating.vue';
+import Footer from '../components/Footer.vue';
+import StarRating from '../components/Icons/StarRating.vue';
 import { onMounted, ref } from 'vue';
 
 const props = defineProps(['adId'])
