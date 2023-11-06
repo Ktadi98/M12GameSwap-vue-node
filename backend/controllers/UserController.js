@@ -19,6 +19,7 @@ export class UserController {
     }
 
     const [returnState, token] = await this.userModel.register(req.body);
+
     //Pass validated data to model to create user
     if (returnState === 1) {
       console.log("User registered successfully");

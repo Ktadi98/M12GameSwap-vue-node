@@ -20,6 +20,7 @@ export function authenticateToken(req, res, next) {
         //console.log(decoded_token);
 
         //Getting the user information to use it in the following controller method.
+        req.user_id = decoded_token.user_id;
         req.user_email = decoded_token.user_email;
         req.user_role = decoded_token.user_role;
         next();

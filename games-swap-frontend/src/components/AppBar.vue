@@ -1,7 +1,5 @@
 <template>
-  <nav
-    class="app-bar fixed-bottom w-100 d-flex d-sm-flex justify-content-center py-3 d-md-none gap-4"
-  >
+  <nav class="app-bar sticky-bottom w-100 d-flex d-sm-flex justify-content-center py-3 d-md-none gap-4">
     <div class="navbar-nav mb-2">
       <button class="button access">Acceder</button>
     </div>
@@ -15,6 +13,6 @@
 }
 
 button {
-  transition: none;
+  width: fit-content;
 }
 </style>
