@@ -42,7 +42,7 @@ async function getPhotosPosted() {
         const response = await fetch("http://localhost:8080/posts/images", {
             method: 'POST',
             headers: {
-                "Authorization": `Bearer ${JSON.parse(authStore.getToken())}`
+                "Authorization": `Bearer ${authStore.getToken()}`
             },
             body: postImages
         }
@@ -85,7 +85,7 @@ async function sendPost() {
             method: 'POST',
             headers: {
                 "Accept": "application/json",
-                "Authorization": `Bearer ${JSON.parse(authStore.getToken())}`
+                "Authorization": `Bearer ${authStore.getToken()}`
             },
             body: postFormData
         }
