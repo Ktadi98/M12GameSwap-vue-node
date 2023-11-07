@@ -97,7 +97,24 @@ export class PostModel {
 
     static async getPostByCategory(reqBody) {
         try {
+            const platform = await prismadb.platform.findFirst({
+                where: {
+                    platform_name: {
+                        contains: categoryName,
+                        mode: "insensitive",
+                    },
+                },
+            });
+            if (!platform) {
+                return [];
+            }
+            const posts = await prismadb.post.findMany({
+                where: {
+                  platform_id: platform.platform_id,
+                }
+            });
 
+            return posts;
         }
         catch (error) {
             console.log(error);

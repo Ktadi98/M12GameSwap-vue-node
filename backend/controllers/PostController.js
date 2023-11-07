@@ -60,7 +60,20 @@ export class PostController {
     };
 
     getPostByCategory = async (req, res) => {
-       
+        const categoryName = req.params.categoryName;
+    
+        try {
+            const posts = await this.postModel.getPostsByCategory(categoryName);
+    
+            if (posts.length > 0) {
+                return res.json({ message: "Posts retrieved successfully!", posts });
+            } else {
+                return res.json({ message: `No se encontraron posts en la categoría: ${categoryName}`, posts: [] });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Error al obtener los posts por categoría" });
+        }
     };
 
 }
