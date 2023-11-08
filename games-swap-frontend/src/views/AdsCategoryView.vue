@@ -5,13 +5,19 @@
     <Platforms :platforms="platforms"></Platforms>
     <SearchBar />
 
-    <div class="product-grid" v-if="isLoading">
+    <!-- <div class="product-grid" v-if="isLoading">
       Cargando...
-    </div>
-    <div class="product-grid" v-else>
-      <div v-for="(genre, index) in genres" :key="genre.genre_id">
-        <span @click="updateGenreFilter(genre.genre_name, genre.genre_id)">{{ genre.genre_name }}</span>
+    </div> -->
+    <div class="product-grid">
+      <!-- Genres in separate component. -->
+      <div class="genre-box" v-for="(genre, index) in genres" :key="genre.genre_id">
+        <form @submit.prevent='updateGenreFilter(genre.genre_name, genre.genre_id)'>
+          <input type="submit" :value="genre.genre_name">
+        </form>
       </div>
+      <form @submit.prevent='updateGenreFilter("test", 2)'>
+        <input type="submit" value="Test">
+      </form>
       <PostCard v-for="product in products" :key="product.post_id" :product="product"></PostCard>
     </div>
     <Footer></Footer>
@@ -19,7 +25,7 @@
 </template>
   
 <script setup lang="ts">
-import { ref, onMounted, type Ref, onBeforeMount, watch } from 'vue';
+import { ref, onMounted, type Ref, onBeforeMount, watch, computed } from 'vue';
 import NavBar from "../components/NavBar.vue";
 import SearchBar from "../components/SearchBar.vue";
 import Footer from "../components/Footer.vue";
@@ -31,39 +37,38 @@ import type { Product } from "../interfaces/Product.ts";
 import type { Platform } from '@/interfaces/Platform';
 import type { Genre } from '@/interfaces/Genre';
 
-
-
+onMounted(() => {
+  fetchPlatforms();
+  fetchGenres();
+  getPosts();
+})
 
 //const platformsStore = usePlatformsStore();
-const genreFilter = ref("");
+const genreFilter: Ref<string | number> = ref(0);
 const platforms: Ref<Platform[]> = ref([]);
 const genres: Ref<Genre[]> = ref([]);
 const route = useRoute();
 const categoryId = ref(route.params.id);
 const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
+//let filteredProducts = computed<Product[]>(() => console.log("test"))
 
 //Filters
+// function applyFilters(): Product[] {
+//   filteredProducts = products.value;
 
-function applyFilters() {
-  let filteredProducts = products.value;
+//   if (genreFilter.value !== "") {
+//     filteredProducts = [...products.value.filter(product => product.genre_id === genreFilter.value)]
+//   }
 
-  if (genreFilter.value !== "") {
-    filteredProducts = [...filteredProducts.filter(product => product.genre_id === 1)]
-  }
+//   return filteredProducts;
+// }
+
+function updateGenreFilter(genre_name: string, id: number) {
+  genreFilter.value = id;
+  console.log(genreFilter.value);
+  //applyFilters();
 }
-
-function updateGenreFilter(filter: string, id: number) {
-  genreFilter.value = filter;
-  applyFilters();
-}
-
-
-onMounted(() => {
-  fetchPlatforms();
-  fetchGenres();
-  getPosts();
-})
 
 const fetchPlatforms = async (): Promise<{ message: string, categories: Platform[] } | undefined> => {
   const response: Response = await fetch("http://localhost:8080/posts/categories");
@@ -87,17 +92,14 @@ const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | und
 
 };
 
-watch(route, () => {
-  categoryId.value = route.params.id;
-  getPosts();
-}, { immediate: true, deep: true })
-
 async function getPosts() {
   try {
+
     const response = await fetch(`http://localhost:8080/posts/category/${categoryId.value}`);
 
     if (!response.ok) {
       console.log(response.status);
+      return;
     }
 
     const data: { message: string, posts: Product[] } = await response.json();
@@ -110,6 +112,11 @@ async function getPosts() {
   }
 }
 
+watch(route, () => {
+  categoryId.value = route.params.id;
+  getPosts();
+}, { immediate: true, deep: true })
+
 </script>
   
 <style scoped>
@@ -121,6 +128,14 @@ async function getPosts() {
 
 span {
   cursor: pointer;
+}
+
+.genre-box {
+  width: 100%;
+}
+
+span {
+  width: 100%;
 }
 </style>
   

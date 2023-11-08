@@ -14,20 +14,7 @@
 
 <script setup lang="ts">
 import { ref, defineProps } from 'vue';
-
-interface Product {
-  post_id: number;
-  user_id: number;
-  platform_id: number;
-  genre_id: number;
-  post_title: string;
-  post_photos: Array<string>;
-  post_description: string;
-  post_condition: string;
-  post_created_at: string;
-  post_price: number;
-  post_status: string;
-}
+import type { Product } from '@/interfaces/Product';
 
 const props = defineProps<{
   product: Product
