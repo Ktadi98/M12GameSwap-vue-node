@@ -91,7 +91,7 @@ export class PostModel {
         }
     }
 
-    static async getCategories(reqBody) {
+    static async getCategories() {
         try {
             const categories = await prismadb.platform.findMany();
             //console.log(categories);
@@ -102,26 +102,37 @@ export class PostModel {
         }
     }
 
-    static async getPostByCategory(reqBody) {
+    static async getPostsByCategory(category_id) {
         try {
-            const platform = await prismadb.platform.findFirst({
-                where: {
-                    platform_name: {
-                        contains: categoryName,
-                        mode: "insensitive",
-                    },
-                },
-            });
-            if (!platform) {
-                return [];
-            }
+            // const platform = await prismadb.post.findMany({
+            //     where: {
+            //         platform_id: {
+            //             contains: categoryName,
+            //             mode: "insensitive",
+            //         },
+            //     },
+            // });
+            // if (!platform) {
+            //     return [];
+            // }
             const posts = await prismadb.post.findMany({
                 where: {
-                  platform_id: platform.platform_id,
+                    platform_id: category_id,
                 }
             });
 
             return posts;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async getGenres() {
+        try {
+            const genres = await prismadb.genre.findMany();
+            //console.log(categories);
+            return [1, genres]
         }
         catch (error) {
             console.log(error);

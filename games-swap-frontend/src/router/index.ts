@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import UploadPostViewVue from '@/views/UploadPostView.vue';
 import AdDetail from '@/views/AdDetail.vue';
+import AdsCategoryViewVue from '@/views/AdsCategoryView.vue';
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -42,20 +45,6 @@ const router = createRouter({
       path: '/protected/uploadPost',
       name: 'uploadPost',
       component: UploadPostViewVue,
-      beforeEnter: (to, from, next) => {
-        const authStore = useAuthStore();
-        // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
-          next();
-        } else {
-          next('/'); // Redirigir al usuario a la página de inicio 
-        }
-      }
-    },
-    {
-      path: '/adsCategoryView',
-      name: 'adsCategoryView',
-      component: () => import('../views/AdsCategoryView.vue'),
       // beforeEnter: (to, from, next) => {
       //   const authStore = useAuthStore();
       //   // Verificar si el usuario tiene un token válido
@@ -67,13 +56,15 @@ const router = createRouter({
       // }
     },
     {
-      path: '/adDetail',
+      path: '/adDetail/:id',
       name: 'adDetail',
       component: AdDetail,
 
-      //     next('/home'); // Redirigir al usuario a la página de inicio 
-      //   }
-      // }
+    },
+    {
+      path: '/adsCategory/:id',
+      name: 'adsCategory',
+      component: AdsCategoryViewVue,
     }
   ]
 })

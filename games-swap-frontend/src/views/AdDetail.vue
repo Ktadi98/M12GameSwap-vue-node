@@ -3,21 +3,24 @@ import Icon from '@/components/Icons/BackArrow.vue';
 import Footer from '../components/Footer.vue';
 import StarRating from '../components/Icons/StarRating.vue';
 import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-const props = defineProps(['adId'])
+const route = useRoute();
 
-let adDetail = ref(null as any)
+//To use in fetch request
+const post_id = route.params.id;
+
+let adDetail = ref(null as any);
 
 onMounted(async () => {
-    const data = await fetch(`http://localhost:8080/posts/${props.adId}`).then(res => res.json())
-    adDetail.value = data
+    const data = await fetch(`http://localhost:8080/posts/${post_id}`).then(res => res.json());
+    adDetail.value = data.post;
 })
 
 </script>
 
 <template>
     <header>
-
         <div class="logo">
             <img src="@/assets/logo.png" alt="logo">
         </div>

@@ -12,8 +12,8 @@ export class PostController {
     };
 
     getById = async (req, res) => {
-        const post = await this.postModel.getById(req.params.id)
-        res.json(post)
+        const post = await this.postModel.getById(req.params.id);
+        return res.json({ post: post });
     }
 
     //Method to store a new post in the DB.
@@ -60,20 +60,26 @@ export class PostController {
     };
 
     getPostByCategory = async (req, res) => {
-        const categoryName = req.params.categoryName;
-    
+        const category_id = req.params.id;
+
         try {
-            const posts = await this.postModel.getPostsByCategory(categoryName);
-    
+            const posts = await this.postModel.getPostsByCategory(Number(category_id));
+
             if (posts.length > 0) {
-                return res.json({ message: "Posts retrieved successfully!", posts });
+                return res.json({ message: "Posts retrieved successfully!", posts: posts });
             } else {
-                return res.json({ message: `No se encontraron posts en la categoría: ${categoryName}`, posts: [] });
+                return res.json({ message: `No se encontraron posts en la categoría: ${category_id}`, posts: [] });
             }
         } catch (error) {
             console.error(error);
             return res.status(500).json({ error: "Error al obtener los posts por categoría" });
         }
+    };
+
+    getGenres = async (req, res) => {
+        const [status, genres] = await this.postModel.getGenres();
+
+        return res.json({ message: "Genres retrieved successfully!", genres: genres });
     };
 
 }
