@@ -3,7 +3,7 @@
 
       <NavBar />
       <SearchBar />
-  
+      <Categories></Categories>
       <div class="product-grid" v-if="isLoading">
         Cargando...
       </div>
@@ -20,6 +20,7 @@
   import SearchBar from "../components/SearchBar.vue";
   import Footer from "../components/Footer.vue";
   import PostCard from "../components/PostCard.vue";
+  import Categories from '@/components/Categories.vue';
   
   const categoryId = 1; 
   const products = ref<Array<Product>>([]);

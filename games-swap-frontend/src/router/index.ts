@@ -53,9 +53,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/adView',
-      name: 'adView',
-      component: () => import('../views/AdView.vue'),
+      path: '/adsCategoryView',
+      name: 'adsCategoryView',
+      component: () => import('../views/AdsCategoryView.vue'),
       // beforeEnter: (to, from, next) => {
       //   const authStore = useAuthStore();
       //   // Verificar si el usuario tiene un token válido
