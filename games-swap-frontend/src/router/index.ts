@@ -42,6 +42,20 @@ const router = createRouter({
       path: '/protected/uploadPost',
       name: 'uploadPost',
       component: UploadPostViewVue,
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
+    },
+    {
+      path: '/adsCategoryView',
+      name: 'adsCategoryView',
+      component: () => import('../views/AdsCategoryView.vue'),
       // beforeEnter: (to, from, next) => {
       //   const authStore = useAuthStore();
       //   // Verificar si el usuario tiene un token válido
@@ -57,6 +71,9 @@ const router = createRouter({
       name: 'adDetail',
       component: AdDetail,
 
+      //     next('/home'); // Redirigir al usuario a la página de inicio 
+      //   }
+      // }
     }
   ]
 })

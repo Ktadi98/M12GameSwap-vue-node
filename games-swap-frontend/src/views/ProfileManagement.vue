@@ -14,7 +14,7 @@
         <main class="main-content">
             <div id="ProfileManagement">
                 <div class="button-container">
-                    <button class="rounded-button">Recuperar Contraseña</button>
+                    <button class="rounded-button">Cambiar Contraseña</button>
                     <button class="rounded-button">Cambiar Datos del Perfil</button>
                     <form @submit.prevent="sendData">
                         <button type="submit" class="rounded-button">Eliminar Cuenta</button>
@@ -39,24 +39,6 @@ import { type Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
-// export default {
-//     data() {
-//         return {
-//             suggestion: "",
-//         };
-//     },
-//     methods: {
-//         submitSuggestion() {
-//             console.log("Sugerencia enviada:", this.suggestion);
-//             this.suggestion = "";
-//         },
-//     },
-// };
-
-// const formData: Ref<number> = ref({
-//     id: ,
-// })
 
 const sendData = () => {
     fetch("http://localhost:8080/users/delete", {
