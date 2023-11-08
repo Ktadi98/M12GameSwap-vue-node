@@ -3,8 +3,15 @@ import Icon from '@/components/Icons/BackArrow.vue';
 import Footer from '../components/Footer.vue';
 import StarRating from '../components/Icons/StarRating.vue';
 import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
 
 const props = defineProps(['adId'])
+
+const route = useRoute();
+
+//To use in fetch request
+const post_id = route.params.id;
 
 let adDetail = ref(null as any)
 

@@ -53,7 +53,7 @@ const router = createRouter({
       // }
     },
     {
-      path: '/adDetail',
+      path: '/adDetail/:id',
       name: 'adDetail',
       component: AdDetail,
 
