@@ -1,10 +1,7 @@
 import { defineStore } from "pinia";
-import { computed, ref, type Ref } from "vue";
+import { ref, type Ref } from "vue";
+import type { Platform } from "@/interfaces/Platform";
 
-interface Platform {
-    platform_id: number,
-    platform_name: string
-}
 export const usePlatformsStore = defineStore('platforms', () => {
 
     const platforms: Ref<Platform[]> = ref([]);
@@ -23,8 +20,6 @@ export const usePlatformsStore = defineStore('platforms', () => {
     function getPlatforms(): Platform[] {
         return platforms.value;
     }
-
-
 
     return { platforms, fetchPlatforms, getPlatforms }
 })

@@ -2,32 +2,37 @@
 
 import NavBar from "../components/NavBar.vue";
 import SearchBar from "../components/SearchBar.vue";
-import Categories from "../components/Categories.vue";
+import Platforms from "../components/Platforms.vue";
 import Footer from "../components/Footer.vue";
 import AppBar from "../components/AppBar.vue";
 import { onBeforeMount, onMounted, ref, type Ref } from "vue";
 import { usePlatformsStore } from "@/stores/platforms";
+import type { Platform } from '../interfaces/Platform';
 
+//const platformsStore = usePlatformsStore();
 
-interface Platform {
-  platform_id: number,
-  platform_name: string
-}
-
-onBeforeMount(() => {
-  platformsStore.fetchPlatforms();
+onMounted(() => {
+  fetchPlatforms();
 })
 
+const fetchPlatforms = async (): Promise<{ message: string, categories: Platform[] } | undefined> => {
+  const response: Response = await fetch("http://localhost:8080/posts/categories");
 
-const platformsStore = usePlatformsStore();
+  if (!response.ok) {
+    return;
+  }
+  const data: { message: string, categories: Platform[] } = await response.json();
+  platforms.value = data.categories;
 
-const categories: Ref<Platform[]> = ref(platformsStore.getPlatforms());
+};
+
+const platforms: Ref<Platform[]> = ref([]);
 
 </script>
 
 <template>
   <NavBar></NavBar>
-  <Categories :categories="categories"></Categories>
+  <Platforms :platforms="platforms"></Platforms>
   <main class="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
     <div class="jumbotron jumbotron-fluid text-center my-4">
       <div class="container">
@@ -91,3 +96,4 @@ main {
   max-width: 800px;
 }
 </style>
+../interfaces/Platform

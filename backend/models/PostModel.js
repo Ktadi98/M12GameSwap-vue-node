@@ -91,7 +91,7 @@ export class PostModel {
         }
     }
 
-    static async getCategories(reqBody) {
+    static async getCategories() {
         try {
             const categories = await prismadb.platform.findMany();
             //console.log(categories);
@@ -122,6 +122,17 @@ export class PostModel {
             });
 
             return posts;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async getGenres() {
+        try {
+            const genres = await prismadb.genre.findMany();
+            //console.log(categories);
+            return [1, genres]
         }
         catch (error) {
             console.log(error);

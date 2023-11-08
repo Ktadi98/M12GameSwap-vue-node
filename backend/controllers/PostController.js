@@ -76,4 +76,10 @@ export class PostController {
         }
     };
 
+    getGenres = async (req, res) => {
+        const [status, genres] = await this.postModel.getGenres();
+
+        return res.json({ message: "Genres retrieved successfully!", genres: genres });
+    };
+
 }
