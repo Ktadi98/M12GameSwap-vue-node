@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Icon from '@/components/Icons/BackArrow.vue';
-import Footer from '../components/Footer.vue';
-import StarRating from '../components/Icons/StarRating.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import Footer from '../components/Footer.vue';
+import StarRating from '../components/Icons/StarRating.vue';
 
 const route = useRoute();
 
@@ -48,14 +48,11 @@ onMounted(async () => {
         </div>
 
         <div id="ad-info">
-            <!-- Hay que poner fotos -->
             <img class="photo-ad" :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
-            <h1>
-                {{ adDetail?.post_price }} €
-            </h1>
-            <h2>{{ adDetail?.post_title }}</h2>
-            <h3>{{ adDetail?.post_condition }}</h3>
-            <p>{{ adDetail?.post_description }}</p>
+            <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
+            <h2 class="post_title">{{ adDetail?.post_title }}</h2>
+            <h2 class="post_condition"> Estado: {{ adDetail?.post_condition }}</h2>
+            <p class="post_description">{{ adDetail?.post_description }}</p>
             <div class="other-interests">
                 <h3>Sigue explorando</h3>
                 <span class="category-tag">PS5</span>
@@ -111,14 +108,15 @@ header {
 
 }
 
-main {
-    display: flex;
+main.ad-container {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 8rem;
 }
 
 .ad-container {
     border: 1px solid #8a6cf6;
     border-radius: 3%;
-    height: 50rem;
     width: 70rem;
     flex-direction: column;
     padding-top: 20px;
@@ -126,41 +124,63 @@ main {
     padding-right: 50px;
     margin: auto;
     border-bottom: 1px solid #8a6cf6;
-
+    display: inline-block;
+    margin-bottom: 6em;
 }
 
 img.photo-ad {
-    height: 500px;
-    width: 850px;
+    width: 100%;
+    margin-bottom: 50px;
 }
 
-h1 {
-
-    display: inline-block;
+h1.post_price {
     color: #8a6cf6;
+    text-align: left;
+    font-size: 2.5em;
 }
 
+h2.post_title {
+    margin-bottom: 50px;
+    color: #8a6cf6;
+    text-transform: capitalize;
+}
 
+h2.post_condition {
+   color: #8a6cf6;
+   margin-bottom: 30px;
+}
+
+p.post_description{
+    margin-bottom: 30px;
+}
 
 .other-interests {
-    border: 1px solid black;
-    border-radius: 3%;
+    border: 1px solid #8a6cf6;
+    border-radius: 20px;
     background-color: #EFEFEF;
     display: inline-block;
-    padding-top: 20px;
-    padding-left: 50px;
-    padding-right: 50px;
-    height: 30em;
+    padding: 20px 50px;
+    width: 100%;
     margin: auto;
+}
+
+h3{
+font-weight: 200;
+font-size: 1.3rem;
 }
 
 .category-tag {
     background-color: #8a6cf6;
     color: white;
-    border-radius: 15%;
+    border-radius: 20px;
     height: auto;
     padding: 10px;
     margin-right: 5px;
     font-weight: bold;
+    font-size: 1rem;
+    display: inline-block;
 }
+#ad-info {
+    margin-bottom: 50px;
+} 
 </style>
