@@ -36,7 +36,7 @@ const nameToIcons: any = {
         <!-- <RouterLink :to={ path: "" , parameters: {p1:1}} class="svg-link">
           {{ nameToIcons[category.platform_name] }}
         </RouterLink> -->
-        <RouterLink class="svg-link" to="/">
+        <RouterLink class="svg-link" :to="{ name: 'adsCategory', params: { id: category.platform_id } }">
           <component :is="nameToIcons[category.platform_name]"></component>
         </RouterLink>
 

@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import UploadPostViewVue from '@/views/UploadPostView.vue';
 import AdDetail from '@/views/AdDetail.vue';
+import AdsCategoryViewVue from '@/views/AdsCategoryView.vue';
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -57,6 +60,11 @@ const router = createRouter({
       name: 'adDetail',
       component: AdDetail,
 
+    },
+    {
+      path: '/adsCategory/:id',
+      name: 'adsCategory',
+      component: AdsCategoryViewVue,
     }
   ]
 })

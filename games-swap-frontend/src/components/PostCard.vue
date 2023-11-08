@@ -1,22 +1,37 @@
 <template>
   <div class="product-card" v-if="product">
-    <img :src="product.post_photos[0]" alt="Product Image">
+    <img :src="props.product.post_photos[0]" alt="Product Image">
     <div class="product-info">
-      <div class="product-price">{{ product.post_price }}</div>
+      <div class="product-price">{{ props.product.post_price }}</div>
       <div class="favorite-icon" @click="toggleFavorite">
         <i class="fas fa-heart" :class="{ 'favorited': isFavorited }"></i>
       </div>
-      <div class="product-name">{{ product.post_title }}</div>
+      <div class="product-name">{{ props.product.post_title }}</div>
     </div>
+    <RouterLink :to="{ name: 'adDetail', params: { id: props.product.post_id } }">Detalle</RouterLink>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, defineProps } from 'vue';
 
-const props = defineProps({
-  product: Object,
-});
+interface Product {
+  post_id: number;
+  user_id: number;
+  platform_id: number;
+  genre_id: number;
+  post_title: string;
+  post_photos: Array<string>;
+  post_description: string;
+  post_condition: string;
+  post_created_at: string;
+  post_price: number;
+  post_status: string;
+}
+
+const props = defineProps<{
+  product: Product
+}>()
 
 let isFavorited = ref(false);
 

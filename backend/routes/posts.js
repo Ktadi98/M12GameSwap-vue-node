@@ -13,7 +13,7 @@ export const createPostRouter = (postModel) => {
     postRouter.get("/:id", postController.getById)
     postRouter.post("/upload", authenticateToken, upload.single('images'), postController.create);
     postRouter.post("/images", authenticateToken, upload.single('images'), postController.getImages);
-    postRouter.get("/category", postController.getPostByCategory);
+    postRouter.get("/category/:id", postController.getPostByCategory);
 
 
     return postRouter;

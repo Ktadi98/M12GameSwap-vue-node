@@ -102,22 +102,22 @@ export class PostModel {
         }
     }
 
-    static async getPostByCategory(reqBody) {
+    static async getPostsByCategory(category_id) {
         try {
-            const platform = await prismadb.platform.findFirst({
-                where: {
-                    platform_name: {
-                        contains: categoryName,
-                        mode: "insensitive",
-                    },
-                },
-            });
-            if (!platform) {
-                return [];
-            }
+            // const platform = await prismadb.post.findMany({
+            //     where: {
+            //         platform_id: {
+            //             contains: categoryName,
+            //             mode: "insensitive",
+            //         },
+            //     },
+            // });
+            // if (!platform) {
+            //     return [];
+            // }
             const posts = await prismadb.post.findMany({
                 where: {
-                  platform_id: platform.platform_id,
+                    platform_id: category_id,
                 }
             });
 

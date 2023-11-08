@@ -5,7 +5,8 @@ import SearchBar from "../components/SearchBar.vue";
 import Categories from "../components/Categories.vue";
 import Footer from "../components/Footer.vue";
 import AppBar from "../components/AppBar.vue";
-import { onMounted, ref, type Ref } from "vue";
+import { onBeforeMount, onMounted, ref, type Ref } from "vue";
+import { usePlatformsStore } from "@/stores/platforms";
 
 
 interface Platform {
@@ -13,22 +14,14 @@ interface Platform {
   platform_name: string
 }
 
-const categories: Ref<Platform[]> = ref([]);
-
-const getCategories = async (): Promise<{ message: string, categories: Platform[] } | undefined> => {
-  const response: Response = await fetch("http://localhost:8080/posts/categories");
-
-  if (!response.ok) {
-    return;
-  }
-  const data: { message: string, categories: Platform[] } = await response.json();
-  categories.value = data.categories;
-
-};
-
-onMounted(() => {
-  getCategories();
+onBeforeMount(() => {
+  platformsStore.fetchPlatforms();
 })
+
+
+const platformsStore = usePlatformsStore();
+
+const categories: Ref<Platform[]> = ref(platformsStore.getPlatforms());
 
 </script>
 
