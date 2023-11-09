@@ -2,11 +2,11 @@
   <div class="product-card" v-if="product">
     <img :src="props.product.post_photos[0]" alt="Product Image">
     <div class="product-info">
+      <div class="product-name">{{ props.product.post_title }}</div>
       <div class="product-price">{{ props.product.post_price }}</div>
       <div class="favorite-icon" @click="toggleFavorite">
         <i class="fas fa-heart" :class="{ 'favorited': isFavorited }"></i>
       </div>
-      <div class="product-name">{{ props.product.post_title }}</div>
     </div>
     <RouterLink :to="{ name: 'adDetail', params: { id: props.product.post_id } }">Detalle</RouterLink>
   </div>
@@ -29,31 +29,74 @@ const toggleFavorite = () => {
 
 <style scoped>
 .product-card {
-  border: 1px solid #ddd;
+  border: 1px solid #e1e1e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  border-radius: 6px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.product-card-image {
   text-align: center;
+  margin-bottom: 10px;
 }
 
 .product-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
 }
 
 .product-price {
   font-weight: bold;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 8px;
 }
 
-.favorite-icon {
-  color: red;
+favorite-icon {
+  color: #e53935;
   cursor: pointer;
+  transition: color 0.2s;
 }
 
-.favorite-icon.favorited {
-  color: pink;
+favorite-icon.favorited {
+  color: #c62828;
 }
 
 .product-name {
   margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.product-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-actions a {
+  text-decoration: none;
+  background-color: #2196F3;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.product-actions a:hover {
+  background-color: #1976D2;
 }
 </style>
+
