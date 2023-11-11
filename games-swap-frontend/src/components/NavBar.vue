@@ -4,6 +4,8 @@ import { RouterLink, useRouter } from "vue-router";
 import LoginModal from './Login.vue';
 import RegisterModal from './Register.vue';
 import { ref } from 'vue';
+import PostListIcon from './Icons/PostListIcon.vue';
+import PostUploadIcon from './Icons/PostUploadIcon.vue';
 
 import { useAuthStore } from "@/stores/auth";
 
@@ -44,7 +46,7 @@ const logOut = () => {
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="row container-fluid d-flex align-items-center">
-      <div class="d-flex col-12 col-md-10 align-items-center justify-content-center justify-content-md-start">
+      <div class="d-flex col-12 col-md-9 align-items-center justify-content-center justify-content-md-start">
         <div>
           <img class="logo-app d-block overflow-hidden w-100" src="/imgs/logo-app-2.png" alt="logo" />
         </div>
@@ -52,15 +54,19 @@ const logOut = () => {
         <router-link class="logo ms-2 font-weight-bold" to="/">GAMESWAP</router-link>
       </div>
 
-      <div class="col-md-2 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
+      <div class="col-md-3 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
         <button v-if="!authStore.userIsLoggedIn" class="button access" @click="open">Acceder</button>
         <router-link to="/profileManagement" role="button" class="button access"
           v-if="authStore.userIsLoggedIn">Configuración
           Perfil</router-link>
-        <button v-if="authStore.userIsLoggedIn">
-          <router-link to="/protected/uploadPost">Subir anuncio</router-link>
-        </button>
+        <router-link to="/protected/uploadPost" v-if="authStore.userIsLoggedIn">
+          <PostUploadIcon></PostUploadIcon>
+        </router-link>
+        <router-link v-if="authStore.userIsLoggedIn" to="/">
+          <PostListIcon></PostListIcon>
+        </router-link>
         <button @click="logOut" v-if="authStore.userIsLoggedIn">Cerrar sesión</button>
+
       </div>
     </div>
   </nav>
