@@ -82,4 +82,17 @@ export class PostController {
         return res.json({ message: "Genres retrieved successfully!", genres: genres });
     };
 
+    getPostsByUserId = async (req, res) => {
+        const posts = await this.postModel.getPostsByUserId(req.user_id);
+        return res.json({ posts: posts });
+    };
+
+    getPostsByQuery = async (req, res) => {
+
+        const query = req.params.searchQuery;
+
+        const posts = await this.postModel.getPostsByQuery(query);
+        return res.json({ posts: posts });
+    };
+
 }

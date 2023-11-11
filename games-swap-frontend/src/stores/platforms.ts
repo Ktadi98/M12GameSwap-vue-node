@@ -17,9 +17,5 @@ export const usePlatformsStore = defineStore('platforms', () => {
 
     };
 
-    function getPlatforms(): Platform[] {
-        return platforms.value;
-    }
-
-    return { platforms, fetchPlatforms, getPlatforms }
+    return { platforms, fetchPlatforms }
 })
