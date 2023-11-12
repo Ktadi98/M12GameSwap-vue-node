@@ -8,7 +8,6 @@ import ControlPanel from './views/ControlPanel.vue';
 <template>
   <ModalsContainer />
   <RouterView />
-  <ControlPanel/>
 </template>
 
 <style scoped></style>
