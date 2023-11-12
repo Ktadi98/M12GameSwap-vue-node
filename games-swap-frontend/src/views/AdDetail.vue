@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from '@/components/Icons/BackArrow.vue';
+import BackArrow from '@/components/Icons/BackArrow.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import Footer from '../components/Footer.vue';
@@ -32,7 +32,7 @@ onMounted(async () => {
         </div>
     </header>
     <div style="color: #8a6cf6">
-        <Icon />
+        <BackArrow />
     </div>
     <!-- falta devolver datos del vendedor para pintarlos aqui -->
     <main class="ad-container">
