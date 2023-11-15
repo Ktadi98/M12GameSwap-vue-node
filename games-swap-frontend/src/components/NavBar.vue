@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { useModal } from 'vue-final-modal';
-import { RouterLink, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import LoginModal from './Login.vue';
 import RegisterModal from './Register.vue';
 import { ref } from 'vue';
 import PostListIcon from './Icons/PostListIcon.vue';
 import PostUploadIcon from './Icons/PostUploadIcon.vue';
-
 import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 const router = useRouter();
+const showDropdown = ref(false);
 
 const { open, close } = useModal({
   component: LoginModal,
@@ -23,7 +23,7 @@ const { open, close } = useModal({
       openRegister()
     },
   }
-})
+});
 
 const { open: openRegister, close: closeRegister } = useModal({
   component: RegisterModal,
@@ -35,42 +35,50 @@ const { open: openRegister, close: closeRegister } = useModal({
       closeRegister()
     },
   }
-})
+});
 
 const logOut = () => {
   authStore.deleteToken();
   router.push("/");
-}
+};
+
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value;
+};
 
 </script>
-<template>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="row container-fluid d-flex align-items-center">
-      <div class="d-flex col-12 col-md-9 align-items-center justify-content-center justify-content-md-start">
-        <div>
-          <img class="logo-app d-block overflow-hidden w-100" src="/imgs/logo-app-2.png" alt="logo" />
-        </div>
 
+<template>
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid d-flex align-items-center">
+      <div class="d-flex col-12 col-md-9 align-items-center justify-content-center justify-content-md-start">
+        <img class="logo-app" src="/imgs/logo-app-2.png" alt="logo" />
         <router-link class="logo ms-2 font-weight-bold" to="/">GAMESWAP</router-link>
       </div>
 
       <div class="col-md-3 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
-        <button v-if="!authStore.userIsLoggedIn" class="button access" @click="open">Acceder</button>
-        <router-link to="/profileManagement" role="button" class="button access"
-          v-if="authStore.userIsLoggedIn">Configuración
-          Perfil</router-link>
-        <router-link to="/protected/uploadPost" v-if="authStore.userIsLoggedIn">
+        <router-link v-if="authStore.userIsLoggedIn" class="uploadPost" to="/protected/uploadPost">
           <PostUploadIcon></PostUploadIcon>
         </router-link>
-        <router-link v-if="authStore.userIsLoggedIn" to="/">
-          <PostListIcon></PostListIcon>
-        </router-link>
-        <button @click="logOut" v-if="authStore.userIsLoggedIn">Cerrar sesión</button>
 
+        <div class="profile-link" v-if="authStore.userIsLoggedIn">
+          <div class="profile-info" @click="toggleDropdown">
+            <div class="profile-image">
+              <img src="@/assets/avatar-profile.svg" alt="Profile Image">
+            </div>
+          </div>
+          <div class="dropdown" v-show="showDropdown">
+            <router-link to="/editProfile">Editar perfil</router-link>
+            <router-link to="/">Mis anuncios</router-link>
+            <div @click="logOut">Cerrar sesión</div>
+          </div>
+        </div>
+        <button v-if="!authStore.userIsLoggedIn" class="button access" @click="open">Acceder</button>
       </div>
     </div>
   </nav>
 </template>
+
 <style scoped>
 @media (max-width: 568px) {
   .button {
@@ -79,92 +87,83 @@ const logOut = () => {
 }
 
 nav {
-  border-bottom: 0.2px solid #e4e1e1;
-  padding: 5px 20px 5px 20px;
-  background-color: white !important;
-  position: sticky;
-  top: 0px;
-  z-index: 10;
-}
-
-nav .logo {
-  color: #9f87f5;
-  font-size: 2.5rem;
-}
-
-.access {
-  margin-top: 5px;
-}
-
-.logo {
-  font-size: 30px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 0;
+  align-items: center;
 }
 
 .logo-app {
-  height: 50px;
-  min-height: 50px;
-  min-width: 50px;
-}
-
-/* header {
-    line-height: 1.5;
-    max-height: 100vh;
+  max-height: 50px;
 }
 
 .logo {
-    display: block;
-    margin: 0 auto 2rem;
+  color: #9f87f5;
+  font-size: 2rem; /* Ajustar tamaño del logo */
+  margin-right: 10px; /* Añadido margen para separar el logo del nombre */
 }
 
-nav {
-    width: 100%;
-    font-size: 12px;
-    text-align: center;
-    margin-top: 2rem;
+.profile-info {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: auto; /* Mueve el perfil a la derecha */
 }
 
-nav a.router-link-exact-active {
-    color: var(--color-text);
+.profile-info:hover .profile-image img {
+  border: 2px solid #745cf3;
 }
 
-nav a.router-link-exact-active:hover {
-    background-color: transparent;
+.profile-image img {
+  width: 40px; /* Ajustar tamaño de la imagen del perfil */
+  height: 40px;
+  border-radius: 50%;
+  transition: border 0.3s ease;
 }
 
-nav a {
-    display: inline-block;
-    padding: 0 1rem;
-    border-left: 1px solid var(--color-border);
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  display: none;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-nav a:first-of-type {
-    border: 0;
+.profile-link:hover .dropdown {
+  display: block;
 }
 
-@media (min-width: 1024px) {
-    header {
-        display: flex;
-        place-items: center;
-        padding-right: calc(var(--section-gap) / 2);
-    }
+.dropdown a, .dropdown div {
+  padding: 8px;
+  color: #333;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s ease;
+}
 
-    .logo {
-        margin: 0 2rem 0 0;
-    }
+.dropdown a:hover, .dropdown div:hover {
+  background-color: #f0f0f0;
+}
 
-    header .wrapper {
-        display: flex;
-        place-items: flex-start;
-        flex-wrap: wrap;
-    }
+.button.access, .uploadPost {
+  background-color: #745cf3;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-    nav {
-        text-align: left;
-        margin-left: -1rem;
-        font-size: 1rem;
-
-        padding: 1rem 0;
-        margin-top: 1rem;
-    }
-} */
+.button.access:hover, .uploadPost:hover {
+  background-color: #5538a1;
+}
 </style>
+
+

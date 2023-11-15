@@ -1,16 +1,7 @@
 <template>
     <div>
-        <header class="header">
-            <router-link to="/" class="back-button">
-                <img src="@/assets/arrow.svg" alt="Back">
-            </router-link>
-            <div class="profile-info">
-                <div class="profile-image">
-                    <img src="@/assets/avatar-profile.svg" alt="Profile Image">
-                </div>
-                <div class="profile-name">userName</div>
-            </div>
-        </header>
+        <NavBar>
+        </NavBar>
         <main class="main-content">
             <div id="ProfileManagement">
                 <div class="button-container">
@@ -37,6 +28,7 @@
 <script setup lang="ts">
 import { type Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import NavBar from '@/components/NavBar.vue';
 
 const router = useRouter();
 
@@ -48,7 +40,6 @@ const sendData = () => {
             "Accept": "application/json"
         },
         body: JSON.stringify({
-            //??: Coalescense operator, if the value is null we put a valueby default
             userId: JSON.parse(localStorage.getItem("id") ?? "1")
         })
     })
@@ -56,8 +47,6 @@ const sendData = () => {
         .then(data => {
             console.log(data);
             localStorage.removeItem("id");
-
-            //If the deletion was resolved, we redirect to the home page.
             router.push({ name: 'home' });
         })
         .catch(error => console.error(error))
@@ -66,14 +55,6 @@ const sendData = () => {
 </script>
   
 <style scoped>
-.header {
-    background-color: #9f87f5;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    margin: 0;
-    align-items: center;
-}
 
 .back-button {
     background: none;
@@ -90,23 +71,6 @@ const sendData = () => {
 
 .back-button:hover img {
     transform: scale(1.2);
-}
-
-.profile-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-}
-
-.profile-image img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-
-.profile-name {
-    color: #fff;
 }
 
 .main-content {
