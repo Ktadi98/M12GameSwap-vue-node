@@ -62,7 +62,7 @@ const logOut = () => {
         <router-link to="/protected/uploadPost" v-if="authStore.userIsLoggedIn">
           <PostUploadIcon></PostUploadIcon>
         </router-link>
-        <router-link v-if="authStore.userIsLoggedIn" to="/">
+        <router-link v-if="authStore.userIsLoggedIn" to="/postsList">
           <PostListIcon></PostListIcon>
         </router-link>
         <button @click="logOut" v-if="authStore.userIsLoggedIn">Cerrar sesión</button>
