@@ -67,9 +67,9 @@ const toggleDropdown = () => {
               <img src="@/assets/avatar-profile.svg" alt="Profile Image">
             </div>
           </div>
-          <div class="dropdown" v-show="showDropdown">
+          <div>
             <router-link to="/editProfile">Editar perfil</router-link>
-            <router-link to="/">Mis anuncios</router-link>
+            <router-link to="/postsList">Mis anuncios</router-link>
             <div @click="logOut">Cerrar sesión</div>
           </div>
         </div>
@@ -171,6 +171,7 @@ nav {
 .button.access:hover,
 .uploadPost:hover {
   background-color: #5538a1;
-}</style>
+}
+</style>
 
 
