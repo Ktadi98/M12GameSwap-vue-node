@@ -2,14 +2,14 @@
   <div>
 
     <NavBar />
-    <Platforms :platforms="platforms"></Platforms>
+    <Platforms :platforms="platformsStore.platforms"></Platforms>
     <SearchBar />
 
     <!-- <div class="product-grid" v-if="isLoading">
       Cargando...
     </div> -->
     <div class="product-grid">
-      <select @change="updateCriteriaFilter" v-model="criteria">
+      <select v-model="criteria">
         <option value="Todos">Todos</option>
         <option value="A-Z">A-Z</option>
         <option value="Z-A" selected>Z-A</option>
@@ -44,18 +44,18 @@ import Platforms from '@/components/Platforms.vue';
 import { useRoute } from 'vue-router';
 import { usePlatformsStore } from '@/stores/platforms';
 import type { Product } from "../interfaces/Product.ts";
-import type { Platform } from '@/interfaces/Platform';
 import type { Genre } from '@/interfaces/Genre';
 
 onMounted(() => {
-  fetchPlatforms();
   fetchGenres();
   getPosts();
 })
 
-//const platformsStore = usePlatformsStore();
+const platformsStore = usePlatformsStore();
+platformsStore.fetchPlatforms();
+
+
 const genreFilter: Ref<number> = ref(-1);
-const platforms: Ref<Platform[]> = ref([]);
 const genres: Ref<Genre[]> = ref([]);
 const route = useRoute();
 const categoryId = ref(route.params.id);
@@ -109,37 +109,11 @@ const filteredProducts = computed(() => {
 
 );
 
-//Filters
-// function applyFilters(): Product[] {
-//   filteredProducts = products.value;
 
-//   if (genreFilter.value !== "") {
-//     filteredProducts = [...products.value.filter(product => product.genre_id === genreFilter.value)]
-//   }
-
-//   return filteredProducts;
-// }
 
 function updateGenreFilter(genre_name: string, id: number) {
   genreFilter.value = id;
-  console.log(genreFilter.value);
-  //applyFilters();
 }
-
-function updateCriteriaFilter() {
-
-}
-
-const fetchPlatforms = async (): Promise<{ message: string, categories: Platform[] } | undefined> => {
-  const response: Response = await fetch("http://localhost:8080/posts/categories");
-
-  if (!response.ok) {
-    return;
-  }
-  const data: { message: string, categories: Platform[] } = await response.json();
-  platforms.value = data.categories;
-
-};
 
 const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | undefined> => {
   const response: Response = await fetch("http://localhost:8080/posts/genres");
@@ -263,7 +237,6 @@ watch(route, () => {
 
 .input-active {
   background-color: #9f87f5;
-  ;
 }
 </style>
 

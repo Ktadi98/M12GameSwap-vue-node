@@ -5,6 +5,7 @@ export interface Product {
     genre_id: number;
     post_title: string;
     post_photos: Array<string>;
+    post_keep: boolean;
     post_description: string;
     post_condition: string;
     post_created_at: string;

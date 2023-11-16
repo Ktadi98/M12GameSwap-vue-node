@@ -139,4 +139,29 @@ export class PostModel {
         }
     }
 
+    static async getPostsByUserId(req_user_id) {
+        const posts = await prismadb.post.findMany({
+            where: {
+                user_id: req_user_id
+            }
+        });
+
+        return posts;
+    };
+
+    static async getPostsByQuery(query) {
+        const posts = await prismadb.post.findMany({
+            where: {
+                post_title: {
+                    startsWith: query,
+                    mode: "insensitive"
+                }
+                //TODO:Añadir tags incluidos
+            }
+        });
+
+        return posts;
+    };
+
+
 }

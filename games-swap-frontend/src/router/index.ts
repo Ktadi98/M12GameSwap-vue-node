@@ -3,7 +3,8 @@ import { useAuthStore } from '@/stores/auth';
 import UploadPostViewVue from '@/views/UploadPostView.vue';
 import AdDetail from '@/views/AdDetail.vue';
 import AdsCategoryViewVue from '@/views/AdsCategoryView.vue';
-
+import ControlPanelVue from '@/views/ControlPanel.vue';
+import PostListView from '@/views/PostsListView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,6 +66,25 @@ const router = createRouter({
       path: '/adsCategory/:id',
       name: 'adsCategory',
       component: AdsCategoryViewVue,
+    },
+    {
+      path: '/controlPanel',
+      name: 'controlPanel',
+      component: ControlPanelVue
+    },
+    {
+      path: '/postsList',
+      name: 'postsList',
+      component: PostListView,
+      // beforeEnter: (to, from, next) => {
+      //   const authStore = useAuthStore();
+      //   // Verificar si el usuario tiene un token válido
+      //   if (authStore.userIsLoggedIn) {
+      //     next();
+      //   } else {
+      //     next('/'); // Redirigir al usuario a la página de inicio 
+      //   }
+      // }
     }
   ]
 })

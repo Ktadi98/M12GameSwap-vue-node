@@ -101,15 +101,18 @@ nav {
 
 .logo {
   color: #9f87f5;
-  font-size: 2rem; /* Ajustar tamaño del logo */
-  margin-right: 10px; /* Añadido margen para separar el logo del nombre */
+  font-size: 2rem;
+  /* Ajustar tamaño del logo */
+  margin-right: 10px;
+  /* Añadido margen para separar el logo del nombre */
 }
 
 .profile-info {
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-left: auto; /* Mueve el perfil a la derecha */
+  margin-left: auto;
+  /* Mueve el perfil a la derecha */
 }
 
 .profile-info:hover .profile-image img {
@@ -117,7 +120,8 @@ nav {
 }
 
 .profile-image img {
-  width: 40px; /* Ajustar tamaño de la imagen del perfil */
+  width: 40px;
+  /* Ajustar tamaño de la imagen del perfil */
   height: 40px;
   border-radius: 50%;
   transition: border 0.3s ease;
@@ -139,7 +143,8 @@ nav {
   display: block;
 }
 
-.dropdown a, .dropdown div {
+.dropdown a,
+.dropdown div {
   padding: 8px;
   color: #333;
   text-decoration: none;
@@ -147,11 +152,13 @@ nav {
   transition: background-color 0.3s ease;
 }
 
-.dropdown a:hover, .dropdown div:hover {
+.dropdown a:hover,
+.dropdown div:hover {
   background-color: #f0f0f0;
 }
 
-.button.access, .uploadPost {
+.button.access,
+.uploadPost {
   background-color: #745cf3;
   color: #ffffff;
   border: none;
@@ -161,9 +168,9 @@ nav {
   transition: background-color 0.3s ease;
 }
 
-.button.access:hover, .uploadPost:hover {
+.button.access:hover,
+.uploadPost:hover {
   background-color: #5538a1;
-}
-</style>
+}</style>
 
 
