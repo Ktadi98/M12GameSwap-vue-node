@@ -21,7 +21,8 @@ ul {
   list-style: none;
 }
 
-button {
+button,
+input[type="submit"] {
   padding: 5px 10px;
   margin: 0;
   border: none;

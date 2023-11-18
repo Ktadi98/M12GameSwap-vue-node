@@ -11,4 +11,8 @@ export interface Product {
     post_created_at: string;
     post_price: number;
     post_status: string;
+    platform?: {
+        platform_id: number,
+        platform_name: string
+    }
 }
