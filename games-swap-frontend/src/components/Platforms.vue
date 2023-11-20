@@ -42,4 +42,3 @@ const nameToIcons: any = {
   padding: 5px 10px 5px 10px;
 }
 </style>
-../interfaces/Platform
