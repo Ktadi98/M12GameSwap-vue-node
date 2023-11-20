@@ -4,10 +4,26 @@ import Bookmark from '@/components/Icons/BookMark.vue';
 import Pencil from '@/components/Icons/Pencil.vue';
 import PostDetail from './Icons/PostDetail.vue';
 import TrashCan from '@/components/Icons/TrashBinIcon.vue';
+import { useModal } from 'vue-final-modal';
+import DeletePostModal from './DeletePostModal.vue';
 
 const props = defineProps<{
     post: Product
 }>()
+
+const { open, close } = useModal({
+    component: DeletePostModal,
+    attrs: {
+        onConfirm() {
+            close()
+        },
+        onCancel() {
+            close()
+        },
+        post_image: props.post.post_photos[0],
+        post_title: props.post.post_title
+    }
+});
 
 </script>
 <template>
@@ -43,7 +59,7 @@ const props = defineProps<{
                 </RouterLink>
             </div>
         </div>
-        <div class="text-end ms-4 ms-md-0">
+        <div class="text-end ms-4 ms-md-0" @click="open">
             <TrashCan></TrashCan>
         </div>
     </article>
