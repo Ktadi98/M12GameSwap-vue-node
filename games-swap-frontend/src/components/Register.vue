@@ -66,7 +66,7 @@ interface TokenType {
 
 const sendData = async () => {
   try {
-    const response = await fetch("http://localhost:8080/users/register", {
+    const response = await fetch("http://localhost:1234/users/register", {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

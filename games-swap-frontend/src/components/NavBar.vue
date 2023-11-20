@@ -48,16 +48,17 @@ const toggleDropdown = () => {
 
 </script>
 
+
 <template>
   <nav class="navbar bg-body-tertiary">
-    <div class="container-fluid d-flex align-items-center">
-      <div class="d-flex col-12 col-md-9 align-items-center justify-content-center justify-content-md-start">
+    <div class="container-fluid d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
         <img class="logo-app" src="/imgs/logo-app-2.png" alt="logo" />
         <router-link class="logo ms-2 font-weight-bold" to="/">GAMESWAP</router-link>
       </div>
 
-      <div class="col-md-3 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
-        <router-link v-if="authStore.userIsLoggedIn" class="uploadPost" to="/protected/uploadPost">
+      <div class="d-flex align-items-center">
+        <router-link v-if="authStore.userIsLoggedIn" class="nav-link" to="/protected/uploadPost">
           <PostUploadIcon></PostUploadIcon>
         </router-link>
 
@@ -68,11 +69,12 @@ const toggleDropdown = () => {
             </div>
           </div>
           <div class="dropdown" v-show="showDropdown">
-            <router-link to="/editProfile">Editar perfil</router-link>
-            <router-link to="/">Mis anuncios</router-link>
+            <router-link to="/profileManagement">Editar perfil</router-link>
+            <router-link to="/postsList">Mis anuncios</router-link>
             <div @click="logOut">Cerrar sesión</div>
           </div>
         </div>
+
         <button v-if="!authStore.userIsLoggedIn" class="button access" @click="open">Acceder</button>
       </div>
     </div>
@@ -80,97 +82,95 @@ const toggleDropdown = () => {
 </template>
 
 <style scoped>
-@media (max-width: 568px) {
-  .button {
-    display: none;
-  }
+.navbar {
+  background-color: #f8f9fa;
+  /* Cambia el color de fondo según tu preferencia */
+  padding: 10px;
 }
 
-nav {
-  background-color: #ffffff;
+.container-fluid {
   display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  margin: 0;
   align-items: center;
+  justify-content: space-between;
 }
 
 .logo-app {
-  max-height: 50px;
+  max-width: 50px;
+  /* Ajusta el tamaño del logo según tus necesidades */
 }
 
 .logo {
-  color: #9f87f5;
-  font-size: 2rem;
-  /* Ajustar tamaño del logo */
-  margin-right: 10px;
-  /* Añadido margen para separar el logo del nombre */
+  margin-left: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #343a40;
+  /* Cambia el color del texto según tu preferencia */
+  font-size: 1.5rem;
+  /* Ajusta el tamaño del texto según tus necesidades */
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.uploadPost {
+  text-decoration: none;
+  color: #007bff;
+  /* Cambia el color del enlace según tu preferencia */
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
 }
 
 .profile-info {
-  display: flex;
-  align-items: center;
   cursor: pointer;
-  margin-left: auto;
-  /* Mueve el perfil a la derecha */
-}
-
-.profile-info:hover .profile-image img {
-  border: 2px solid #745cf3;
 }
 
 .profile-image img {
-  width: 40px;
-  /* Ajustar tamaño de la imagen del perfil */
-  height: 40px;
+  max-width: 30px;
+  /* Ajusta el tamaño de la imagen del perfil según tus necesidades */
   border-radius: 50%;
-  transition: border 0.3s ease;
+  /* Añade bordes redondeados a la imagen del perfil */
 }
 
 .dropdown {
+  flex-direction: column;
   position: absolute;
   top: 100%;
   right: 0;
   background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px;
+  /* Cambia el color de fondo según tu preferencia */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  /* Añade una sombra al menú desplegable */
+  z-index: 1;
   display: none;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.profile-link:hover .dropdown {
-  display: block;
 }
 
 .dropdown a,
 .dropdown div {
-  padding: 8px;
-  color: #333;
+  padding: 10px;
   text-decoration: none;
-  display: block;
-  transition: background-color 0.3s ease;
-}
-
-.dropdown a:hover,
-.dropdown div:hover {
-  background-color: #f0f0f0;
-}
-
-.button.access,
-.uploadPost {
-  background-color: #745cf3;
-  color: #ffffff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  color: #343a40;
+  /* Cambia el color del texto según tu preferencia */
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.button.access:hover,
-.uploadPost:hover {
-  background-color: #5538a1;
-}</style>
+.profile-link:hover .dropdown {
+  display: flex;
+}
 
+.button {
+  background-color: #28a745;
+  /* Cambia el color de fondo del botón según tu preferencia */
+  color: #ffffff;
+  /* Cambia el color del texto del botón según tu preferencia */
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}</style>
 
