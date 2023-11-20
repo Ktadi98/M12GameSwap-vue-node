@@ -53,8 +53,8 @@ onMounted(() => {
         <p class="header-title px-4 py-2">Tus anuncios</p>
         <p class="header-description px-4 py-2">Aquí puedes gestionar todos los anuncios que has subido</p>
     </header>
-    <main class=" d-flex flex-column px-md-5 align-items-md-start">
-        <section v-if="posts !== undefined && !loading" class="posts-box">
+    <main class="d-flex flex-column px-md-5 mx-3 mx-md-0 align-items-md-center">
+        <section v-if="posts !== undefined && !loading" class="posts-box w-100">
             <template v-for="post in posts" :key="post.post_id">
                 <PostRow :post="post"></PostRow>
             </template>
@@ -66,6 +66,10 @@ onMounted(() => {
     <AppBar></AppBar>
 </template>
 <style scoped>
+a {
+    width: 100%;
+}
+
 header {
     background-color: white;
     font-weight: 500;
