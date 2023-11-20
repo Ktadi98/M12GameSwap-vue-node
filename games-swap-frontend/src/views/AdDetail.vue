@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import BackArrow from '@/components/Icons/BackArrow.vue';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Footer from '../components/Footer.vue';
 import StarRating from '../components/Icons/StarRating.vue';
 
 const route = useRoute();
+const router = useRouter();
 
 //To use in fetch request
 const post_id = route.params.id;
@@ -31,7 +32,7 @@ onMounted(async () => {
             <div class="profile-name">userName</div>
         </div>
     </header>
-    <div style="color: #8a6cf6">
+    <div class="arrow-box" style="color: #8a6cf6" @click="router.back()">
         <BackArrow />
     </div>
     <!-- falta devolver datos del vendedor para pintarlos aqui -->
@@ -65,6 +66,10 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.arrow-box {
+    cursor: pointer;
+}
+
 header {
     display: flex;
     justify-content: space-between;
@@ -146,11 +151,11 @@ h2.post_title {
 }
 
 h2.post_condition {
-   color: #8a6cf6;
-   margin-bottom: 30px;
+    color: #8a6cf6;
+    margin-bottom: 30px;
 }
 
-p.post_description{
+p.post_description {
     margin-bottom: 30px;
 }
 
@@ -164,9 +169,9 @@ p.post_description{
     margin: auto;
 }
 
-h3{
-font-weight: 200;
-font-size: 1.3rem;
+h3 {
+    font-weight: 200;
+    font-size: 1.3rem;
 }
 
 .category-tag {
@@ -180,7 +185,8 @@ font-size: 1.3rem;
     font-size: 1rem;
     display: inline-block;
 }
+
 #ad-info {
     margin-bottom: 50px;
-} 
+}
 </style>

@@ -156,7 +156,11 @@ export class PostModel {
                     startsWith: query,
                     mode: "insensitive"
                 }
-                //TODO:Añadir tags incluidos
+                //TODO:Añadir tags incluidos, sprint 4
+            },
+            include:
+            {
+                platform: true,
             }
         });
 
