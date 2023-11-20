@@ -8,6 +8,7 @@ export const createPostRouter = (postModel) => {
 
     const postController = new PostController(postModel);
 
+    postRouter.delete("/delete/:id", postController.deletePost);
     postRouter.get("/", postController.getAll);
     postRouter.get("/categories", postController.getCategories);
     postRouter.get("/genres", postController.getGenres);

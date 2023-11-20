@@ -167,5 +167,13 @@ export class PostModel {
         return posts;
     };
 
+    static async deletePost(postIdToDelete) {
+        const post = await prismadb.post.delete({
+            where: {
+                post_id: postIdToDelete
+            }
+        });
 
+        return 1;
+    }
 }

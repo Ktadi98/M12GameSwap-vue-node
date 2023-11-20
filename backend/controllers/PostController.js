@@ -95,4 +95,10 @@ export class PostController {
         return res.json({ posts: posts });
     };
 
+    deletePost = async (req, res) => {
+        const postIdToDelete = req.params.id;
+        //const exitState = this.postModel.deletePost(postIdToDelete);
+        //return res.json({ message: "Post deleted successfully" });
+    };
+
 }

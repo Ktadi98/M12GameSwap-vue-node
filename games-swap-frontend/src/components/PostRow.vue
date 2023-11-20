@@ -11,14 +11,23 @@ const props = defineProps<{
     post: Product
 }>()
 
+const emit = defineEmits<{
+    deletePost: [post: Product]
+}>()
+
+function drop() {
+    emit('deletePost', props.post);
+}
+
 const { open, close } = useModal({
     component: DeletePostModal,
     attrs: {
         onConfirm() {
-            close()
+            close();
+            drop();
         },
         onCancel() {
-            close()
+            close();
         },
         post_image: props.post.post_photos[0],
         post_title: props.post.post_title
@@ -65,9 +74,14 @@ const { open, close } = useModal({
     </article>
 </template>
 <style scoped>
+.img-box {
+    width: 150px;
+    border-radius: 10px;
+}
+
 .img-box>img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 10px;
 }
 
@@ -107,9 +121,6 @@ const { open, close } = useModal({
     width: 30%;
 }
 
-.img-box {
-    width: 100px;
-}
 
 .post-row:hover {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
