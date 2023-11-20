@@ -58,7 +58,7 @@ async function fetchResults() {
       class="search-results-box pb-2 w-100 z-1 position-absolute">
       <ul class="w-100 ">
         <li class="px-3 pt-3 pb-1" v-for="post in searchResults" :key="post.post_id">
-          <RouterLink to="/">
+          <RouterLink :to="{ name: 'searchResults', query: { search: searchTerm } }">
             <p class="post-title">{{ post.post_title }}</p>
             <p class="m-0 post-platform">{{ post.platform?.platform_name }}</p>
           </RouterLink>

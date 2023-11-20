@@ -66,6 +66,10 @@ onMounted(() => {
     <AppBar></AppBar>
 </template>
 <style scoped>
+a {
+    width: 100%;
+}
+
 header {
     background-color: white;
     font-weight: 500;

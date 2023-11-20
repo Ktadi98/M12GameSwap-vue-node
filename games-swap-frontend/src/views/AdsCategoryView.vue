@@ -10,7 +10,6 @@
     </div> -->
     <div class="product-grid">
       <select v-model="criteria">
-        <option value="Todos">Todos</option>
         <option value="A-Z">A-Z</option>
         <option value="Z-A" selected>Z-A</option>
         <option value="priceDesc">Precio (menor a mayor)</option>
@@ -27,7 +26,6 @@
           <input type="submit" value="Restaurar">
         </form>
       </div>
-
       <PostCard v-for=" product  in  filteredProducts " :key="product.post_id" :product="product"></PostCard>
     </div>
     <Footer></Footer>

@@ -85,6 +85,11 @@ const router = createRouter({
       //     next('/'); // Redirigir al usuario a la página de inicio 
       //   }
       // }
+    },
+    {
+      path: '/searchResults',
+      name: 'searchResults',
+      component: () => import('../views/SearchedResultsView.vue')
     }
   ]
 })

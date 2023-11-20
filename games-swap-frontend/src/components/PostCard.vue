@@ -38,8 +38,9 @@ const toggleFavorite = () => {
   align-items: center;
   height: 100%;
   border-radius: 6px;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease-in-out;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .product-card:hover {
