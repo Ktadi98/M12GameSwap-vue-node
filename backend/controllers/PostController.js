@@ -96,9 +96,14 @@ export class PostController {
     };
 
     deletePost = async (req, res) => {
-        const postIdToDelete = req.params.id;
-        //const exitState = this.postModel.deletePost(postIdToDelete);
-        //return res.json({ message: "Post deleted successfully" });
+        const postIdToDelete = Number(req.params.id);
+        const [exitState, post] = await this.postModel.deletePost(postIdToDelete);
+        if (exitState === 1) {
+            return res.json({ post: post });
+
+        }
+        return res.status(500).json({ error: "Post could not be dropped" })
+
     };
 
 }

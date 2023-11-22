@@ -142,7 +142,10 @@ export class PostModel {
     static async getPostsByUserId(req_user_id) {
         const posts = await prismadb.post.findMany({
             where: {
-                user_id: req_user_id
+                AND: [
+                    { user_id: req_user_id },
+                    { post_status: true }
+                ]
             }
         });
 
@@ -168,12 +171,15 @@ export class PostModel {
     };
 
     static async deletePost(postIdToDelete) {
-        const post = await prismadb.post.delete({
+        const post = await prismadb.post.update({
             where: {
                 post_id: postIdToDelete
+            },
+            data: {
+                post_status: false
             }
         });
 
-        return 1;
+        return [1, post];
     }
 }

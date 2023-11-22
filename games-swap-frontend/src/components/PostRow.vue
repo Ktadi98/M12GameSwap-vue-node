@@ -60,7 +60,20 @@ const { open, close } = useModal({
                 <Bookmark></Bookmark>
             </div>
             <div class="icon-box">
-                <Pencil></Pencil>
+                <RouterLink :to="{
+                    name: 'updatePost', query:
+                    {
+                        id: props.post.post_id,
+                        title: props.post.post_title,
+                        description: props.post.post_description,
+                        platform: props.post.platform?.platform_name,
+                        price: props.post.post_price,
+                        state: props.post.post_condition
+                    }
+                }">
+                    <Pencil></Pencil>
+                </RouterLink>
+
             </div>
             <div class="icon-box">
                 <RouterLink :to="{ name: 'adDetail', params: { id: props.post.post_id } }">

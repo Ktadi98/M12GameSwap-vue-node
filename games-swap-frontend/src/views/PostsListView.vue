@@ -20,12 +20,13 @@ watch(() => authStore.token, async () => {
 
 const dropPost = async (postEmitted: Product) => {
 
+    const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
     posts.value.splice(posts.value.findIndex(post => post.post_id === postEmitted.post_id), 1);
     try {
-        const response = await fetch("http://localhost:8080/posts/delete/post.post_id", {
+        const response = await fetch(`${apiEndpoint}/posts/delete/${postEmitted.post_id}`, {
             method: 'DELETE',
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         });
@@ -35,7 +36,7 @@ const dropPost = async (postEmitted: Product) => {
         }
 
     } catch (err) {
-
+        console.log(err);
     }
 }
 
