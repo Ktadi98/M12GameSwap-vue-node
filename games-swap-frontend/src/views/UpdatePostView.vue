@@ -46,7 +46,7 @@ async function getPhotosPosted() {
         const response = await fetch("http://localhost:8080/posts/images", {
             method: 'POST',
             headers: {
-                "Authorization": `Bearer ${authStore.getToken()}`
+                "Authorization": `Bearer ${authStore.token}`
             },
             body: postImages
         }
@@ -83,10 +83,10 @@ async function sendPost() {
 
     console.log(postFormData);
 
-
+    const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
     try {
-        const response = await fetch("http://localhost:8080/posts/upload", {
-            method: 'POST',
+        const response = await fetch(`${apiEndpoint}/posts/update/${route.query.id}`, {
+            method: 'PATCH',
             headers: {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${authStore.getToken()}`

@@ -8,7 +8,7 @@ export const createPostRouter = (postModel) => {
 
     const postController = new PostController(postModel);
 
-    postRouter.delete("/delete/:id", postController.deletePost);
+    postRouter.delete("/delete/:id", authenticateToken, postController.deletePost);
     postRouter.get("/", postController.getAll);
     postRouter.get("/categories", postController.getCategories);
     postRouter.get("/genres", postController.getGenres);
@@ -18,7 +18,7 @@ export const createPostRouter = (postModel) => {
     postRouter.post("/upload", authenticateToken, upload.single('images'), postController.create);
     postRouter.post("/images", authenticateToken, upload.single('images'), postController.getImages);
     postRouter.get("/category/:id", postController.getPostByCategory);
-
+    postRouter.patch("/update/:id", authenticateToken, upload.single('images'), postController.updatePost);
 
 
     return postRouter;

@@ -106,4 +106,14 @@ export class PostController {
 
     };
 
+    updatePost = async (req, res) => {
+        const postIdToPatch = Number(req.params.id);
+        const [exitState, updatedPost] = await this.postModel.updatePost(req.body, postIdToPatch, req.user_id, req.file);
+        if (exitState === 1) {
+            return res.json({ post: updatedPost });
+        }
+
+        return res.status(500).json({ error: "Post could not be updated..." });
+    };
+
 }

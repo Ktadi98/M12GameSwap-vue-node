@@ -27,7 +27,8 @@ const dropPost = async (postEmitted: Product) => {
         const response = await fetch(`${apiEndpoint}/posts/delete/${postEmitted.post_id}`, {
             method: 'DELETE',
             headers: {
-                "Accept": "application/json"
+                "Accept": "application/json",
+                "Authorization": `Bearer ${authStore.token}`
             }
         });
 

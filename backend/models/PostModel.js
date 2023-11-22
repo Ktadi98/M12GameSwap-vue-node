@@ -182,4 +182,49 @@ export class PostModel {
 
         return [1, post];
     }
+
+    static async updatePost(data, postIdToPatch, userId, post_file) {
+        //Fetch category id by name provided in request
+        const platform = await prismadb.platform.findFirst({
+            where: {
+                platform_name: {
+                    contains: data.platform,
+                    mode: "insensitive"
+                }
+            }
+        });
+
+        //Fetch genre id by name provided in request
+        const genre = await prismadb.genre.findFirst({
+            where: {
+                genre_name: {
+                    contains: data.genre,
+                    mode: "insensitive"
+                }
+            }
+        });
+
+        //Mount image in public directory
+        //public/static/images directory must be previously created!
+
+        await sharp(post_file.path).toFile(`./public/static/images/${post_file.originalname}`);
+        await fs.unlink(post_file.path);
+
+        const updatedPost = await prismadb.post.update({
+            where: {
+                post_id: postIdToPatch
+            },
+            data: {
+                post_title: data.title,
+                post_description: data.description,
+                post_price: Math.floor(Number(data.price)),
+                post_condition: data.state.toLowerCase(),
+                platform_id: platform.platform_id,
+                genre_id: genre.genre_id,
+                post_photos: [`http://localhost:8080/public/static/images/${post_file.originalname}`]
+            }
+        });
+
+        return [1, updatedPost];
+    }
 }
