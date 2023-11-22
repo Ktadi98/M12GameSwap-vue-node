@@ -46,15 +46,15 @@ const router = createRouter({
       path: '/protected/uploadPost',
       name: 'uploadPost',
       component: () => import('@/views/UploadPostView.vue'),
-      // beforeEnter: (to, from, next) => {
-      //   const authStore = useAuthStore();
-      //   // Verificar si el usuario tiene un token válido
-      //   if (authStore.userIsLoggedIn) {
-      //     next();
-      //   } else {
-      //     next('/'); // Redirigir al usuario a la página de inicio 
-      //   }
-      // }
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     },
     {
       path: '/adDetail/:id',
@@ -76,15 +76,15 @@ const router = createRouter({
       path: '/postsList',
       name: 'postsList',
       component: () => import('@/views/PostsListView.vue'),
-      // beforeEnter: (to, from, next) => {
-      //   const authStore = useAuthStore();
-      //   // Verificar si el usuario tiene un token válido
-      //   if (authStore.userIsLoggedIn) {
-      //     next();
-      //   } else {
-      //     next('/'); // Redirigir al usuario a la página de inicio 
-      //   }
-      // }
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     },
     {
       path: '/searchResults',
@@ -94,7 +94,16 @@ const router = createRouter({
     {
       path: '/updatePost',
       name: 'updatePost',
-      component: () => import('@/views/UpdatePostView.vue')
+      component: () => import('@/views/UpdatePostView.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     }
   ]
 })

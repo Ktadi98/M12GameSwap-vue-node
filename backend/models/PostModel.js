@@ -117,7 +117,10 @@ export class PostModel {
             // }
             const posts = await prismadb.post.findMany({
                 where: {
-                    platform_id: category_id,
+                    AND: [
+                        { platform_id: category_id },
+                        { post_status: true }
+                    ]
                 }
             });
 
@@ -155,10 +158,18 @@ export class PostModel {
     static async getPostsByQuery(query) {
         const posts = await prismadb.post.findMany({
             where: {
-                post_title: {
-                    startsWith: query,
-                    mode: "insensitive"
-                }
+                AND: [
+                    {
+                        post_title: {
+                            startsWith: query,
+                            mode: "insensitive"
+                        }
+                    },
+                    {
+                        post_status: true
+                    }
+                ]
+
                 //TODO:Añadir tags incluidos, sprint 4
             },
             include:

@@ -32,38 +32,6 @@ interface TokenType {
   token: string
 }
 
-// OLD FETCH
-// const sendData = () => {
-//   fetch("http://localhost:8080/users/register", {
-//     method: 'POST',
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Accept": "application/json"
-//     },
-//     body: JSON.stringify({
-//       username: formData.value.username,
-//       email: formData.value.email,
-//       password: formData.value.password
-//     })
-//   })
-//     .then((res: Response) => {
-
-//       if (!res.ok) {
-//         error.value = `Error: ${res.status} `;
-//         return;
-//       }
-//       return res.json() as Promise<TokenType>;
-//     }
-//     )
-//     .then((data) => {
-//       error.value = "";
-//       console.log(data);
-//       //authStore.setToken(data.token)
-//       //localStorage.setItem("id", JSON.stringify(data[1]));
-//     })
-//     .catch((error) => error.value = error as string)
-// }
-
 const sendData = async () => {
   try {
     const response = await fetch("http://localhost:8080/users/register", {
@@ -89,6 +57,7 @@ const sendData = async () => {
     console.log(data);
 
     authStore.setToken(data.token);
+    emit('confirm');
   } catch (err) {
     error.value = err as string;
   }
