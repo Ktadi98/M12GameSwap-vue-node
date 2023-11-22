@@ -11,14 +11,23 @@ const props = defineProps<{
     post: Product
 }>()
 
+const emit = defineEmits<{
+    deletePost: [post: Product]
+}>()
+
+function drop() {
+    emit('deletePost', props.post);
+}
+
 const { open, close } = useModal({
     component: DeletePostModal,
     attrs: {
         onConfirm() {
-            close()
+            close();
+            drop();
         },
         onCancel() {
-            close()
+            close();
         },
         post_image: props.post.post_photos[0],
         post_title: props.post.post_title
@@ -51,7 +60,20 @@ const { open, close } = useModal({
                 <Bookmark></Bookmark>
             </div>
             <div class="icon-box">
-                <Pencil></Pencil>
+                <RouterLink :to="{
+                    name: 'updatePost', query:
+                    {
+                        id: props.post.post_id,
+                        title: props.post.post_title,
+                        description: props.post.post_description,
+                        platform: props.post.platform?.platform_name,
+                        price: props.post.post_price,
+                        state: props.post.post_condition
+                    }
+                }">
+                    <Pencil></Pencil>
+                </RouterLink>
+
             </div>
             <div class="icon-box">
                 <RouterLink :to="{ name: 'adDetail', params: { id: props.post.post_id } }">
@@ -65,9 +87,14 @@ const { open, close } = useModal({
     </article>
 </template>
 <style scoped>
+.img-box {
+    width: 150px;
+    border-radius: 10px;
+}
+
 .img-box>img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 10px;
 }
 
@@ -107,9 +134,6 @@ const { open, close } = useModal({
     width: 30%;
 }
 
-.img-box {
-    width: 100px;
-}
 
 .post-row:hover {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);

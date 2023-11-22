@@ -1,35 +1,32 @@
 <template>
-  <div>
-
-    <NavBar />
-    <Platforms :platforms="platformsStore.platforms"></Platforms>
+  <NavBar />
+  <Platforms :platforms="platformsStore.platforms"></Platforms>
+  <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5 mt-5">
     <SearchBar />
-
-    <!-- <div class="product-grid" v-if="isLoading">
-      Cargando...
-    </div> -->
-    <div class="product-grid">
+    <section class="filters-section w-100 d-flex flex-row gap-5 justify-content-center">
+      <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
+        @submit.prevent='updateGenreFilter(genre.genre_id)'>
+        <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
+      </form>
+      <form class="genre-box" @submit.prevent='genreFilter = -1'>
+        <input type="submit" value="Restaurar">
+      </form>
+    </section>
+    <div class="w-100 criteria-box align-self-left">
       <select v-model="criteria">
         <option value="A-Z">A-Z</option>
         <option value="Z-A" selected>Z-A</option>
         <option value="priceDesc">Precio (menor a mayor)</option>
         <option value="priceAsc">Precio (mayor a menor)</option>
       </select>
-      <!-- Genres in separate component. -->
-      <div class="genre-box" v-for="(genre, index) in  genres " :key="genre.genre_id">
-        <form @submit.prevent='updateGenreFilter(genre.genre_name, genre.genre_id)'>
-          <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
-        </form>
-      </div>
-      <div class="genre-box">
-        <form @submit.prevent='genreFilter = -1'>
-          <input type="submit" value="Restaurar">
-        </form>
-      </div>
-      <PostCard v-for=" product  in  filteredProducts " :key="product.post_id" :product="product"></PostCard>
     </div>
-    <Footer></Footer>
-  </div>
+    <section class="post-box container-fluid">
+      <div class="row gap-3 w-100">
+        <PostCard v-for=" product in filteredProducts" :key="product.post_id" :product="product"></PostCard>
+      </div>
+    </section>
+  </main>
+  <Footer></Footer>
 </template>
   
 <script setup lang="ts">
@@ -107,9 +104,7 @@ const filteredProducts = computed(() => {
 
 );
 
-
-
-function updateGenreFilter(genre_name: string, id: number) {
+function updateGenreFilter(id: number) {
   genreFilter.value = id;
 }
 
@@ -146,95 +141,23 @@ async function getPosts() {
 
 watch(route, () => {
   categoryId.value = route.params.id;
+  genreFilter.value = -1;
   getPosts();
 }, { immediate: true, deep: true })
 
 </script>
   
 <style scoped>
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+input[type="submit"]:hover {
+  background-color: white;
+  color: #9f87f5;
+  transition: all 0.2s ease-in-out;
 }
 
-.product-card {
-  border: 1px solid #e1e1e1;
-  background-color: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-.product-card img {
-  width: 100%;
-  max-height: 200px;
-  object-fit: cover;
-  object-position: center top;
-}
-
-.product-info {
-  padding: 16px;
-  text-align: left;
-}
-
-.product-price {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.product-name {
-  font-size: 16px;
-  color: #555;
-}
-
-.favorite-icon {
-  color: #e53935;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.favorite-icon:hover {
-  color: #c62828;
-}
-
-.product-name {
-  margin-top: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-}
-
-.product-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.product-actions a {
-  text-decoration: none;
-  background-color: #2196F3;
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.product-actions a:hover {
-  background-color: #1976D2;
-}
-
-.input-active {
+input[type="submit"]:focus,
+input[type="submit"]:hover {
   background-color: #9f87f5;
+  color: white;
 }
 </style>
 

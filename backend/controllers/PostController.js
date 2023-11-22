@@ -95,4 +95,25 @@ export class PostController {
         return res.json({ posts: posts });
     };
 
+    deletePost = async (req, res) => {
+        const postIdToDelete = Number(req.params.id);
+        const [exitState, post] = await this.postModel.deletePost(postIdToDelete);
+        if (exitState === 1) {
+            return res.json({ post: post });
+
+        }
+        return res.status(500).json({ error: "Post could not be dropped" })
+
+    };
+
+    updatePost = async (req, res) => {
+        const postIdToPatch = Number(req.params.id);
+        const [exitState, updatedPost] = await this.postModel.updatePost(req.body, postIdToPatch, req.user_id, req.file);
+        if (exitState === 1) {
+            return res.json({ post: updatedPost });
+        }
+
+        return res.status(500).json({ error: "Post could not be updated..." });
+    };
+
 }

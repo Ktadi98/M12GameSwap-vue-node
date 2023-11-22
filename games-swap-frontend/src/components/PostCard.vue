@@ -1,15 +1,18 @@
 <template>
-  <div class="product-card" v-if="product">
-    <img :src="props.product.post_photos[0]" alt="Product Image">
-    <div class="product-info">
-      <div class="product-name">{{ props.product.post_title }}</div>
-      <div class="product-price">{{ props.product.post_price }}</div>
-      <div class="favorite-icon" @click="toggleFavorite">
-        <i class="fas fa-heart" :class="{ 'favorited': isFavorited }"></i>
+  <RouterLink class="col-12 col-md-3" :to="{ name: 'adDetail', params: { id: props.product.post_id } }">
+    <div class="product-card" v-if="product">
+      <div class="img-box">
+        <img :src="props.product.post_photos[0]" alt="Product Image">
+      </div>
+      <div class="product-info">
+        <div class="product-name">{{ props.product.post_title }}</div>
+        <div class="product-price">{{ props.product.post_price }}€</div>
+        <div class="favorite-icon" @click="toggleFavorite">
+          <i class="fas fa-heart" :class="{ 'favorited': isFavorited }"></i>
+        </div>
       </div>
     </div>
-    <RouterLink :to="{ name: 'adDetail', params: { id: props.product.post_id } }">Detalle</RouterLink>
-  </div>
+  </RouterLink>
 </template>
 
 <script setup lang="ts">
@@ -28,6 +31,15 @@ const toggleFavorite = () => {
 </script>
 
 <style scoped>
+.img-box {
+  overflow: hidden;
+}
+
+.img-box>img {
+  width: 100%;
+  height: auto;
+}
+
 .product-card {
   border: 1px solid #e1e1e1;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -36,7 +48,6 @@ const toggleFavorite = () => {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 100%;
   border-radius: 6px;
   transition: transform 0.2s ease-in-out;
   cursor: pointer;

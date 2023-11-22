@@ -14,62 +14,36 @@ const props = defineProps<{
 }>()
 
 function closeModal() {
-    emit('cancel');
+    emit('confirm');
 }
 
 const authStore = useAuthStore();
 
 const error: Ref<Error | string> = ref("");
 
-const deletePost = async () => {
-    // try {
-    //     const response = await fetch("http://localhost:8080/users/register", {
-    //         method: 'POST',
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Accept": "application/json"
-    //         },
-    //         body: JSON.stringify({
-    //             username: formData.value.username,
-    //             email: formData.value.email,
-    //             password: formData.value.password
-    //         })
-    //     });
-
-    //     if (!response.ok) {
-    //         error.value = `Error: ${response.status}`;
-    //         return;
-    //     }
-
-    //     const data: TokenType = await response.json();
-    //     error.value = "";
-    //     console.log(data);
-
-    //     authStore.setToken(data.token);
-    // } catch (err) {
-    //     error.value = err as string;
-    // }
-}
-
 </script>
 
 <template>
-    <VueFinalModal class="confirm-modal" content-class="confirm-modal-content" overlay-transition="vfm-fade"
+    <VueFinalModal class="confirm-modal" content-class="confirm-modal-content border-0" overlay-transition="vfm-fade"
         content-transition="vfm-fade">
-        <form class="d-flex flex-column gap-5 " @submit.prevent="deletePost()">
-            <h1>¿Deseas eliminar este producto?</h1>
-            <div class="d-flex align-items-center justify-content-center gap-1">
-                <div class="img-box text-center">
+        <form class="d-flex flex-column gap-5 absolute inset-0" @submit.prevent="emit('cancel')">
+            <h1 class="display-4">¿Deseas eliminar este producto?</h1>
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <div class="img-box w-40 text-center">
                     <img :src="props.post_image">
                 </div>
-                <div>
+                <div class="w-50">
                     <h2>{{ props.post_title }}</h2>
                 </div>
             </div>
-
+            <div class="warning-box text-center p-3">
+                <p class="h4">Una vez eliminado este producto no podrás recuperarlo. ¿Estás seguro de que lo quieres
+                    eliminar?
+                </p>
+            </div>
             <div class="d-flex flex-column gap-3">
-                <button class="delete-button" type="submit">Eliminar</button>
-                <button class="exit-button" @click="closeModal">Cerrar</button>
+                <button class="delete-button" @click="closeModal">Eliminar</button>
+                <button class="exit-button" type="submit">Volver</button>
             </div>
         </form>
         <div v-if="error !== ''">{{ error }}</div>
@@ -77,8 +51,11 @@ const deletePost = async () => {
 </template>
 
 <style>
+h1 {
+    font-size: large;
+}
+
 .img-box {
-    width: 100%;
     overflow: hidden;
 }
 
@@ -88,13 +65,18 @@ const deletePost = async () => {
     border-radius: 10px;
 }
 
-.exit-button {
+.warning-box {
+    border: 2px solid #9F87F5;
+    border-radius: 10px;
+}
+
+.delete-button {
     background-color: #F45A5A;
     border: none;
     transition: all 0.2s ease-in-out;
 }
 
-.exit-button:hover {
+.delete-button:hover {
     background-color: #de5353;
 }
 

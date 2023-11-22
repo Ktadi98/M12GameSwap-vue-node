@@ -55,29 +55,6 @@ const sendData = async () => {
     error.value = err as string;
   }
 }
-
-// OLD
-// const sendData = () => {
-//   fetch("http://localhost:8080/users/login", {
-//     method: 'POST',
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Accept": "application/json"
-//     },
-//     body: JSON.stringify({
-//       email: formData.value.email,
-//       password: formData.value.password
-//     })
-//   })
-//     .then(res => res.json())
-//     .then(data => {
-//       console.log(data);
-//       //authStore.setToken() >TODO
-//       localStorage.setItem("id", JSON.stringify(data[1]));
-//     })
-//     .catch(error => console.error(error))
-// }
-
 </script>
 
 <template>
@@ -88,8 +65,8 @@ const sendData = async () => {
       <input v-model="formData.email" type="email" name="email" id="email" placeholder="Correo">
       <input v-model="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
       <button @click="emit('confirm')">ENTRAR</button>
-      <button class="register-btn" @click="emit('cancel')">¿No tienes cuenta? Regístrate</button>
     </form>
+    <button class="register-btn" @click="emit('cancel')">¿No tienes cuenta? Regístrate</button>
     <div v-if="error !== ''">{{ error }}</div>
   </VueFinalModal>
 </template>

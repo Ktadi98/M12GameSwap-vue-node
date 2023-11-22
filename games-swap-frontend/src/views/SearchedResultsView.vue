@@ -19,11 +19,9 @@
                 <option value="priceAsc">Precio (mayor a menor)</option>
             </select>
         </div>
-        <section class="post-box container">
+        <section class="post-box container-fluid">
             <div class="row">
-                <div class="col-12 col-md-3">
-                    <PostCard v-for=" product in filteredProducts " :key="product.post_id" :product="product"></PostCard>
-                </div>
+                <PostCard v-for="product in filteredProducts" :key="product.post_id" :product="product"></PostCard>
             </div>
         </section>
     </main>
@@ -133,6 +131,7 @@ async function getPosts() {
 
 watch(route, () => {
     getPosts();
+    genreFilter.value = -1;
 }, { immediate: true, deep: true })
 
 </script>

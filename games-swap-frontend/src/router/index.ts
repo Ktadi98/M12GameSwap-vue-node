@@ -45,51 +45,65 @@ const router = createRouter({
     {
       path: '/protected/uploadPost',
       name: 'uploadPost',
-      component: UploadPostViewVue,
-      // beforeEnter: (to, from, next) => {
-      //   const authStore = useAuthStore();
-      //   // Verificar si el usuario tiene un token válido
-      //   if (authStore.userIsLoggedIn) {
-      //     next();
-      //   } else {
-      //     next('/'); // Redirigir al usuario a la página de inicio 
-      //   }
-      // }
+      component: () => import('@/views/UploadPostView.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     },
     {
       path: '/adDetail/:id',
       name: 'adDetail',
-      component: AdDetail,
+      component: () => import('@/views/AdDetail.vue'),
 
     },
     {
       path: '/adsCategory/:id',
       name: 'adsCategory',
-      component: AdsCategoryViewVue,
+      component: () => import('@/views/AdsCategoryView.vue'),
     },
     {
       path: '/controlPanel',
       name: 'controlPanel',
-      component: ControlPanelVue
+      component: () => import('@/views/ControlPanel.vue'),
     },
     {
       path: '/postsList',
       name: 'postsList',
-      component: PostListView,
-      // beforeEnter: (to, from, next) => {
-      //   const authStore = useAuthStore();
-      //   // Verificar si el usuario tiene un token válido
-      //   if (authStore.userIsLoggedIn) {
-      //     next();
-      //   } else {
-      //     next('/'); // Redirigir al usuario a la página de inicio 
-      //   }
-      // }
+      component: () => import('@/views/PostsListView.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     },
     {
       path: '/searchResults',
       name: 'searchResults',
       component: () => import('../views/SearchedResultsView.vue')
+    },
+    {
+      path: '/updatePost',
+      name: 'updatePost',
+      component: () => import('@/views/UpdatePostView.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     }
   ]
 })
