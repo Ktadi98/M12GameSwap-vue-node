@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { VueFinalModal } from 'vue-final-modal';
 
+const emit = defineEmits<{
+  (e: 'confirm'): void,
+  (e: 'cancel'): void
+}>()
 </script>
 
 <template>
-  <VueFinalModal>
-      <h1>¿Estás seguro que quieres elimninar tu cuenta?</h1>
-      <p>Recuerda que esta acción no se puede deshacer</p>
-      <button class="btn-delete" type="submit">ELIMINAR</button>
-      <button class="btn-cancel" type="submit">CANCELAR</button>
-
-
+  <VueFinalModal class="confirm-modal" content-class="confirm-modal-content" overlay-transition="vfm-fade"
+    content-transition="vfm-fade">
+    <h1>¿Estás seguro que quieres elimninar tu cuenta?</h1>
+    <p>Recuerda que esta acción no se puede deshacer</p>
+    <button class="btn-delete" @click="emit('confirm')">ELIMINAR</button>
+    <button class="btn-cancel" @click="emit('cancel')">CANCELAR</button>
   </VueFinalModal>
 </template>
 
@@ -59,5 +62,4 @@ h1 {
   margin: 0 auto;
   width: 70%;
 }
-
 </style>

@@ -4,22 +4,19 @@ import BackArrow from "@/components/Icons/BackArrow.vue";
 </script>
 
 <template>
- <VueFinalModal>
+  <VueFinalModal class="confirm-modal" content-class="confirm-modal-content" overlay-transition="vfm-fade"
+    content-transition="vfm-fade">
     <main>
-    <div class="arrow-box" style="color: #8a6cf6">
-      <BackArrow />
-    </div>
-    <h1>BUZÓN DE SUGERENCIAS</h1>
-    <form>
-      <textarea
-        id="message"
-        name="message"
-        placeholder="Introduce aquí tus sugerencias"
-      ></textarea>
-      <button type="submit">ENVIAR</button>
-    </form>
-  </main>
- </VueFinalModal>
+      <div class="arrow-box" style="color: #8a6cf6">
+        <BackArrow />
+      </div>
+      <h1>BUZÓN DE SUGERENCIAS</h1>
+      <form>
+        <textarea id="message" name="message" placeholder="Introduce aquí tus sugerencias"></textarea>
+        <button type="submit">ENVIAR</button>
+      </form>
+    </main>
+  </VueFinalModal>
 </template>
 
 <style scoped>
@@ -68,13 +65,12 @@ header {
 }
 
 main {
-  display: block;
   margin: 0 auto;
   margin-bottom: 8rem;
 }
 
 form {
-  width: 50rem;
+  width: auto;
   margin: 0 auto;
 }
 
