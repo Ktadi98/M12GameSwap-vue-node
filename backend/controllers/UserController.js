@@ -9,6 +9,17 @@ export class UserController {
     res.json("All users");
   };
 
+  getByType = async (req, res) => {
+    try {
+      const results = await this.userModel.findByType(req.params.type);
+
+      res.json(results)
+    } catch (_) {
+      res.status(400).json({})
+    }
+
+  };
+
   register = async (req, res) => {
 
     //Apply validation schema to the data received

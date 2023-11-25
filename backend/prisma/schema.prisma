@@ -23,11 +23,13 @@ enum PostCondition {
 
 model User {
   user_id         Int      @id @default(autoincrement())
+  user_name       String   @default("Test") @db.VarChar(256)
   user_email      String   @unique @db.VarChar(255)
   user_password   String   @db.VarChar(255)
   user_salt       String   @db.VarChar(255)
   user_created_at DateTime @default(now()) @db.Timestamptz(6)
   user_type       UserRole @default(client)
+  user_active     Boolean  @default(true)
 
   // 1-1 Relation with the child tables in the hierarchy
   user_Admin  User_Admin?
