@@ -10,6 +10,8 @@ import App from "./App.vue";
 import { createPinia } from 'pinia'
 import router from "./router";
 import { useAuthStore } from './stores/auth';
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -26,6 +28,11 @@ if (storedToken) {
 app.use(pinia);
 app.use(vfm);
 app.use(PrimeVue);
+app.use(Toast, {
+    transition: "Vue-Toastification__bounce",
+    maxToasts: 20,
+    newestOnTop: true
+});
 
 
 app.mount("#app");

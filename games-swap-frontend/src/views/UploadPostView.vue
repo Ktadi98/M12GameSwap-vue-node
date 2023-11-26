@@ -3,6 +3,7 @@ import NavBar from '@/components/NavBar.vue';
 import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useToast, POSITION } from "vue-toastification";
 
 interface PostType {
     title: string,
@@ -13,6 +14,27 @@ interface PostType {
     images: any[],
     state: string
 }
+
+const toast = useToast();
+
+function triggerToast() {
+
+    toast.success("¡Producto subido!", {
+        position: POSITION.BOTTOM_RIGHT,
+        timeout: 5000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: true,
+        hideProgressBar: false,
+        closeButton: false,
+        icon: "fas fa-rocket",
+        rtl: false
+    });
+
+}
+
 
 const authStore = useAuthStore();
 
@@ -99,6 +121,8 @@ async function sendPost() {
         const data: any = await response.json();
         //error.value = "";
         console.log(data);
+        //Toast trigger
+        triggerToast();
 
     } catch (err: any) {
         err.value = err as string;
