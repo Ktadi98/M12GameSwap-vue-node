@@ -108,8 +108,11 @@ function updateGenreFilter(id: number) {
   genreFilter.value = id;
 }
 
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
+
 const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | undefined> => {
-  const response: Response = await fetch("http://localhost:8080/posts/genres");
+  const response: Response = await fetch(`${apiEndpoint}/posts/genres`);
 
   if (!response.ok) {
     return;
@@ -122,7 +125,7 @@ const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | und
 async function getPosts() {
   try {
 
-    const response = await fetch(`http://localhost:8080/posts/category/${categoryId.value}`);
+    const response = await fetch(`${apiEndpoint}/posts/category/${categoryId.value}`);
 
     if (!response.ok) {
       console.log(response.status);

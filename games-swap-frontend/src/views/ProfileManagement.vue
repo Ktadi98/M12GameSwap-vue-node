@@ -32,8 +32,10 @@ import NavBar from '@/components/NavBar.vue';
 
 const router = useRouter();
 
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
 const sendData = () => {
-    fetch("http://localhost:8080/users/delete", {
+    fetch(`${apiEndpoint}/users/delete`, {
         method: 'DELETE',
         headers: {
             "Content-Type": "application/json",
@@ -55,7 +57,6 @@ const sendData = () => {
 </script>
   
 <style scoped>
-
 .back-button {
     background: none;
     border: none;

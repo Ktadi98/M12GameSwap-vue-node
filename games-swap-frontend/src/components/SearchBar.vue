@@ -20,12 +20,14 @@ function clearResults() {
   searchResults.value = [];
 }
 
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
 async function fetchResults() {
 
   if (searchTerm.value.length == 0) return;
 
   try {
-    const response: Response = await fetch(`http://localhost:8080/posts/query/${searchTerm.value.toLowerCase()}`, {
+    const response: Response = await fetch(`${apiEndpoint}/posts/query/${searchTerm.value.toLowerCase()}`, {
       method: "GET"
     });
 

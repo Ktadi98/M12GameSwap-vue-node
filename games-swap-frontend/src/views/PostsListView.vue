@@ -18,9 +18,10 @@ watch(() => authStore.token, async () => {
     fetchUserPosts(authStore.token);
 });
 
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
 const dropPost = async (postEmitted: Product) => {
 
-    const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
     posts.value.splice(posts.value.findIndex(post => post.post_id === postEmitted.post_id), 1);
     try {
@@ -44,7 +45,7 @@ const dropPost = async (postEmitted: Product) => {
 async function fetchUserPosts(token: string) {
 
     try {
-        const response: Response = await fetch("http://localhost:8080/posts/user/posts", {
+        const response: Response = await fetch(`${apiEndpoint}/posts/user/posts`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             },

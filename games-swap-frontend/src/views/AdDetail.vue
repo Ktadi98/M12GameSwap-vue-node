@@ -12,9 +12,10 @@ const router = useRouter();
 const post_id = route.params.id;
 
 let adDetail = ref(null as any);
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 onMounted(async () => {
-    const data = await fetch(`http://localhost:8080/posts/${post_id}`).then(res => res.json());
+    const data = await fetch(`${apiEndpoint}/posts/${post_id}`).then(res => res.json());
     adDetail.value = data.post;
 })
 

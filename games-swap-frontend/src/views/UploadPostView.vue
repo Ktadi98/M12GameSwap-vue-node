@@ -32,14 +32,14 @@ function selectFile(event: any) {
     formState.value.images = event.target.files[0];
     getPhotosPosted();
 }
-
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 async function getPhotosPosted() {
     try {
         const postImages = new FormData();
         uploadedImages.value = [];
         postImages.append("images", formState.value.images);
 
-        const response = await fetch("http://localhost:8080/posts/images", {
+        const response = await fetch(`${apiEndpoint}/posts/images`, {
             method: 'POST',
             headers: {
                 "Authorization": `Bearer ${authStore.getToken()}`
@@ -81,7 +81,7 @@ async function sendPost() {
 
 
     try {
-        const response = await fetch("http://localhost:8080/posts/upload", {
+        const response = await fetch(`${apiEndpoint}/posts/upload`, {
             method: 'POST',
             headers: {
                 "Accept": "application/json",
@@ -194,6 +194,12 @@ header {
 
 .fa-cloud-arrow-up {
     color: white;
+}
+
+figure>img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
 }
 
 form {
