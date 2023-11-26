@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import fs from 'fs/promises';
 import sharp from 'sharp';
+import "dotenv/config";
 
 const prismadb = new PrismaClient(); //Move to external module
 
@@ -51,7 +52,7 @@ export class PostModel {
                     user_id: user_id,
                     platform_id: platform.platform_id,
                     genre_id: genre.genre_id,
-                    post_photos: [`http://localhost:8080/public/static/images/${post_file.originalname}`],
+                    post_photos: [`${process.env.PHOTOS_URL}/${post_file.originalname}`],
                     post_price: post_data.price
                 }
             })
@@ -232,7 +233,7 @@ export class PostModel {
                 post_condition: data.state.toLowerCase(),
                 platform_id: platform.platform_id,
                 genre_id: genre.genre_id,
-                post_photos: [`http://localhost:8080/public/static/images/${post_file.originalname}`]
+                post_photos: [`${process.env.PHOTOS_URL}/${post_file.originalname}`]
             }
         });
 

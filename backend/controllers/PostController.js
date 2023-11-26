@@ -1,5 +1,5 @@
 import { validateUploadedPost } from '../schemas/posts.js'
-
+import "dotenv/config";
 
 export class PostController {
     constructor(postModel) {
@@ -48,7 +48,7 @@ export class PostController {
 
         if (status === 1) {
             console.log("Éxito!!")
-            return res.json({ file: `http://localhost:8080/public/static/images/${req.file.originalname}` });
+            return res.json({ file: `${process.env.PHOTOS_URL}/${req.file.originalname}` });
         }
         return res.status(500).json({ error: "Images could not be retrieved" });
     };

@@ -50,7 +50,9 @@ onMounted(async () => {
         </div>
 
         <div id="ad-info">
-            <img class="photo-ad" :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
+            <div class="img-box mb-3">
+                <img class="photo-ad" :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
+            </div>
             <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
             <h2 class="post_title">{{ adDetail?.post_title }}</h2>
             <h2 class="post_condition"> Estado: {{ adDetail?.post_condition }}</h2>
@@ -67,6 +69,17 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.img-box {
+    width: 100%;
+    overflow: hidden;
+}
+
+.img-box>img {
+    border-radius: 10px;
+    width: 500px;
+    height: auto;
+}
+
 .arrow-box {
     cursor: pointer;
 }
@@ -134,11 +147,6 @@ main.ad-container {
     margin-bottom: 6em;
 }
 
-img.photo-ad {
-    width: 100%;
-    margin-bottom: 50px;
-}
-
 h1.post_price {
     color: #8a6cf6;
     text-align: left;
@@ -158,6 +166,7 @@ h2.post_condition {
 
 p.post_description {
     margin-bottom: 30px;
+    font-size: 1.5rem;
 }
 
 .other-interests {
