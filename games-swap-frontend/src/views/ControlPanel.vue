@@ -9,35 +9,41 @@ import DeleteUser from '@/components/Icons/DeleteUser.vue';
 import { ref, onMounted } from "vue"
 import type { User } from "@/interfaces/User";
 
-const users = ref<User[]>([])
+const users = ref<User[]>([]);
 const columns = [
   { field: "user_name", header: "Usuario" },
   { field: "user_email", header: "Email" },
-]
+];
+
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 const fetchUsers = async () => {
-  const res = await fetch("http://localhost:8080/users/type/client")
-  const usersResult: User[] = await res.json()
-  users.value = usersResult.filter(u => u.user_active)
+  const res = await fetch(`${apiEndpoint}/users/type/client`);
+  if (!res.ok) {
+    return;
+  }
+  const usersResult: User[] = await res.json();
+  users.value = usersResult;
+
 }
 
 onMounted(async () => {
-  await fetchUsers()
+  await fetchUsers();
 })
 
 const modifyUser = (data: any) => {
-  alert(`Modificar usuario: ${data.user_name}`)
+  alert(`Modificar usuario: ${data.user_name}`);
 }
 
 const deleteUser = async (data: any) => {
   if (confirm(`¿Quieres borrar el usuario ${data.user_email}`)) {
-    await fetch('http://localhost:8080/users/delete', {
+    await fetch(`${apiEndpoint}/users/delete`, {
       method: "DELETE", headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
       }, body: JSON.stringify({ userId: data.user_id })
     })
-    await fetchUsers()
+    await fetchUsers();
   }
 
 }
@@ -85,7 +91,7 @@ const deleteUser = async (data: any) => {
     </main>
   </body>
 
-  <Footer />
+  <Footer></Footer>
 </template>
 
 <style scoped>

@@ -32,10 +32,10 @@ interface TokenType {
   token: string
 }
 
-
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const sendData = async () => {
   try {
-    const response = await fetch("http://localhost:8080/users/register", {
+    const response = await fetch(`${apiEndpoint}/users/register`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -135,5 +135,4 @@ button {
   margin: 0 auto;
   width: 70%;
 }
-
 </style>
