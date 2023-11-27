@@ -2,6 +2,7 @@
 import { ref, type Ref } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
 import { useAuthStore } from "@/stores/auth";
+import ErrorMessages from './ErrorMessages.vue';
 
 const emit = defineEmits<{
   (e: 'confirm'): void
@@ -9,7 +10,8 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore();
 
-const error: Ref<Error | string> = ref("");
+const error: Ref<boolean> = ref(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 interface RegisterType {
   username: string,
@@ -31,8 +33,44 @@ interface TokenType {
   message: string,
   token: string
 }
+
+const validateRegister = () => {
+
+  if (formData.value.username.length === 0 || formData.value.username.length < 3 || formData.value.username.length > 20) {
+    errorMessages.value.push("El nombre de usuario debe tener entre 3 y 20 carácteres.");
+    error.value = true;
+  }
+  if (
+    formData.value.email.length === 0 ||
+    !formData.value.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+  ) {
+    errorMessages.value.push("El email introducido no es válido.");
+    error.value = true;
+  }
+  if (formData.value.password.length === 0 || formData.value.password.length < 6 || formData.value.password.length > 20) {
+    errorMessages.value.push("La contraseña debe tener entre 6 y 20 carácteres.");
+    error.value = true;
+  }
+  if (formData.value.password !== formData.value.password2) {
+    errorMessages.value.push("Las constrseñas no coinciden.");
+    error.value = true;
+  }
+  if (!formData.value.checkbox) {
+    errorMessages.value.push("Debes aceptar las condiciones de uso y la Política de Provacidad.");
+    error.value = true;
+  }
+}
+
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
 const sendData = async () => {
+
+  errorMessages.value = [];
+  error.value = false;
+  validateRegister();
+
+  if (error.value) return;
+
   try {
     const response = await fetch(`${apiEndpoint}/users/register`, {
       method: 'POST',
@@ -48,18 +86,19 @@ const sendData = async () => {
     });
 
     if (!response.ok) {
-      error.value = `Error: ${response.status}`;
+      errorMessages.value.push("Registro inválido , el usuario ya existe.");
+      error.value = true;
       return;
     }
 
     const data: TokenType = await response.json();
-    error.value = "";
+
     console.log(data);
 
     authStore.setToken(data.token);
     emit('confirm');
   } catch (err) {
-    error.value = err as string;
+    errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
   }
 }
 
@@ -71,10 +110,11 @@ const sendData = async () => {
     <form @submit.prevent="sendData()">
       <h1>DATE DE ALTA</h1>
 
-      <input v-model="formData.username" type="name" name="name" id="name" placeholder="Nombre">
-      <input v-model="formData.email" type="email" name="email" id="email" placeholder="Correo">
-      <input v-model="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
-      <input v-model="formData.password2" type="password" name="password2" id="password2" placeholder="Repite contraseña">
+      <input v-model.trim="formData.username" type="name" name="name" id="name" placeholder="Nombre">
+      <input v-model.trim="formData.email" type="email" name="email" id="email" placeholder="Correo">
+      <input v-model.trim="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
+      <input v-model.trim="formData.password2" type="password" name="password2" id="password2"
+        placeholder="Repite contraseña">
 
       <div class="terms">
         <input v-model="formData.checkbox" type="checkbox" name="conditions" id="conditions-text">
@@ -84,7 +124,7 @@ const sendData = async () => {
       </div>
       <button type="submit">REGISTRARSE </button>
     </form>
-    <div v-if="error !== ''">{{ error }}</div>
+    <ErrorMessages :messages="errorMessages"></ErrorMessages>
   </VueFinalModal>
 </template>
 
@@ -103,6 +143,9 @@ const sendData = async () => {
   background: var(--Color, #F6F6F6);
   padding: 2rem;
   height: auto;
+  /*Scrollable content*/
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
 }
 
 .dark .confirm-modal-content {
