@@ -1,5 +1,5 @@
 import { validateUploadedPost } from '../schemas/posts.js'
-
+import "dotenv/config";
 
 export class PostController {
     constructor(postModel) {
@@ -48,7 +48,7 @@ export class PostController {
 
         if (status === 1) {
             console.log("Éxito!!")
-            return res.json({ file: `http://localhost:8080/public/static/images/${req.file.originalname}` });
+            return res.json({ file: `${process.env.PHOTOS_URL}/${req.file.originalname}` });
         }
         return res.status(500).json({ error: "Images could not be retrieved" });
     };
@@ -93,6 +93,27 @@ export class PostController {
 
         const posts = await this.postModel.getPostsByQuery(query);
         return res.json({ posts: posts });
+    };
+
+    deletePost = async (req, res) => {
+        const postIdToDelete = Number(req.params.id);
+        const [exitState, post] = await this.postModel.deletePost(postIdToDelete);
+        if (exitState === 1) {
+            return res.json({ post: post });
+
+        }
+        return res.status(500).json({ error: "Post could not be dropped" })
+
+    };
+
+    updatePost = async (req, res) => {
+        const postIdToPatch = Number(req.params.id);
+        const [exitState, updatedPost] = await this.postModel.updatePost(req.body, postIdToPatch, req.user_id, req.file);
+        if (exitState === 1) {
+            return res.json({ post: updatedPost });
+        }
+
+        return res.status(500).json({ error: "Post could not be updated..." });
     };
 
 }

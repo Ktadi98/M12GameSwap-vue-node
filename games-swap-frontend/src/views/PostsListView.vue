@@ -3,14 +3,14 @@ import AppBar from '@/components/AppBar.vue';
 import NavBar from '@/components/NavBar.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useUserPosts } from '@/stores/userPosts';
-import { onBeforeMount, onMounted, reactive, ref, watch } from 'vue';
+import { onBeforeMount, onMounted, reactive, ref, watch, type Ref } from 'vue';
 import type { Product } from '@/interfaces/Product';
 import PostRow from '@/components/PostRow.vue';
 
 
 const authStore = useAuthStore();
 
-let posts: Product[] | undefined = reactive([]);
+let posts: Ref<Product[]> = ref([]);
 
 let loading = ref(true);
 
@@ -18,10 +18,34 @@ watch(() => authStore.token, async () => {
     fetchUserPosts(authStore.token);
 });
 
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
+const dropPost = async (postEmitted: Product) => {
+
+
+    posts.value.splice(posts.value.findIndex(post => post.post_id === postEmitted.post_id), 1);
+    try {
+        const response = await fetch(`${apiEndpoint}/posts/delete/${postEmitted.post_id}`, {
+            method: 'DELETE',
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${authStore.token}`
+            }
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 async function fetchUserPosts(token: string) {
 
     try {
-        const response: Response = await fetch("http://localhost:8080/posts/user/posts", {
+        const response: Response = await fetch(`${apiEndpoint}/posts/user/posts`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             },
@@ -32,7 +56,7 @@ async function fetchUserPosts(token: string) {
         }
         const data: { posts: Product[] } = await response.json();
 
-        posts = data.posts;
+        posts.value = data.posts;
     }
     catch (error) {
         console.error(error);
@@ -53,15 +77,19 @@ onMounted(() => {
         <p class="header-title px-4 py-2">Tus anuncios</p>
         <p class="header-description px-4 py-2">Aquí puedes gestionar todos los anuncios que has subido</p>
     </header>
-    <main class="d-flex flex-column px-md-5 mx-3 mx-md-0 align-items-md-center">
-        <section v-if="posts !== undefined && !loading" class="posts-box w-100">
-            <template v-for="post in posts" :key="post.post_id">
-                <PostRow :post="post"></PostRow>
-            </template>
-        </section>
-        <section v-else>
+    <main class="d-flex flex-column px-md-4 mx-3 mx-md-0 align-items-md-center">
+        <section v-if="loading">
             <h2>Cargando tus anuncios...</h2>
         </section>
+        <section v-else-if="posts.length === 0">
+            <h2>Todavía no has colgado ningún anuncio.</h2>
+        </section>
+        <section v-else-if="posts !== undefined && !loading" class="posts-box w-100">
+            <template v-for="post in posts" :key="post.post_id">
+                <PostRow :post="post" @deletePost="dropPost"></PostRow>
+            </template>
+        </section>
+
     </main>
     <AppBar></AppBar>
 </template>

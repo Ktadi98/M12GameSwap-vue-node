@@ -110,9 +110,12 @@ export class UserModel {
 
             //console.log(user_data.userId);
 
-            const deletedUser = await prismadb.user.delete({
+            const deletedUser = await prismadb.user.update({
                 where: {
                     user_id: user_data.userId
+                },
+                data: {
+                    user_active: false
                 }
             })
 
@@ -125,6 +128,16 @@ export class UserModel {
 
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    static async findByType(type) {
+        try {
+            const result = await prismadb.user.findMany({ where: { user_type: type } })
+
+            return result;
+        } catch (err) {
+            throw new Error("User type invalid")
         }
     }
 }

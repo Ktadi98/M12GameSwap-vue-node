@@ -11,11 +11,12 @@ export const createUserRouter = (userModel) => {
   userRouter.post("/register", userController.register);
   userRouter.post("/login", userController.login);
   userRouter.delete("/delete", userController.delete);
-  userRouter.get("/test", authenticateToken, (req, res, next) => {
-    console.log(req.user_email);
-    console.log("test");
-    res.status(202).json({ message: "token verified successfully!" })
-  })
+  userRouter.get("/type/:type", userController.getByType);
+  // userRouter.get("/test", authenticateToken, (req, res, next) => {
+  //   console.log(req.user_email);
+  //   console.log("test");
+  //   res.status(202).json({ message: "token verified successfully!" })
+  // })
 
   return userRouter;
 };

@@ -20,12 +20,14 @@ function clearResults() {
   searchResults.value = [];
 }
 
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
 async function fetchResults() {
 
   if (searchTerm.value.length == 0) return;
 
   try {
-    const response: Response = await fetch(`http://localhost:8080/posts/query/${searchTerm.value.toLowerCase()}`, {
+    const response: Response = await fetch(`${apiEndpoint}/posts/query/${searchTerm.value.toLowerCase()}`, {
       method: "GET"
     });
 
@@ -46,7 +48,7 @@ async function fetchResults() {
 
 <template>
   <form class="d-flex mb-3 w-75 position-relative" @submit.prevent="fetchResults">
-    <div class="search w-100 d-flex gap-2 flex-column flex-md-row align-items-center justify-content-center me-2">
+    <div class="search w-100 d-flex gap-2 flex-row align-items-center justify-content-center me-2">
       <div class="d-flex justify-content-center align-items-center">
         <img src="/imgs/search-icon.svg" alt="magnifying glass" />
       </div>
@@ -55,17 +57,18 @@ async function fetchResults() {
       <button class="button" type="submit">Buscar</button>
     </div>
     <section v-if="showResults && numberOfResults > 0 && searchTerm.length > 0"
-      class="search-results-box pb-2 w-100 z-1 position-absolute">
+      class="search-results-box w-100 z-1 position-absolute">
       <ul class="w-100 ">
         <li class="px-3 pt-3 pb-1" v-for="post in searchResults" :key="post.post_id">
-          <RouterLink :to="{ name: 'searchResults', query: { search: searchTerm } }">
+          <RouterLink :to="{ name: 'searchResults', query: { search: searchTerm } }" @click.prevent="clearResults">
             <p class="post-title">{{ post.post_title }}</p>
             <p class="m-0 post-platform">{{ post.platform?.platform_name }}</p>
           </RouterLink>
         </li>
       </ul>
     </section>
-    <section v-else-if="showResults && numberOfResults === 0" class="search-results-box pb-2 w-100 z-1 position-absolute">
+    <section v-else-if="showResults && numberOfResults === 0"
+      class="search-results-box py-2 w-100 text-center z-1 position-absolute">
       <p>No hay resultados coincidentes</p>
     </section>
   </form>

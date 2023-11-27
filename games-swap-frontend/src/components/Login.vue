@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { type Ref, ref } from 'vue';
+import { type Ref, ref, watch } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
 import { useAuthStore } from "@/stores/auth";
+import ErrorMessages from './ErrorMessages.vue';
 
 const emit = defineEmits<{
   (e: 'confirm'): void,
@@ -9,7 +10,8 @@ const emit = defineEmits<{
 }>()
 
 const authStore = useAuthStore();
-const error: Ref<Error | string> = ref("");
+const error: Ref<boolean> = ref(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 interface LoginType {
   email: string,
@@ -27,9 +29,35 @@ interface TokenType {
   token: string
 }
 
+watch(formData, () => {
+  formData.value.email = formData.value.email.toLowerCase();
+})
+
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
+const validateLogin = () => {
+  if (
+    formData.value.email.length === 0 ||
+    !formData.value.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+  ) {
+    errorMessages.value.push("El email introducido no es válido");
+    error.value = true;
+  }
+  if (formData.value.password.length === 0 || formData.value.password.length < 6 || formData.value.password.length > 20) {
+    errorMessages.value.push("La contraseña debe tener entre 6 y 20 carácteres");
+    error.value = true;
+  }
+}
+
 const sendData = async () => {
+
+  errorMessages.value = [];
+  error.value = false;
+  validateLogin();
+
+  if (error.value) return;
   try {
-    const response = await fetch("http://localhost:8080/users/login", {
+    const response = await fetch(`${apiEndpoint}/users/login`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -42,42 +70,22 @@ const sendData = async () => {
     });
 
     if (!response.ok) {
-      error.value = `Error: ${response.status}`;
+      errorMessages.value.push("Inicio de sesión erróneo. El usuario no existe en el sistema o la contraseña es incorrecta.");
+      error.value = true;
       return;
     }
 
     const data: TokenType = await response.json();
-    error.value = "";
+
     console.log(data);
 
     authStore.setToken(data.token);
+
+    emit("confirm");
   } catch (err) {
-    error.value = err as string;
+    errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
   }
 }
-
-// OLD
-// const sendData = () => {
-//   fetch("http://localhost:8080/users/login", {
-//     method: 'POST',
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Accept": "application/json"
-//     },
-//     body: JSON.stringify({
-//       email: formData.value.email,
-//       password: formData.value.password
-//     })
-//   })
-//     .then(res => res.json())
-//     .then(data => {
-//       console.log(data);
-//       //authStore.setToken() >TODO
-//       localStorage.setItem("id", JSON.stringify(data[1]));
-//     })
-//     .catch(error => console.error(error))
-// }
-
 </script>
 
 <template>
@@ -85,12 +93,12 @@ const sendData = async () => {
     content-transition="vfm-fade">
     <form @submit.prevent="sendData()">
       <h1>INICIO SESIÓN</h1>
-      <input v-model="formData.email" type="email" name="email" id="email" placeholder="Correo">
-      <input v-model="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
-      <button @click="emit('confirm')">ENTRAR</button>
-      <button class="register-btn" @click="emit('cancel')">¿No tienes cuenta? Regístrate</button>
+      <input v-model.trim="formData.email" type="email" name="email" id="email" placeholder="Correo">
+      <input v-model.trim="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
+      <button>ENTRAR</button>
     </form>
-    <div v-if="error !== ''">{{ error }}</div>
+    <button class="register-btn" @click="emit('cancel')">¿No tienes cuenta? Regístrate</button>
+    <ErrorMessages :messages="errorMessages"></ErrorMessages>
   </VueFinalModal>
 </template>
 
@@ -110,6 +118,10 @@ const sendData = async () => {
   padding: 2rem;
   width: 507px;
   height: 438px;
+
+  /*Scrollable content*/
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
 
 }
 

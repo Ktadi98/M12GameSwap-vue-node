@@ -8,7 +8,7 @@
                 <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
             </form>
             <form class="genre-box" @submit.prevent='genreFilter = -1'>
-                <input type="submit" value="Restaurar">
+                <input type="submit" value="Todos">
             </form>
         </section>
         <div class="w-100 criteria-box align-self-left">
@@ -19,11 +19,12 @@
                 <option value="priceAsc">Precio (mayor a menor)</option>
             </select>
         </div>
-        <section class="post-box container">
-            <div class="row">
-                <div class="col-12 col-md-3">
-                    <PostCard v-for=" product in filteredProducts " :key="product.post_id" :product="product"></PostCard>
-                </div>
+        <section class="post-box container-fluid">
+            <div v-if="products.length > 0" class="row">
+                <PostCard v-for="product in filteredProducts" :key="product.post_id" :product="product"></PostCard>
+            </div>
+            <div v-else>
+                <h2>No hay anuncios disponibles para esta búsqueda. Prueba a buscar otra cosa.</h2>
             </div>
         </section>
     </main>
@@ -100,8 +101,10 @@ function updateGenreFilter(id: number) {
     genreFilter.value = id;
 }
 
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
 const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | undefined> => {
-    const response: Response = await fetch("http://localhost:8080/posts/genres");
+    const response: Response = await fetch(`${apiEndpoint}/posts/genres`);
 
     if (!response.ok) {
         return;
@@ -114,7 +117,7 @@ const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | und
 async function getPosts() {
     try {
 
-        const response = await fetch(`http://localhost:8080/posts/query/${route.query.search}`);
+        const response = await fetch(`${apiEndpoint}/posts/query/${route.query.search}`);
 
         if (!response.ok) {
             console.log(response.status);
@@ -133,6 +136,7 @@ async function getPosts() {
 
 watch(route, () => {
     getPosts();
+    genreFilter.value = -1;
 }, { immediate: true, deep: true })
 
 </script>

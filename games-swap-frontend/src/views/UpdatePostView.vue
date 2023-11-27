@@ -3,9 +3,10 @@ import NavBar from '@/components/NavBar.vue';
 import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useRoute, useRouter } from 'vue-router';
 import { useToast, POSITION } from "vue-toastification";
 import ErrorMessages from '@/components/ErrorMessages.vue';
-import { useRouter } from 'vue-router';
+
 
 interface PostType {
     title: string,
@@ -18,6 +19,27 @@ interface PostType {
 }
 
 const toast = useToast();
+const authStore = useAuthStore();
+
+const route = useRoute();
+const router = useRouter();
+
+
+function triggerToast() {
+    toast.success("¡Producto actualizado con éxito!", {
+        position: POSITION.BOTTOM_RIGHT,
+        timeout: 2000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: true,
+        hideProgressBar: false,
+        closeButton: false,
+        icon: "fas fa-rocket",
+        rtl: false
+    });
+}
 
 const platforms = ["PS5", "PS4", "PS3", "Nintendo Switch", "Xbox One", "Xbox Series X/S", "Retro"];
 const genres = ["Acción", "Aventura", "Plataformas", "RPG", "Puzzle", "Indie", "Lucha"];
@@ -57,36 +79,14 @@ const validatePost = () => {
     }
 }
 
-function triggerToast() {
-
-    toast.success("¡Producto subido!", {
-        position: POSITION.BOTTOM_RIGHT,
-        timeout: 5000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: true,
-        hideProgressBar: false,
-        closeButton: false,
-        icon: "fas fa-rocket",
-        rtl: false
-    });
-
-}
-
-
-const authStore = useAuthStore();
-const router = useRouter();
-
 const formState: Ref<any> = ref({
-    title: "",
-    description: "",
-    category: "",
+    title: route.query.title,
+    description: route.query.description,
+    category: route.query.platform,
     genre: "",
-    price: 0,
+    price: Number(route.query.price),
     images: [],
-    state: ""
+    state: route.query.state
 })
 
 const uploadedImages: Ref<any> = ref([]);
@@ -95,7 +95,9 @@ function selectFile(event: any) {
     formState.value.images = event.target.files[0];
     getPhotosPosted();
 }
+
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
 async function getPhotosPosted() {
     try {
         const postImages = new FormData();
@@ -105,7 +107,7 @@ async function getPhotosPosted() {
         const response = await fetch(`${apiEndpoint}/posts/images`, {
             method: 'POST',
             headers: {
-                "Authorization": `Bearer ${authStore.getToken()}`
+                "Authorization": `Bearer ${authStore.token}`
             },
             body: postImages
         }
@@ -149,10 +151,10 @@ async function sendPost() {
 
     console.log(postFormData);
 
-
+    const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
     try {
-        const response = await fetch(`${apiEndpoint}/posts/upload`, {
-            method: 'POST',
+        const response = await fetch(`${apiEndpoint}/posts/update/${route.query.id}`, {
+            method: 'PATCH',
             headers: {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${authStore.getToken()}`
@@ -162,36 +164,34 @@ async function sendPost() {
         );
 
         if (!response.ok) {
-            errorMessages.value.push("Ha habido un problema al subir tu anuncio. Por favor, inténtalo de nuevo más tarde.");
+            errorMessages.value.push("Ha habido un problema al actualizar tu anuncio. Por favor, inténtalo de nuevo más tarde.");
             error.value = true;
             return;
         }
 
         const data: any = await response.json();
-
-        console.log(data);
-
-        //Toast trigger
         triggerToast();
         router.back();
+        console.log(data);
 
     } catch (err: any) {
-        errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
+        errorMessages.value.push("Ha habido un problema al actualizar tu anuncio. Por favor, inténtalo de nuevo más tarde.");
+        error.value = true;
     }
 
 }
 </script>
 <template>
     <NavBar></NavBar>
-    <header class="text-left text-md-center px-2 py-1 responsive-text ">Tu nuevo producto</header>
+    <header class="text-left text-md-center px-2 py-1 responsive-text ">Modifica tu producto</header>
     <main
         class="d-flex flex-column flex-grow-1 justify-content-left align-items-center justify-content-md-center px-4 py-3 w-100">
         <form novalidate @submit.prevent="sendPost" id="post-form" class="d-flex flex-column px-4 py-3 gap-4"
             enctype="multipart/form-data">
             <label for="title">Título</label>
-            <input v-model.trim="formState.title" type="text" name="title" id="title">
+            <input v-model="formState.title" type="text" name="title" id="title">
             <label for="description">Descripción</label>
-            <input v-model.trim="formState.description" type="text" name="description" id="description">
+            <input v-model="formState.description" type="text" name="description" id="description">
             <label for="category">Categoría</label>
             <select v-model="formState.category" name="category" id="category">
                 <optgroup>
@@ -241,18 +241,24 @@ async function sendPost() {
             </select>
         </form>
         <ErrorMessages :messages="errorMessages"></ErrorMessages>
-        <div class="upload-btn">
-            <button form="post-form" type="submit">Subir producto
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload" width="24" height="24"
-                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
-                    <path d="M7 9l5 -5l5 5"></path>
-                    <path d="M12 4l0 12"></path>
-                </svg>
-            </button>
+        <div class="d-flex w-50 flex-column flex-md-row align-items-center">
+            <div class="upload-btn">
+                <button form="post-form" type="submit">Actualizar producto
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload" width="24"
+                        height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                        <path d="M7 9l5 -5l5 5"></path>
+                        <path d="M12 4l0 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="upload-btn">
+                <button @click="router.back">Volver</button>
+            </div>
         </div>
+
     </main>
     <AppBar></AppBar>
 </template>
@@ -267,14 +273,14 @@ header {
     font-weight: 500;
 }
 
-.fa-cloud-arrow-up {
-    color: white;
-}
-
 figure>img {
     width: 100%;
     height: auto;
     border-radius: 10px;
+}
+
+.fa-cloud-arrow-up {
+    color: white;
 }
 
 form {
