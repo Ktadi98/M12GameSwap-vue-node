@@ -78,14 +78,18 @@ onMounted(() => {
         <p class="header-description px-4 py-2">Aquí puedes gestionar todos los anuncios que has subido</p>
     </header>
     <main class="d-flex flex-column px-md-4 mx-3 mx-md-0 align-items-md-center">
-        <section v-if="posts !== undefined && !loading" class="posts-box w-100">
+        <section v-if="loading">
+            <h2>Cargando tus anuncios...</h2>
+        </section>
+        <section v-else-if="posts.length === 0">
+            <h2>Todavía no has colgado ningún anuncio.</h2>
+        </section>
+        <section v-else-if="posts !== undefined && !loading" class="posts-box w-100">
             <template v-for="post in posts" :key="post.post_id">
                 <PostRow :post="post" @deletePost="dropPost"></PostRow>
             </template>
         </section>
-        <section v-else>
-            <h2>Cargando tus anuncios...</h2>
-        </section>
+
     </main>
     <AppBar></AppBar>
 </template>

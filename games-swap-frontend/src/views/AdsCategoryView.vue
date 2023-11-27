@@ -9,7 +9,7 @@
         <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
       </form>
       <form class="genre-box" @submit.prevent='genreFilter = -1'>
-        <input type="submit" value="Restaurar">
+        <input type="submit" value="Todos">
       </form>
     </section>
     <div class="w-100 criteria-box align-self-left">
@@ -21,8 +21,11 @@
       </select>
     </div>
     <section class="post-box container-fluid">
-      <div class="row gap-3 w-100">
+      <div v-if="products.length > 0" class="row gap-3 w-100">
         <PostCard v-for=" product in filteredProducts" :key="product.post_id" :product="product"></PostCard>
+      </div>
+      <div v-else>
+        <h2>No hay anuncios disponibles para esta categoria. Échale un vistazo a las demás.</h2>
       </div>
     </section>
   </main>
