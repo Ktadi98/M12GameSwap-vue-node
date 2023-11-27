@@ -4,6 +4,9 @@ import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
+import { useToast, POSITION } from "vue-toastification";
+import ErrorMessages from '@/components/ErrorMessages.vue';
+
 
 interface PostType {
     title: string,
@@ -15,10 +18,66 @@ interface PostType {
     state: string
 }
 
+const toast = useToast();
 const authStore = useAuthStore();
 
 const route = useRoute();
 const router = useRouter();
+
+
+function triggerToast() {
+    toast.success("¡Producto actualizado con éxito!", {
+        position: POSITION.BOTTOM_RIGHT,
+        timeout: 2000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: true,
+        hideProgressBar: false,
+        closeButton: false,
+        icon: "fas fa-rocket",
+        rtl: false
+    });
+}
+
+const platforms = ["PS5", "PS4", "PS3", "Nintendo Switch", "Xbox One", "Xbox Series X/S", "Retro"];
+const genres = ["Acción", "Aventura", "Plataformas", "RPG", "Puzzle", "Indie", "Lucha"];
+const states = ["Nuevo", "Bueno", "Satisfactorio"];
+
+const error: Ref<boolean> = ref(false);
+const errorMessages: Ref<string[]> = ref([]);
+
+const validatePost = () => {
+    if (formState.value.title.length === 0 || formState.value.title.length > 50) {
+        errorMessages.value.push("El título del anuncio debe tener entre 3 y 50 carácteres.");
+        error.value = true;
+    }
+    if (formState.value.description.length === 0 || formState.value.description.length > 80) {
+        errorMessages.value.push("La descripción del anuncio debe tener entre 5 y 80 carácteres.");
+        error.value = true;
+    }
+    if (!platforms.includes(formState.value.category)) {
+        errorMessages.value.push("La categoría del producto debe ser de las plataformas disponibles");
+        error.value = true;
+    }
+    if (formState.value.price <= 0) {
+        errorMessages.value.push("El precio mínimo del producto debe ser de 1€");
+        error.value = true;
+    }
+    if (!genres.includes(formState.value.genre)) {
+        errorMessages.value.push("El género debe ser el de los géneros disponibles");
+        error.value = true;
+    }
+    if (formState.value.images.length === 0) {
+        errorMessages.value.push("Debes subir una foto de tu producto");
+        error.value = true;
+    }
+    if (!states.includes(formState.value.state)) {
+        errorMessages.value.push("El estado del producto debe ser el de los estados disponibles");
+        error.value = true;
+    }
+}
 
 const formState: Ref<any> = ref({
     title: route.query.title,
@@ -55,21 +114,28 @@ async function getPhotosPosted() {
         );
 
         if (!response.ok) {
-            //error.value = `Error: ${response.status}`;
+            errorMessages.value.push("Ha habido un problema al colgar tu foto. Por favor, inténtalo más tarde.");
+            error.value = true;
             return;
         }
 
         const data: any = await response.json();
-        //error.value = "";
+
         console.log(data);
         uploadedImages.value.push(data.file);
 
     } catch (error) {
-        console.log(error);
+        errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
     }
 }
 
 async function sendPost() {
+
+    errorMessages.value = [];
+    error.value = false;
+
+    validatePost();
+    if (error.value) return;
 
     const postFormData = new FormData();
 
@@ -98,16 +164,19 @@ async function sendPost() {
         );
 
         if (!response.ok) {
-            //error.value = `Error: ${response.status}`;
+            errorMessages.value.push("Ha habido un problema al actualizar tu anuncio. Por favor, inténtalo de nuevo más tarde.");
+            error.value = true;
             return;
         }
 
         const data: any = await response.json();
-        //error.value = "";
+        triggerToast();
+        router.back();
         console.log(data);
 
     } catch (err: any) {
-        err.value = err as string;
+        errorMessages.value.push("Ha habido un problema al actualizar tu anuncio. Por favor, inténtalo de nuevo más tarde.");
+        error.value = true;
     }
 
 }
@@ -171,9 +240,10 @@ async function sendPost() {
                 </optgroup>
             </select>
         </form>
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
         <div class="d-flex w-50 flex-column flex-md-row align-items-center">
             <div class="upload-btn">
-                <button form="post-form" type="submit">Subir producto
+                <button form="post-form" type="submit">Actualizar producto
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload" width="24"
                         height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">

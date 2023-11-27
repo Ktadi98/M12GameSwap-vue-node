@@ -4,6 +4,8 @@ import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useToast, POSITION } from "vue-toastification";
+import ErrorMessages from '@/components/ErrorMessages.vue';
+import { useRouter } from 'vue-router';
 
 interface PostType {
     title: string,
@@ -16,6 +18,44 @@ interface PostType {
 }
 
 const toast = useToast();
+
+const platforms = ["PS5", "PS4", "PS3", "Nintendo Switch", "Xbox One", "Xbox Series X/S", "Retro"];
+const genres = ["Acción", "Aventura", "Plataformas", "RPG", "Puzzle", "Indie", "Lucha"];
+const states = ["Nuevo", "Bueno", "Satisfactorio"];
+
+const error: Ref<boolean> = ref(false);
+const errorMessages: Ref<string[]> = ref([]);
+
+const validatePost = () => {
+    if (formState.value.title.length === 0 || formState.value.title.length > 50) {
+        errorMessages.value.push("El título del anuncio debe tener entre 3 y 50 carácteres.");
+        error.value = true;
+    }
+    if (formState.value.description.length === 0 || formState.value.description.length > 80) {
+        errorMessages.value.push("La descripción del anuncio debe tener entre 5 y 80 carácteres.");
+        error.value = true;
+    }
+    if (!platforms.includes(formState.value.category)) {
+        errorMessages.value.push("La categoría del producto debe ser de las plataformas disponibles");
+        error.value = true;
+    }
+    if (formState.value.price <= 0) {
+        errorMessages.value.push("El precio mínimo del producto debe ser de 1€");
+        error.value = true;
+    }
+    if (!genres.includes(formState.value.genre)) {
+        errorMessages.value.push("El género debe ser el de los géneros disponibles");
+        error.value = true;
+    }
+    if (formState.value.images.length === 0) {
+        errorMessages.value.push("Debes subir una foto de tu producto");
+        error.value = true;
+    }
+    if (!states.includes(formState.value.state)) {
+        errorMessages.value.push("El estado del producto debe ser el de los estados disponibles");
+        error.value = true;
+    }
+}
 
 function triggerToast() {
 
@@ -37,6 +77,7 @@ function triggerToast() {
 
 
 const authStore = useAuthStore();
+const router = useRouter();
 
 const formState: Ref<any> = ref({
     title: "",
@@ -71,21 +112,28 @@ async function getPhotosPosted() {
         );
 
         if (!response.ok) {
-            //error.value = `Error: ${response.status}`;
+            errorMessages.value.push("Ha habido un problema al colgar tu foto. Por favor, inténtalo más tarde.");
+            error.value = true;
             return;
         }
 
         const data: any = await response.json();
-        //error.value = "";
+
         console.log(data);
         uploadedImages.value.push(data.file);
 
     } catch (error) {
-        console.log(error);
+        errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
     }
 }
 
 async function sendPost() {
+
+    errorMessages.value = [];
+    error.value = false;
+
+    validatePost();
+    if (error.value) return;
 
     const postFormData = new FormData();
 
@@ -114,18 +162,21 @@ async function sendPost() {
         );
 
         if (!response.ok) {
-            //error.value = `Error: ${response.status}`;
+            errorMessages.value.push("Ha habido un problema al subir tu anuncio. Por favor, inténtalo de nuevo más tarde.");
+            error.value = true;
             return;
         }
 
         const data: any = await response.json();
-        //error.value = "";
+
         console.log(data);
+
         //Toast trigger
         triggerToast();
+        router.back();
 
     } catch (err: any) {
-        err.value = err as string;
+        errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
     }
 
 }
@@ -138,9 +189,9 @@ async function sendPost() {
         <form novalidate @submit.prevent="sendPost" id="post-form" class="d-flex flex-column px-4 py-3 gap-4"
             enctype="multipart/form-data">
             <label for="title">Título</label>
-            <input v-model="formState.title" type="text" name="title" id="title">
+            <input v-model.trim="formState.title" type="text" name="title" id="title">
             <label for="description">Descripción</label>
-            <input v-model="formState.description" type="text" name="description" id="description">
+            <input v-model.trim="formState.description" type="text" name="description" id="description">
             <label for="category">Categoría</label>
             <select v-model="formState.category" name="category" id="category">
                 <optgroup>
@@ -189,7 +240,7 @@ async function sendPost() {
                 </optgroup>
             </select>
         </form>
-
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
         <div class="upload-btn">
             <button form="post-form" type="submit">Subir producto
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload" width="24" height="24"

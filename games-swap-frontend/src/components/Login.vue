@@ -70,7 +70,7 @@ const sendData = async () => {
     });
 
     if (!response.ok) {
-      errorMessages.value.push("Inicio de sesión erróneo. El usuario no existe en el sistema.");
+      errorMessages.value.push("Inicio de sesión erróneo. El usuario no existe en el sistema o la contraseña es incorrecta.");
       error.value = true;
       return;
     }

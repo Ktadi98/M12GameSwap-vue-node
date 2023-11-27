@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Footer from '../components/Footer.vue';
 import StarRating from '../components/Icons/StarRating.vue';
+import NavBar from '@/components/NavBar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -22,17 +23,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <header>
-        <div class="logo">
-            <img src="@/assets/logo.png" alt="logo">
-        </div>
-        <div class="profile-info">
-            <div class="profile-image">
-                <img src="@/assets/avatar-profile.svg" alt="Profile Image">
-            </div>
-            <div class="profile-name">userName</div>
-        </div>
-    </header>
+    <NavBar></NavBar>
     <div class="arrow-box" style="color: #8a6cf6" @click="router.back()">
         <BackArrow />
     </div>
