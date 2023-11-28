@@ -42,7 +42,7 @@ onMounted(async () => {
 
         <div id="ad-info">
             <div class="img-box mb-3">
-                <img class="photo-ad" :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
+                <img :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
             </div>
             <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
             <h2 class="post_title">{{ adDetail?.post_title }}</h2>
