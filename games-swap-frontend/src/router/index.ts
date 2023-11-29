@@ -104,6 +104,11 @@ const router = createRouter({
           next('/'); // Redirigir al usuario a la página de inicio 
         }
       }
+    },
+    {
+      path: '/editUserData',
+      name: 'editUserData',
+      component: () => import('@/views/EditUserData.vue')
     }
   ]
 })
