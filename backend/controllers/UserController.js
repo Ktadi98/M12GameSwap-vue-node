@@ -83,4 +83,28 @@ export class UserController {
     return res.status(500).json({ error: "User could not be deleted!" })
 
   };
+
+
+  getData = async (req, res) => {
+  
+    const userEmail = await req.user_email;
+    const userId = req.user_id;
+     
+    const userName = await this.userModel.getData(userId);
+     
+    return res.json({email:userEmail, name:userName});
+
+  };
+
+  sendData = async (req, res) => {
+  
+    const userEmail = await req.user_email;
+    const userId = req.user_id;
+     
+    const userName = await this.userModel.sendData(req.body, seq.user_id);
+     
+    return res.json({email:userEmail, name:userName});
+
+  };
+
 }

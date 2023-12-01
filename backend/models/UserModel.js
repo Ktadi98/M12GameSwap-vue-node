@@ -140,4 +140,41 @@ export class UserModel {
             throw new Error("User type invalid")
         }
     }
+
+    static async getData(userId) {
+        try {
+           const user = await prismadb.user_Client.findUnique({ where: { user_id: userId } })
+           //console.log(user);
+           return user.user_name;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async sendData( body, userId) {
+        try {
+
+            if(body.username){
+                const user = await prismadb.user_Client.update({
+                    where: { user_id: userId }, 
+                    data: { user_name: body.username} 
+                })
+                return user;
+            }
+            else if(body.email){
+                const user = await prismadb.user_Client.update({ 
+                    where: { user_id: userId }, 
+                    data: {user_email: body.email} 
+                })
+                return user;
+            }
+          
+           //console.log(user);
+           return 1;        
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    
 }
