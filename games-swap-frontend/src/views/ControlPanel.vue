@@ -67,7 +67,6 @@ const deleteUser = async (data: any) => {
 
     <main>
       <div class="heading" style="color: #8a6cf6">
-        <BackArrow />
         <h1>Bienvenido al panel de control</h1>
       </div>
       <h2>Listado de usuarios</h2>
@@ -116,7 +115,7 @@ body {
 
 aside.left-menu {
   background-color: rgba(159, 135, 245, 0.5);
-  height: 900px;
+  height: 1200px;
   padding: 30px 10px;
 
 }

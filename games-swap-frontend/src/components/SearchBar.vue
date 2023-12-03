@@ -107,6 +107,8 @@ input[type]:focus,
   transition: all 0.2s ease-out;
   cursor: pointer;
   bottom: -110px;
+  height: 120px;
+  overflow: scroll;
 }
 
 .search-results-box li {
