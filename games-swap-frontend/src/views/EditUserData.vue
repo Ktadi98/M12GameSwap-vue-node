@@ -3,21 +3,44 @@
   <div>
     <section>
       <h1>EDITA TUS DATOS</h1>
-      <div class="d-flex">
-        <input v-model.trim="username" type="name" name="name" id="name" placeholder="Nombre" disabled>
-        <button @click="toggleUserNameModifierInput">{{ editMode.username ? 'CANCELAR' : 'EDITAR' }}</button>
+
+
+      <!-- botóns per al username -->
+      <!-- <div class="d-flex"> -->
+        
+        <!-- <button @click="toggleUserNameModifierInput">{{ editMode.username ? 'CANCELAR' : 'EDITAR' }}</button>
       </div>
       <div v-if="modifyUserNameFieldActive" class="d-flex">
         <input  type="name" name="name" id="name" placeholder="Nombre">
         <button @click="sendUserName">ENVIAR</button>
-      </div>
+      </div> -->
+      
       <div class="d-flex">
+        <input v-model.trim="username" type="name" name="name" id="name" placeholder="Nombre" disabled>
+        <img :src="editMode.username ? cancelImage : editImage" type="submit" alt="Edit" @click="toggleUserNameModifierInput" />
+      </div>
+      <div v-if="modifyUserNameFieldActive" class="d-flex">
+        <input type="name" name="name" id="name" placeholder="Nombre">
+        <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserName" />
+      </div>
+
+      <!-- botó per al email -->
+      <!-- <div class="d-flex">
         <input v-model.trim="userEmail" type="email" name="email" id="email" placeholder="Correo" disabled>
         <button @click="toggleEmailModifierInput"  type="submit">{{ editMode.email ? 'CANCELAR' : 'EDITAR' }}</button>
       </div>
       <div v-if="modifyUserEmailFieldActive" class="d-flex">
         <input  type="name" name="name" id="name" placeholder="Nombre">
         <button type="submit" @click="sendUserEmail">ENVIAR</button>
+      </div> -->
+
+      <div class="d-flex">
+        <input v-model.trim="userEmail" type="email" name="email" id="email" placeholder="Correo" disabled>
+        <img :src="editMode.email ? cancelImage : editImage" type="submit" alt="Edit" @click="toggleEmailModifierInput" />
+      </div>
+      <div v-if="modifyUserEmailFieldActive" class="d-flex">
+        <input type="name" name="name" id="name" placeholder="Nombre">
+        <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserEmail" />
       </div>
     </section>
   </div>
@@ -29,6 +52,10 @@ import NavBar from '@/components/NavBar.vue';
 import { VueFinalModal } from 'vue-final-modal';
 import { useAuthStore } from "@/stores/auth";
 import ErrorMessages from '@/components/ErrorMessages.vue';
+import editImage from '@/components/Icons/pen.svg';
+import cancelImage from '@/components/Icons/cancel.svg';
+
+
 
 const modifyUserNameFieldActive = ref(false);
 const modifyUserEmailFieldActive = ref(false);
@@ -54,6 +81,7 @@ interface TokenType {
   message: string,
   token: string
 }
+
 
 
 const toggleEmailModifierInput =() =>
@@ -246,14 +274,22 @@ input {
 }
 
 
-button {
+/* button {
   padding: 0.5rem 1rem;
   width:max-content;
   height: max-content;
   background-color: #9f87f5;
   color: #fff;
   cursor: pointer;
-} 
+}  */
+
+img{
+  padding: 0.5rem 1rem;
+  width: 65px;
+  height: 65px;
+  cursor: pointer;
+}
+
 
 </style>
   
