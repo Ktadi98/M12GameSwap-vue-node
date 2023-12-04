@@ -1,12 +1,44 @@
+<template>
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo-container">
+        <template v-if="isProfileManagement">
+          <router-link to="/">
+            <BackArrowIcon class="back-arrow" />
+          </router-link>
+        </template>
+        <template v-else>
+          <img class="logo" src="/imgs/logo-app-2.png" alt="logo" />
+          <router-link class="logo-text" to="/">GAMESWAP</router-link>
+        </template>
+      </div>
+      <div class="nav-links">
+        <router-link v-if="authStore.userIsLoggedIn" class="nav-link" to="/protected/uploadPost">
+          <PostUploadIcon></PostUploadIcon>
+        </router-link>
+        <div v-if="authStore.userIsLoggedIn" class="profile-dropdown" @click="toggleDropdown">
+          <img src="@/assets/avatar-profile.svg" alt="Profile Image" class="profile-image" />
+          <div v-show="showDropdown" class="dropdown-menu">
+            <router-link to="/profileManagement">Editar perfil</router-link>
+            <router-link to="/postsList">Mis anuncios</router-link>
+            <div @click="logOut">Cerrar sesión</div>
+          </div>
+        </div>
+        <button v-else class="button access" @click="open">Acceder</button>
+      </div>
+    </div>
+  </nav>
+</template>
+
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { useModal } from 'vue-final-modal';
 import { useRouter } from "vue-router";
 import LoginModal from './Login.vue';
 import RegisterModal from './Register.vue';
-import { ref } from 'vue';
-import PostListIcon from './Icons/PostListIcon.vue';
-import PostUploadIcon from './Icons/PostUploadIcon.vue';
 import { useAuthStore } from "@/stores/auth";
+import BackArrowIcon from "@/components/Icons/BackArrow.vue";
+import PostUploadIcon from './Icons/PostUploadIcon.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -46,132 +78,86 @@ const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
 };
 
+const isProfileManagement = computed(() => {
+  return router.currentRoute.value.name === "profileManagement";
+});
+
+
 </script>
 
-<template>
-  <nav class="navbar bg-body-tertiary">
-    <div class="container-fluid d-flex align-items-center">
-      <div class="d-flex col-12 col-md-9 align-items-center justify-content-center justify-content-md-start">
-        <img class="logo-app" src="/imgs/logo-app-2.png" alt="logo" />
-        <router-link class="logo ms-2 font-weight-bold" to="/">GAMESWAP</router-link>
-      </div>
-
-      <div class="col-md-3 d-sm-none d-md-flex navbar-nav mb-2 justify-content-end">
-        <router-link v-if="authStore.userIsLoggedIn" class="uploadPost" to="/protected/uploadPost">
-          <PostUploadIcon></PostUploadIcon>
-        </router-link>
-
-        <div class="profile-link" v-if="authStore.userIsLoggedIn">
-          <div class="profile-info" @click="toggleDropdown">
-            <div class="profile-image">
-              <img src="@/assets/avatar-profile.svg" alt="Profile Image">
-            </div>
-          </div>
-          <div>
-            <router-link to="/editProfile">Editar perfil</router-link>
-            <router-link to="/postsList">Mis anuncios</router-link>
-            <div @click="logOut">Cerrar sesión</div>
-          </div>
-        </div>
-        <button v-if="!authStore.userIsLoggedIn" class="button access" @click="open">Acceder</button>
-      </div>
-    </div>
-  </nav>
-</template>
-
 <style scoped>
-@media (max-width: 568px) {
-  .button {
-    display: none;
-  }
+.navbar {
+  background-color: #f8f9fa;
+  padding: 10px;
 }
 
-nav {
-  background-color: #ffffff;
+.nav-links{
+  display: flex;
+  gap: 10px;
+}
+
+.container {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
-  margin: 0;
   align-items: center;
 }
 
-.logo-app {
-  max-height: 50px;
+.logo-container {
+  display: flex;
+  align-items: center;
 }
 
 .logo {
-  color: #9f87f5;
-  font-size: 2rem;
-  /* Ajustar tamaño del logo */
-  margin-right: 10px;
-  /* Añadido margen para separar el logo del nombre */
+  max-width: 50px;
 }
 
-.profile-info {
+.logo-text {
+  margin-left: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #343a40;
+  font-size: 1.5rem;
+}
+
+.profile-dropdown {
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-left: auto;
-  /* Mueve el perfil a la derecha */
+  position: relative;
 }
 
-.profile-info:hover .profile-image img {
-  border: 2px solid #745cf3;
-}
-
-.profile-image img {
-  width: 40px;
-  /* Ajustar tamaño de la imagen del perfil */
-  height: 40px;
+.profile-image {
+  max-width: 50px;
   border-radius: 50%;
-  transition: border 0.3s ease;
 }
 
-.dropdown {
+.dropdown-menu {
   position: absolute;
   top: 100%;
   right: 0;
   background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
   display: none;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.profile-link:hover .dropdown {
-  display: block;
-}
-
-.dropdown a,
-.dropdown div {
-  padding: 8px;
-  color: #333;
+.dropdown-menu a,
+.dropdown-menu div {
+  padding: 10px;
   text-decoration: none;
-  display: block;
-  transition: background-color 0.3s ease;
-}
-
-.dropdown a:hover,
-.dropdown div:hover {
-  background-color: #f0f0f0;
-}
-
-.button.access,
-.uploadPost {
-  background-color: #745cf3;
-  color: #ffffff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  color: #343a40;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.button.access:hover,
-.uploadPost:hover {
-  background-color: #5538a1;
+.dropdown-menu a:hover, .dropdown-menu div:hover {
+  background-color: #9F87F5;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+  display: flex;
+}
+
+.button.access {
+  background-color: #9F87F5;
 }
 </style>
-
-
