@@ -12,7 +12,9 @@ export const createUserRouter = (userModel) => {
   userRouter.post("/login", userController.login);
   userRouter.delete("/delete", userController.delete);
   userRouter.get("/type/:type", userController.getByType);
-  userRouter.get("/getData", authenticateToken ,userController.getData);
+  userRouter.get("/getData", authenticateToken, userController.getData);
+  userRouter.get("/favorites", authenticateToken, userController.getFavorites)
+  userRouter.put("/favorites", authenticateToken, userController.toggleFavorite)
   // userRouter.get("/test", authenticateToken, (req, res, next) => {
   //   console.log(req.user_email);
   //   console.log("test");

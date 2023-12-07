@@ -1,0 +1,32 @@
+/*
+  Warnings:
+
+  - You are about to drop the `User_Favorites` table. If the table is not empty, all the data it contains will be lost.
+
+*/
+-- DropForeignKey
+ALTER TABLE "User_Favorites" DROP CONSTRAINT "User_Favorites_post_id_fkey";
+
+-- DropForeignKey
+ALTER TABLE "User_Favorites" DROP CONSTRAINT "User_Favorites_user_id_fkey";
+
+-- DropTable
+DROP TABLE "User_Favorites";
+
+-- CreateTable
+CREATE TABLE "_PostToUser" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_PostToUser_AB_unique" ON "_PostToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_PostToUser_B_index" ON "_PostToUser"("B");
+
+-- AddForeignKey
+ALTER TABLE "_PostToUser" ADD CONSTRAINT "_PostToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Post"("post_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PostToUser" ADD CONSTRAINT "_PostToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
