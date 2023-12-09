@@ -110,7 +110,27 @@ const router = createRouter({
       path: '/vendor/:id',
       name: 'vendor',
       component: () => import('@/views/VendorView.vue'),
-      props: route => ({ ...route.params, id: parseInt(route.params.id as string) })
+      props: route => ({ ...route.params, id: parseInt(route.params.id as string) }),
+      children: [
+        {
+          path: '',
+          name: 'vendor_posts',
+          component: () => import('@/views/VendorPostsView.vue'),
+          props: route => ({ ...route.params, id: parseInt(route.params.id as string) })
+        },
+        {
+          path: 'posts',
+          name: 'vendor_posts',
+          component: () => import('@/views/VendorPostsView.vue'),
+          props: route => ({ ...route.params, id: parseInt(route.params.id as string) })
+        },
+        {
+          path: 'reviews',
+          name: 'vendor_reviews',
+          component: () => import('@/views/VendorReviewsView.vue'),
+          props: route => ({ ...route.params, id: parseInt(route.params.id as string) })
+        }
+      ]
     }
   ]
 })

@@ -95,6 +95,12 @@ export class PostController {
         return res.json({ posts: posts });
     };
 
+    getVendorPosts = async (req, res) => {
+        const vendorId = Number(req.params.id);
+        const posts = await this.postModel.getVendorPosts(vendorId);
+        return res.json({ posts: posts });
+    };
+
     deletePost = async (req, res) => {
         const postIdToDelete = Number(req.params.id);
         const [exitState, post] = await this.postModel.deletePost(postIdToDelete);

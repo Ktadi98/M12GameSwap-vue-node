@@ -1,5 +1,5 @@
 <template>
-  <RouterLink class="col-12 col-md-3" :to="{ name: 'adDetail', params: { id: props.product.post_id } }">
+  <RouterLink class="col-12 col-md-4 col-lg-3" :to="{ name: 'adDetail', params: { id: props.product.post_id } }">
     <div class="product-card" v-if="product">
       <div class="img-box">
         <img :src="props.product.post_photos[0]" alt="Product Image">

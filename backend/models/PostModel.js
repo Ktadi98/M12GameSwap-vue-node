@@ -186,6 +186,21 @@ export class PostModel {
         return posts;
     };
 
+    static async getVendorPosts(vendorId) {
+        const posts = await prismadb.post.findMany({
+            where: {
+                AND: [
+                    { user_id: vendorId },
+                    { post_status: true }
+                ]
+            }
+        });
+
+        //Maybe we need to get the vendor information here?? /SPRINT 4
+
+        return posts;
+    }
+
     static async deletePost(postIdToDelete) {
         const post = await prismadb.post.update({
             where: {
