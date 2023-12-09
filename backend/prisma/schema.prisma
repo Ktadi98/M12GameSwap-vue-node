@@ -52,8 +52,12 @@ model User_Client {
   user_phone   String  @db.VarChar(20)
 
   // 1-1 Relation with User table
-  user User   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  post Post[]
+  user           User             @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  post           Post[]
+  User_Favorites User_Favorites[]
+  Review         Review[]
+  Reservation    Reservation[]
+  Purchase       Purchase[]
 }
 
 model Platform {
@@ -90,7 +94,51 @@ model Post {
   post_price       Int
   post_status      Boolean       @default(true)
 
-  user_client User_Client? @relation(fields: [user_id], references: [user_id])
-  platform    Platform?    @relation(fields: [platform_id], references: [platform_id])
-  genre       Genre?       @relation(fields: [genre_id], references: [genre_id])
+  user_client    User_Client?     @relation(fields: [user_id], references: [user_id])
+  platform       Platform?        @relation(fields: [platform_id], references: [platform_id])
+  genre          Genre?           @relation(fields: [genre_id], references: [genre_id])
+  User_Favorites User_Favorites[]
+  Review         Review[]
+  Reservation    Reservation[]
+  Purchase       Purchase[]
+}
+
+model User_Favorites {
+  user_favorites_id Int         @id @default(autoincrement())
+  post_id           Int
+  user_id           Int
+  post              Post        @relation(fields: [post_id], references: [post_id])
+  user              User_Client @relation(fields: [user_id], references: [user_id])
+}
+
+model Review {
+  review_id          Int      @id @default(autoincrement())
+  user_buyer_id      Int
+  post_id            Int
+  review_title       String   @db.VarChar(50)
+  review_description String   @db.Text
+  review_punctuation Int      @default(0)
+  review_created_at  DateTime @default(now()) @db.Timestamptz(6)
+  review_status      Boolean  @default(true)
+
+  post       Post        @relation(fields: [post_id], references: [post_id])
+  user_buyer User_Client @relation(fields: [user_buyer_id], references: [user_id])
+}
+
+model Reservation {
+  reservation_id         Int         @id @default(autoincrement())
+  user_reserver_id       Int
+  post_id                Int
+  reservation_created_at DateTime    @default(now()) @db.Timestamptz(6)
+  user                   User_Client @relation(fields: [user_reserver_id], references: [user_id])
+  post                   Post        @relation(fields: [post_id], references: [post_id])
+}
+
+model Purchase {
+  purchase_id         Int         @id @default(autoincrement())
+  user_buyer_id       Int
+  post_id             Int
+  purchase_created_at DateTime    @default(now()) @db.Timestamptz(6)
+  user                User_Client @relation(fields: [user_buyer_id], references: [user_id])
+  post                Post        @relation(fields: [post_id], references: [post_id])
 }

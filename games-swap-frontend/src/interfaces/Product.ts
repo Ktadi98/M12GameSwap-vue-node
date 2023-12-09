@@ -1,3 +1,5 @@
+import type { UserClient } from "./UserClient";
+
 export interface Product {
     post_id: number;
     user_id: number;
@@ -14,5 +16,6 @@ export interface Product {
     platform?: {
         platform_id: number,
         platform_name: string
-    }
+    },
+    user_client?: UserClient
 }

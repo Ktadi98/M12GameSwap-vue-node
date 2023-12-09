@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import Footer from '../components/Footer.vue';
 import StarRating from '../components/Icons/StarRating.vue';
 import NavBar from '@/components/NavBar.vue';
+import type { Product } from '@/interfaces/Product';
 
 const route = useRoute();
 const router = useRouter();
@@ -12,12 +13,23 @@ const router = useRouter();
 //To use in fetch request
 const post_id = route.params.id;
 
-let adDetail = ref(null as any);
+let adDetail = ref<Product | null | any>(null as any);
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 onMounted(async () => {
-    const data = await fetch(`${apiEndpoint}/posts/${post_id}`).then(res => res.json());
-    adDetail.value = data.post;
+
+    try {
+        const response: Response = await fetch(`${apiEndpoint}/posts/${post_id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data: { post: Product } = await response.json();
+        adDetail.value = data.post;
+        console.log(adDetail.value);
+    }
+    catch (error) {
+        console.error(error);
+    }
 })
 
 </script>
@@ -33,7 +45,9 @@ onMounted(async () => {
             <div class="profile-image">
                 <img src="@/assets/avatar-profile.svg" alt="Profile Image">
             </div>
-            <div class="profile-name">userName</div>
+            <RouterLink :to="{ name: 'vendor', params: { id: adDetail?.user_client?.user_id } }">
+                <h2 class="profile-name">{{ adDetail?.user_client?.user_name }}</h2>
+            </RouterLink>
             <!-- El rating de donde sale? -->
             <div style="color: #8a6cf6;" class="rating">
                 <StarRating /> (16)

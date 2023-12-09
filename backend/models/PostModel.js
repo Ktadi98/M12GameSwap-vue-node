@@ -72,8 +72,12 @@ export class PostModel {
             const result = await prismadb.post.findFirst({
                 where: {
                     post_id: +id
+                },
+                include: { //Adding the vendor information of this post - SPRINT 4
+                    user_client: true
                 }
             })
+            console.log(result);
 
             return result
         } catch (err) {
