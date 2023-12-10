@@ -43,11 +43,17 @@ import { useRoute } from 'vue-router';
 import { usePlatformsStore } from '@/stores/platforms';
 import type { Product } from "../interfaces/Product.ts";
 import type { Genre } from '@/interfaces/Genre';
+import { useAuthStore } from '@/stores/auth';
+import { storeToRefs } from 'pinia';
+
+
+const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
 onMounted(() => {
-  fetchGenres();
-  getPosts();
+
 })
+
+
 
 const platformsStore = usePlatformsStore();
 platformsStore.fetchPlatforms();
@@ -145,10 +151,50 @@ async function getPosts() {
   }
 }
 
+async function getPostsLogIn() {
+  try {
+
+    const response = await fetch(`${apiEndpoint}/posts/category/auth/${categoryId.value}`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${token.value}`
+      }
+    });
+
+    if (!response.ok) {
+      console.log(response.status);
+      return;
+    }
+
+    const data: { message: string, posts: Product[] } = await response.json();
+
+    products.value = data.posts;
+    isLoading.value = false;
+
+  } catch (error) {
+    console.error('Error al obtener los productos', error);
+  }
+}
+
+fetchGenres();
+if (!userIsLoggedIn.value) {
+  getPosts();
+}
+else {
+  getPostsLogIn();
+}
+
 watch(route, () => {
   categoryId.value = route.params.id;
   genreFilter.value = -1;
-  getPosts();
+  if (!userIsLoggedIn.value) {
+    getPosts();
+  }
+  else {
+    getPostsLogIn();
+  }
+  // getPosts();
 }, { immediate: true, deep: true })
 
 </script>

@@ -76,6 +76,39 @@ export class PostController {
         }
     };
 
+    // getPostByCategory = async (req, res) => {
+    //     const category_id = req.params.id;
+
+    //     try {
+    //         const posts = await this.postModel.getPostsByCategory(Number(category_id));
+
+    //         if (posts.length > 0) {
+    //             return res.json({ message: "Posts retrieved successfully!", posts: posts });
+    //         } else {
+    //             return res.json({ message: `No se encontraron posts en la categoría: ${category_id}`, posts: [] });
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //         return res.status(500).json({ error: "Error al obtener los posts por categoría" });
+    //     }
+    // };
+
+    getPostByCategoryLogIn = async (req, res) => {
+        const category_id = Number(req.params.id);
+
+        try {
+            const posts = await this.postModel.getPostsByCategoryLogIn(category_id, req.user_id);
+
+            if (posts.length > 0) {
+                return res.json({ message: "Posts retrieved successfully!", posts: posts });
+            } else {
+                return res.json({ message: `No se encontraron posts en la categoría: ${category_id}`, posts: [] });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Error al obtener los posts por categoría" });
+        }
+    }
     getGenres = async (req, res) => {
         const [status, genres] = await this.postModel.getGenres();
 
@@ -92,6 +125,14 @@ export class PostController {
         const query = req.params.searchQuery;
 
         const posts = await this.postModel.getPostsByQuery(query);
+        return res.json({ posts: posts });
+    };
+
+    getPostsByQueryLogIn = async (req, res) => {
+
+        const query = req.params.searchQuery;
+
+        const posts = await this.postModel.getPostsByQueryLogIn(query, req.user_id);
         return res.json({ posts: posts });
     };
 

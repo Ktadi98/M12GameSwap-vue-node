@@ -136,6 +136,30 @@ export class PostModel {
         }
     }
 
+    static async getPostsByCategoryLogIn(category_id, userId) {
+        try {
+
+
+            const posts = await prismadb.post.findMany({
+                where: {
+                    AND: [
+                        { platform_id: category_id },
+                        { post_status: true },
+                    ],
+                    NOT: {
+                        user_id: userId
+                    }
+                }
+            });
+
+            return posts;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+
     static async getGenres() {
         try {
             const genres = await prismadb.genre.findMany();
@@ -176,6 +200,35 @@ export class PostModel {
                 ]
 
                 //TODO:Añadir tags incluidos, sprint 4
+            },
+            include:
+            {
+                platform: true,
+            }
+        });
+
+        return posts;
+    };
+
+    static async getPostsByQueryLogIn(query, userId) {
+        const posts = await prismadb.post.findMany({
+            where: {
+                AND: [
+                    {
+                        post_title: {
+                            startsWith: query,
+                            mode: "insensitive"
+                        }
+                    },
+                    {
+                        post_status: true
+                    }
+                ],
+                NOT: {
+                    user_id: userId
+                }
+
+                //TODO:Añadir tags incluidos??
             },
             include:
             {

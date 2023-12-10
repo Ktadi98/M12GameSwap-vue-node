@@ -40,18 +40,22 @@ import PostCard from "../components/PostCard.vue";
 import { useRoute, type LocationQuery } from 'vue-router';
 import type { Product } from "../interfaces/Product.ts";
 import type { Genre } from '@/interfaces/Genre';
+import { useAuthStore } from '@/stores/auth';
+import { storeToRefs } from 'pinia';
 
 onMounted(() => {
-    fetchGenres();
-    getPosts();
+    // fetchGenres();
+    // getPosts();
 })
+
+const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
 const genreFilter: Ref<number> = ref(-1);
 const genres: Ref<Genre[]> = ref([]);
 const route = useRoute();
 const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
-const criteria: Ref<string> = ref("");
+const criteria: Ref<string> = ref("A-Z");
 
 const filteredProducts = computed(() => {
     if (genreFilter.value === -1 && criteria.value === "") {
@@ -134,8 +138,48 @@ async function getPosts() {
     }
 }
 
-watch(route, () => {
+async function getPostsLogIn() {
+    try {
+
+        const response = await fetch(`${apiEndpoint}/posts/query/auth/${route.query.search}`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token.value}`
+            }
+        });
+
+        if (!response.ok) {
+            console.log(response.status);
+            return;
+        }
+
+        const data: { posts: Product[] } = await response.json();
+
+        products.value = data.posts;
+        isLoading.value = false;
+
+    } catch (error) {
+        console.error('Error al obtener los productos', error);
+    }
+}
+
+fetchGenres();
+if (!userIsLoggedIn.value) {
     getPosts();
+}
+else {
+    getPostsLogIn();
+}
+
+watch(route, () => {
+    fetchGenres();
+    if (!userIsLoggedIn.value) {
+        getPosts();
+    }
+    else {
+        getPostsLogIn();
+    }
     genreFilter.value = -1;
 }, { immediate: true, deep: true })
 
