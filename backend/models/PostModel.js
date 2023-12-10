@@ -311,4 +311,17 @@ export class PostModel {
 
         return [1, updatedPost];
     }
+
+    static async getPurchases(userId) {
+        const purchases = await prismadb.purchase.findMany({
+            where: {
+                user_buyer_id: userId
+            },
+            include: {
+                post: true
+            }
+        });
+
+        return [1, purchases];
+    }
 }

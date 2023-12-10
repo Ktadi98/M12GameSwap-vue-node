@@ -10,20 +10,20 @@ const router = createRouter({
       name: 'home',
       component: () => import('../views/HomeView.vue')
     },
-    {
-      path: '/profile',
-      name: 'profile',
-      component: () => import('../views/ProfileView.vue'),
-      beforeEnter: (to, from, next) => {
-        const authStore = useAuthStore();
-        // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
-          next();
-        } else {
-          next('/'); // Redirigir al usuario a la página de inicio 
-        }
-      }
-    },
+    // {
+    //   path: '/profile',
+    //   name: 'profile',
+    //   component: () => import('../views/ProfileView.vue'),
+    //   beforeEnter: (to, from, next) => {
+    //     const authStore = useAuthStore();
+    //     // Verificar si el usuario tiene un token válido
+    //     if (authStore.userIsLoggedIn) {
+    //       next();
+    //     } else {
+    //       next('/'); // Redirigir al usuario a la página de inicio 
+    //     }
+    //   }
+    // },
     {
       path: '/profileManagement',
       name: 'profileManagement',
@@ -131,6 +131,24 @@ const router = createRouter({
           props: route => ({ ...route.params, id: parseInt(route.params.id as string) })
         }
       ]
+    },
+    {
+      path: '/userProfile',
+      name: 'user_profile',
+      component: () => import('@/views/UserProfileView.vue'),
+      children: [
+        {
+          path: 'purchases',
+          name: 'purchases',
+          component: () => import('@/views/UserPurchasesView.vue'),
+        }
+      ]
+    },
+    {
+      path: '/review/:postId',
+      name: 'review',
+      component: () => import('@/views/WriteReviewView.vue'),
+      props: route => ({ ...route.params, postId: parseInt(route.params.id as string) }),
     }
   ]
 })

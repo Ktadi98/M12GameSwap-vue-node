@@ -163,4 +163,13 @@ export class PostController {
         return res.status(500).json({ error: "Post could not be updated..." });
     };
 
+    getPurchases = async (req, res) => {
+        const [exitState, purchasedPosts] = await this.postModel.getPurchases(req.user_id);
+        if (exitState === 1) {
+            return res.json({ purchasesData: purchasedPosts });
+        }
+
+        return res.status(500).json({ error: "Purchases could not be obtained..." });
+    };
+
 }

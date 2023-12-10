@@ -3,12 +3,15 @@ import type { Product } from '@/interfaces/Product';
 import Bookmark from '@/components/Icons/BookMark.vue';
 import Pencil from '@/components/Icons/Pencil.vue';
 import PostDetail from './Icons/PostDetail.vue';
+import ReviewIcon from './Icons/ReviewIcon.vue';
 import TrashCan from '@/components/Icons/TrashBinIcon.vue';
 import { useModal } from 'vue-final-modal';
 import DeletePostModal from './DeletePostModal.vue';
 
 const props = defineProps<{
     post: Product
+    purchased?: Boolean,
+    purchaseDate?: Date
 }>()
 
 const emit = defineEmits<{
@@ -19,7 +22,7 @@ function drop() {
     emit('deletePost', props.post);
 }
 
-const { open, close } = useModal({
+const { open: openDeleteModal, close } = useModal({
     component: DeletePostModal,
     attrs: {
         onConfirm() {
@@ -45,7 +48,7 @@ const { open, close } = useModal({
             <h3 class="price-box">{{ props.post.post_price }}€</h3>
             <p class="title-box">{{ props.post.post_title }}</p>
         </div>
-        <div class="dates-box d-none d-lg-flex gap-2 mx-5 flex-grow-1">
+        <div v-if="!purchased" class="dates-box d-none d-lg-flex gap-2 mx-5 flex-grow-1">
             <div class="published d-flex flex-column">
                 <h4>Actualizado</h4>
                 <p>{{ props.post.post_created_at }}</p>
@@ -55,7 +58,10 @@ const { open, close } = useModal({
                 <p>{{ props.post.post_created_at }}</p>
             </div>
         </div>
-        <div class="icons-box position-relative d-flex gap-2">
+        <div v-else>
+            <p>Comprado el {{ purchaseDate }}</p>
+        </div>
+        <div v-if="!purchased" class="icons-box position-relative d-flex gap-2">
             <div class="icon-box">
                 <Bookmark></Bookmark>
             </div>
@@ -81,9 +87,14 @@ const { open, close } = useModal({
                 </RouterLink>
             </div>
         </div>
-        <div class="text-end ms-4 ms-md-0" @click="open">
+        <div v-if="!purchased" class="text-end ms-4 ms-md-0" @click="openDeleteModal">
             <TrashCan></TrashCan>
         </div>
+        <RouterLink v-else :to="{ name: 'review', params: { postId: props.post.post_id } }">
+            <div class="text-end ms-4 ms-md-0">
+                <ReviewIcon></ReviewIcon>
+            </div>
+        </RouterLink>
     </article>
 </template>
 <style scoped>

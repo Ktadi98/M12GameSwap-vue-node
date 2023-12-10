@@ -15,6 +15,7 @@ export const createPostRouter = (postModel) => {
     postRouter.get("/user/posts", authenticateToken, postController.getPostsByUserId);
     postRouter.get("/query/:searchQuery", postController.getPostsByQuery);
     postRouter.get("/query/auth/:searchQuery", authenticateToken, postController.getPostsByQueryLogIn);
+    postRouter.get("/purchases", authenticateToken, postController.getPurchases);
     postRouter.get("/:id", postController.getById);
     postRouter.get("/vendor/:id", postController.getVendorPosts);
     postRouter.post("/upload", authenticateToken, upload.single('images'), postController.create);
@@ -22,6 +23,7 @@ export const createPostRouter = (postModel) => {
     postRouter.get("/category/:id", postController.getPostByCategory);
     postRouter.get("/category/auth/:id", authenticateToken, postController.getPostByCategoryLogIn);
     postRouter.patch("/update/:id", authenticateToken, upload.single('images'), postController.updatePost);
+
 
 
     return postRouter;
