@@ -159,5 +159,9 @@ const isProfileManagement = computed(() => {
 
 .button.access {
   background-color: #9F87F5;
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  
 }
 </style>

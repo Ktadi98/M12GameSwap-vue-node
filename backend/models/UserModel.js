@@ -143,38 +143,99 @@ export class UserModel {
 
     static async getData(userId) {
         try {
-           const user = await prismadb.user_Client.findUnique({ where: { user_id: userId } })
-           //console.log(user);
-           return user.user_name;
+            const user = await prismadb.user_Client.findUnique({ where: { user_id: userId } })
+            //console.log(user);
+            return user.user_name;
         } catch (err) {
             console.log(err);
         }
     }
 
-    static async sendData( body, userId) {
+    static async sendData(body, userId) {
         try {
 
-            if(body.username){
+            if (body.username) {
                 const user = await prismadb.user_Client.update({
-                    where: { user_id: userId }, 
-                    data: { user_name: body.username} 
+                    where: { user_id: userId },
+                    data: { user_name: body.username }
                 })
                 return user;
             }
-            else if(body.email){
-                const user = await prismadb.user_Client.update({ 
-                    where: { user_id: userId }, 
-                    data: {user_email: body.email} 
+            else if (body.email) {
+                const user = await prismadb.user_Client.update({
+                    where: { user_id: userId },
+                    data: { user_email: body.email }
                 })
                 return user;
             }
-          
-           //console.log(user);
-           return 1;        
+
+            //console.log(user);
+            return 1;
 
         } catch (err) {
             console.log(err);
         }
     }
-    
+
+    static async getFavorites(userId) {
+        try {
+            const favorites = await prismadb.user.findUnique({
+                where: {
+                    user_id: userId
+                },
+                include: {
+                    Post_Favorites: true
+                }
+            })
+            //console.log(user);
+            return favorites.Post_Favorites;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async toggleFavorite(userId, postId) {
+        try {
+            const post = await prismadb.post.findUnique({
+                where: {
+                    post_id: postId
+                },
+                include: {
+                    User_Favorites: true
+                }
+            })
+            let curFavorite = post.User_Favorites.filter((u => u.user_id === userId))
+
+            let fav = {}
+
+            if (curFavorite.length > 0) {
+                fav = await prismadb.user.update({
+                    where: {
+                        user_id: userId,
+                    },
+                    data: {
+                        Post_Favorites: {
+                            disconnect: { post_id: postId }
+                        }
+                    }
+                })
+            } else if (post) {
+                fav = await prismadb.user.update({
+                    where: {
+                        user_id: userId,
+                    },
+                    data: {
+                        Post_Favorites: {
+                            connect: { post_id: postId }
+                        }
+                    }
+                })
+            }
+
+            return fav;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 }

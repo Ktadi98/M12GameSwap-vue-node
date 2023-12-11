@@ -32,8 +32,9 @@ model User {
   user_active     Boolean  @default(true)
 
   // 1-1 Relation with the child tables in the hierarchy
-  user_Admin  User_Admin?
-  user_Client User_Client?
+  user_Admin     User_Admin?
+  user_Client    User_Client?
+  Post_Favorites Post[]
 }
 
 model User_Admin {
@@ -96,10 +97,10 @@ model Post {
   post_price       Int
   post_status      Boolean       @default(true)
 
-  user_client    User_Client?     @relation(fields: [user_id], references: [user_id])
-  platform       Platform?        @relation(fields: [platform_id], references: [platform_id])
-  genre          Genre?           @relation(fields: [genre_id], references: [genre_id])
-  User_Favorites User_Favorites[]
+  user_client    User_Client?  @relation(fields: [user_id], references: [user_id])
+  platform       Platform?     @relation(fields: [platform_id], references: [platform_id])
+  genre          Genre?        @relation(fields: [genre_id], references: [genre_id])
+  User_Favorites User[]
   Review         Review[]
   Reservation    Reservation[]
   Purchase       Purchase[]
@@ -109,7 +110,6 @@ model User_Favorites {
   user_favorites_id Int         @id @default(autoincrement())
   post_id           Int
   user_id           Int
-  post              Post        @relation(fields: [post_id], references: [post_id])
   user              User_Client @relation(fields: [user_id], references: [user_id])
 }
 

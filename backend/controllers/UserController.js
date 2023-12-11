@@ -86,25 +86,44 @@ export class UserController {
 
 
   getData = async (req, res) => {
-  
+
     const userEmail = await req.user_email;
     const userId = req.user_id;
-     
+
     const userName = await this.userModel.getData(userId);
-     
-    return res.json({email:userEmail, name:userName});
+
+    return res.json({ email: userEmail, name: userName });
 
   };
 
   sendData = async (req, res) => {
-  
+
     const userEmail = await req.user_email;
     const userId = req.user_id;
-     
+
     const userName = await this.userModel.sendData(req.body, seq.user_id);
-     
-    return res.json({email:userEmail, name:userName});
+
+    return res.json({ email: userEmail, name: userName });
 
   };
+
+  getFavorites = async (req, res) => {
+    const userId = req.user_id;
+
+    const userFavorites = await this.userModel.getFavorites(userId);
+
+    return res.json(userFavorites);
+
+  };
+
+  toggleFavorite = async (req, res) => {
+    const userId = req.user_id;
+    const postId = req.body.post_id;
+
+    const userFavorites = await this.userModel.toggleFavorite(userId, postId);
+
+    return res.json(userFavorites);
+
+  }
 
 }
