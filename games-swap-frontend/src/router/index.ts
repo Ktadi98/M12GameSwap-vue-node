@@ -148,7 +148,7 @@ const router = createRouter({
       path: '/review/:postId',
       name: 'review',
       component: () => import('@/views/WriteReviewView.vue'),
-      props: route => ({ ...route.params, postId: parseInt(route.params.id as string) }),
+      props: route => ({ ...route.params, ...route.query, postName: route.query.postName, postId: parseInt(route.params.id as string) }),
     }
   ]
 })

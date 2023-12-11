@@ -90,7 +90,8 @@ const { open: openDeleteModal, close } = useModal({
         <div v-if="!purchased" class="text-end ms-4 ms-md-0" @click="openDeleteModal">
             <TrashCan></TrashCan>
         </div>
-        <RouterLink v-else :to="{ name: 'review', params: { postId: props.post.post_id } }">
+        <RouterLink v-else
+            :to="{ name: 'review', params: { postId: props.post.post_id }, query: { postName: props.post.post_title } }">
             <div class="text-end ms-4 ms-md-0">
                 <ReviewIcon></ReviewIcon>
             </div>

@@ -90,6 +90,7 @@ model Post {
   post_description String        @db.Text
   post_reserved    Boolean       @default(false)
   post_buyed       Boolean       @default(false)
+  post_reviewed    Boolean       @default(false)
   post_condition   PostCondition
   post_created_at  DateTime      @default(now()) @db.Timestamptz(6)
   post_price       Int

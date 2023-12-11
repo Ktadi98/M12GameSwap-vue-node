@@ -9,7 +9,7 @@
 
 </script>
 <style scoped>
-svg:hover path {
-    fill: #9f87f5;
+svg g path {
+    stroke: #9f87f5 !important;
 }
 </style>

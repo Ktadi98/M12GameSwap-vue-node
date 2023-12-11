@@ -5,8 +5,10 @@ import morgan from "morgan";
 import "dotenv/config";
 import { createUserRouter } from "./routes/users.js";
 import { createPostRouter } from "./routes/posts.js";
+import { createReviewRouter } from "./routes/reviews.js";
 import { UserModel } from './models/UserModel.js';
 import { PostModel } from './models/PostModel.js';
+import { ReviewModel } from "./models/ReviewModel.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -31,6 +33,7 @@ app.disable("x-powered-by");
 
 app.use("/users", createUserRouter(UserModel));
 app.use("/posts", createPostRouter(PostModel));
+app.use("/reviews", createReviewRouter(ReviewModel));
 
 
 const PORT = process.env.PORT ?? 1234;
