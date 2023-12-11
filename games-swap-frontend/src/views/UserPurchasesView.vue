@@ -24,7 +24,7 @@ async function getPurchasedProducts() {
         }
         const purchasesData: { purchasesData: Purchase[] } = await response.json();
         purchases.value = purchasesData.purchasesData;
-        console.log(purchases.value);
+
     } catch (error) {
         console.error(error);
     }
@@ -41,7 +41,8 @@ onMounted(() => {
     <main>
         <section class="w-100">
             <template v-for="purchase in  purchases " :key="purchase.purchase_id">
-                <PostRow :post="purchase?.post" :purchaseDate="purchase?.purchase_created_at" :purchased="true"></PostRow>
+                <PostRow :post="purchase?.post" :purchaseDate="new Date(purchase?.purchase_created_at)" :purchased="true">
+                </PostRow>
             </template>
         </section>
     </main>

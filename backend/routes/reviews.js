@@ -7,6 +7,9 @@ export const createReviewRouter = (reviewModel) => {
     const reviewRouter = Router();
 
     const reviewController = new ReviewController(reviewModel);
+
+    reviewRouter.get("/:vendorId", reviewController.getAllById);
     reviewRouter.post("/post/:postId", authenticateToken, reviewController.create);
+
     return reviewRouter;
 };

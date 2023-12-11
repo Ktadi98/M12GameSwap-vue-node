@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import type { PostReview } from '@/interfaces/Review';
+import type { PostReview } from '@/interfaces/PostReview';
 import { ref, type Ref } from 'vue';
 import Rating from 'primevue/rating';
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
+import { useToast, POSITION } from "vue-toastification";
+import type { Review } from '@/interfaces/Review';
+import { useRoute, useRouter } from 'vue-router';
 
 const error: Ref<boolean> = ref(false);
 const errorMessages: Ref<string[]> = ref([]);
@@ -21,7 +24,29 @@ const reviewData = ref<PostReview>({
     title: "",
     description: "",
     puntuaction: 3
-})
+});
+
+const toast = useToast();
+const router = useRouter();
+const route = useRoute();
+
+function triggerToast() {
+
+    toast.success("¡Gracias por tu reseña!", {
+        position: POSITION.BOTTOM_RIGHT,
+        timeout: 5000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: true,
+        hideProgressBar: false,
+        closeButton: false,
+        icon: "fas fa-rocket",
+        rtl: false
+    });
+
+}
 
 function validateReview() {
     if (reviewData.value.title.length === 0 || reviewData.value.title.length > 50) {
@@ -42,7 +67,7 @@ async function sendReview() {
     if (error.value) return;
 
     try {
-        const response = await fetch(`${apiEndpoint}/reviews/post/${props.postId}`, {
+        const response = await fetch(`${apiEndpoint}/reviews/post/${route.params.postId}`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -60,6 +85,13 @@ async function sendReview() {
             error.value = true;
             return;
         }
+
+        const data: { message: string, review: Review } = await response.json();
+
+        console.log(data);
+
+        triggerToast();
+        router.back();
     } catch (err) {
         errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
     }

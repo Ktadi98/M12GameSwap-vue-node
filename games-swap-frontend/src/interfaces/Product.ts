@@ -13,6 +13,9 @@ export interface Product {
     post_created_at: string;
     post_price: number;
     post_status: string;
+    post_reviewed: boolean,
+    post_buyed: boolean,
+    post_reserved: boolean,
     platform?: {
         platform_id: number,
         platform_name: string

@@ -19,4 +19,11 @@ export class ReviewController {
         return res.json({ review: newReview, message: "Review created successfully" });
 
     }
+
+    getAllById = async (req, res) => {
+        const vendorId = Number(req.params.vendorId);
+        const vendorReviews = await this.reviewModel.getAllById(vendorId);
+
+        return res.json({ reviews: vendorReviews });
+    };
 }

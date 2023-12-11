@@ -34,11 +34,11 @@ onMounted(async () => {
     <main class="d-flex flex-column justify-content-center align-items-center mt-3 w-100">
         <SearchBar></SearchBar>
         <VendorSummary></VendorSummary>
-        <h2>{{ id }}</h2>
+        <!-- <h2>{{ id }}</h2> -->
         <section class="tabs-box d-flex justify-content-around gap-3 w-75">
-            <div>
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <p class="nav-number">{{ numberOfPosts }} </p>
                 <RouterLink :to="{ name: 'vendor_posts' }">
-                    <p>{{ numberOfPosts }} </p>
                     <p>En Venta</p>
                 </RouterLink>
             </div>
@@ -64,6 +64,11 @@ onMounted(async () => {
 .router-link-active {
     text-decoration: underline;
     text-decoration-thickness: 3px;
+    color: #8a6cf6;
+}
+
+.nav-number {
+    font-size: 30px;
     color: #8a6cf6;
 }
 </style>

@@ -28,5 +28,33 @@ export class ReviewModel {
         return reviewCreated;
     }
 
+    static async getAllById(vendorId) {
+
+
+        const posts = await prismadb.post.findMany({
+            where: {
+                AND: [
+                    { user_id: vendorId },
+                    { post_reviewed: true },
+                    {
+                        post_buyed: true
+                    }
+                ]
+            }
+        });
+
+        const postsIds = posts.map(post => post.post_id);
+
+        const reviews = await prismadb.review.findMany({
+            where: {
+                post_id: {
+                    in: postsIds
+                }
+            }
+        });
+
+
+        return reviews;
+    }
 
 }

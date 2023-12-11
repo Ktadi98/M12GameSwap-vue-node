@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 <template>
     <section
-        class="d-flex flex-column flex-md-row justify-content-around align-items-center gap-4 vendor-box py-2 px-1 px-md-3">
+        class="d-flex flex-column flex-md-row justify-content-around align-items-center gap-4 vendor-box py-2 mb-4 px-1 px-md-3">
         <div class="profile-image d-flex gap-2 align-items-center flex-row">
             <img src="@/assets/avatar-profile.svg" alt="Profile Image">
             <div>
