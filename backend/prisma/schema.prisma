@@ -55,10 +55,10 @@ model User_Client {
   // 1-1 Relation with User table
   user           User             @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   post           Post[]
-  User_Favorites User_Favorites[]
   Review         Review[]
   Reservation    Reservation[]
   Purchase       Purchase[]
+  User_Favorites User_Favorites[]
 }
 
 model Platform {
