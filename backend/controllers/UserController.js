@@ -96,6 +96,15 @@ export class UserController {
 
   };
 
+  getUserStats = async (req, res) => {
+    const userId = Number(req.params.userId);
+
+    const userStats = await this.userModel.getUserStats(userId);
+    console.log(userStats);
+
+    return res.json({ ...userStats });
+  };
+
   sendData = async (req, res) => {
 
     const userEmail = await req.user_email;

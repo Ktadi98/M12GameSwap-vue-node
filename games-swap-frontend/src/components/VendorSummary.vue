@@ -1,17 +1,26 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { Stats } from '@/interfaces/Stats';
+import Rating from 'primevue/rating';
+
+
+const props = defineProps<{
+    userStats: Stats | null | any
+}>()
+
+</script>
 <template>
     <section
         class="d-flex flex-column flex-md-row justify-content-around align-items-center gap-4 vendor-box py-2 mb-4 px-1 px-md-3">
         <div class="profile-image d-flex gap-2 align-items-center flex-row">
-            <img src="@/assets/avatar-profile.svg" alt="Profile Image">
+            <img :src="userStats?.user.user_photo" alt="Profile Image">
             <div>
-                <h2>UserName</h2>
-                <p>Valoración : 5</p>
+                <h2>{{ userStats?.user.user_name }}</h2>
+                <Rating :model-value="userStats?.averageScore" :cancel="false" readonly></Rating>
             </div>
         </div>
         <div>
-            <p>3 Ventas</p>
-            <p>6 Compras</p>
+            <p>{{ userStats?.numSells }} Ventas</p>
+            <p>{{ userStats?.numPurchases }} Compras</p>
         </div>
     </section>
 </template>

@@ -151,6 +151,39 @@ export class UserModel {
         }
     }
 
+    static async getUserStats(userId) {
+        try {
+            const user = await prismadb.user_Client.findUnique({ where: { user_id: userId } });
+
+            const purchases = await prismadb.purchase.findMany({ where: { user_buyer_id: userId } });
+
+            const numPurchases = purchases.length;
+
+            const sells = await prismadb.purchase.findMany({
+                include: {
+                    post: true
+                }
+            });
+
+            const numSells = sells.filter(purchase => purchase.post.user_id === userId && purchase.post.post_buyed).length;
+
+            const reviews = await prismadb.review.findMany({
+                include: {
+                    post: true
+                }
+            })
+
+            const postReviewed = reviews.filter(review => review.post.post_reviewed && review.post.user_id === userId);
+            const sumOfReviews = postReviewed.map(review => review.review_punctuation).reduce((acc, current) => acc + current, 0);
+            const numOfReviews = postReviewed.length;
+            const averageScore = Math.floor((sumOfReviews / numOfReviews)) || 0;
+
+            return { user: user, numPurchases: numPurchases, numSells: numSells, averageScore: averageScore };
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     static async sendData(body, userId) {
         try {
 

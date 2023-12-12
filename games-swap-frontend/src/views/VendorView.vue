@@ -3,6 +3,7 @@ import NavBar from '@/components/NavBar.vue';
 import SearchBar from '@/components/SearchBar.vue';
 import VendorSummary from '@/components/VendorSummary.vue';
 import type { Product } from '@/interfaces/Product';
+import type { Stats } from '@/interfaces/Stats';
 import { computed, onMounted, ref } from 'vue';
 
 const props = defineProps<{
@@ -13,9 +14,25 @@ const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 const posts = ref<Product[]>([]);
 
+const userStats = ref<Stats | null | any>(null as any);
+
 const numberOfPosts = computed<number>(() => posts.value.length > 0 ? posts.value.length : 0);
 
-onMounted(async () => {
+const getUserStats = async () => {
+    try {
+        const response: Response = await fetch(`${apiEndpoint}/users/getStats/${props.id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data: Stats = await response.json();
+
+        userStats.value = data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const getVendorPosts = async () => {
     try {
         const response: Response = await fetch(`${apiEndpoint}/posts/vendor/${props.id}`);
         if (!response.ok) {
@@ -27,22 +44,32 @@ onMounted(async () => {
     } catch (error) {
         console.error(error);
     }
-})
+}
+
+onMounted(
+    () => {
+        getVendorPosts();
+        getUserStats();
+    }
+);
+
+
 </script>
 <template>
     <NavBar></NavBar>
     <main class="d-flex flex-column justify-content-center align-items-center mt-3 w-100">
         <SearchBar></SearchBar>
-        <VendorSummary></VendorSummary>
+        <VendorSummary :userStats="userStats"></VendorSummary>
         <!-- <h2>{{ id }}</h2> -->
         <section class="tabs-box d-flex justify-content-around gap-3 w-75">
             <div class="d-flex flex-column align-items-center justify-content-center">
-                <p class="nav-number">{{ numberOfPosts }} </p>
                 <RouterLink :to="{ name: 'vendor_posts' }">
-                    <p>En Venta</p>
+                    <p class="nav-number">En Venta ({{ numberOfPosts }})</p>
                 </RouterLink>
             </div>
-            <RouterLink :to="{ name: 'vendor_reviews' }">Valoraciones</RouterLink>
+            <RouterLink :to="{ name: 'vendor_reviews' }">
+                <p>Valoraciones</p>
+            </RouterLink>
         </section>
         <RouterView></RouterView>
     </main>
@@ -68,7 +95,7 @@ onMounted(async () => {
 }
 
 .nav-number {
-    font-size: 30px;
     color: #8a6cf6;
+    text-decoration: none;
 }
 </style>

@@ -3,11 +3,13 @@ import type { UserClient } from "./UserClient";
 
 export interface Review {
     review_id: number,
-    user_buyer_id: UserClient,
-    post_id: Product,
+    user_buyer_id: number,
+    post_id: number,
     review_title: string,
     review_description: string,
-    review_puntuaction: number,
+    review_punctuation: number,
     review_created_at: Date,
-    review_status: boolean
+    review_status: boolean,
+    user_buyer: UserClient,
+    post: Product
 }

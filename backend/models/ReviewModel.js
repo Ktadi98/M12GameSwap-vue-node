@@ -50,6 +50,10 @@ export class ReviewModel {
                 post_id: {
                     in: postsIds
                 }
+            },
+            include: {
+                user_buyer: true,
+                post: true
             }
         });
 

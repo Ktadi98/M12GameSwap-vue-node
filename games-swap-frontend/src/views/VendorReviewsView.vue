@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { Purchase } from '@/interfaces/Purchase';
 import type { Review } from '@/interfaces/Review';
+import ReviewRow from '@/components/ReviewRow.vue';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const props = defineProps<{
@@ -13,6 +14,8 @@ const props = defineProps<{
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 const reviews = ref<Review[]>([]);
+
+const numberOfReviews = computed<number>(() => reviews.value.length);
 
 async function getReviews() {
     try {
@@ -26,8 +29,6 @@ async function getReviews() {
 
         reviews.value = reviewsData.reviews;
 
-        console.log(reviews.value);
-
     } catch (error) {
         console.error(error);
     }
@@ -37,11 +38,11 @@ onMounted(async () => {
     getReviews();
 })
 
-
-
-
 </script>
 <template>
-    {{ reviews }}
+    <section class="w-75">
+        <h2 class="mb-4">Número de Valoraciones : {{ numberOfReviews }}</h2>
+        <ReviewRow v-for="review in reviews" :review="review" :key="review.review_id"></ReviewRow>
+    </section>
 </template>
 <style scoped></style>
