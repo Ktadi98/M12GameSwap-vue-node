@@ -5,6 +5,7 @@ import type { Stats } from '@/interfaces/Stats';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
+import router from '@/router';
 
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
@@ -34,6 +35,7 @@ const getUserStats = async () => {
 onMounted(
     () => {
         getUserStats();
+        router.push(`/userProfile/purchases`);
     }
 );
 </script>

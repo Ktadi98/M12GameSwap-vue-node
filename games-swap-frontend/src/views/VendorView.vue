@@ -4,6 +4,7 @@ import SearchBar from '@/components/SearchBar.vue';
 import VendorSummary from '@/components/VendorSummary.vue';
 import type { Product } from '@/interfaces/Product';
 import type { Stats } from '@/interfaces/Stats';
+import router from '@/router';
 import { computed, onMounted, ref } from 'vue';
 
 const props = defineProps<{
@@ -50,6 +51,7 @@ onMounted(
     () => {
         getVendorPosts();
         getUserStats();
+        router.push(`/vendor/${props.id}/posts`);
     }
 );
 

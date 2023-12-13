@@ -65,7 +65,7 @@ const route = useRoute();
 const categoryId = ref(route.params.id);
 const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
-const criteria: Ref<string> = ref("");
+const criteria: Ref<string> = ref("A-Z");
 
 const filteredProducts = computed(() => {
   if (genreFilter.value === -1 && criteria.value === "") {
