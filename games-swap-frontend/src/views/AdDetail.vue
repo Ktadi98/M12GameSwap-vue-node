@@ -79,20 +79,17 @@ onMounted(() => {
     <!-- falta devolver datos del vendedor para pintarlos aqui -->
     <main class="ad-container">
         <div class="profile-vendor">
-            <div class="profile-image">
-                <img src="@/assets/avatar-profile.svg" alt="Profile Image">
-            </div>
-            <RouterLink v-if="!(currentUserName === adDetail?.user_client?.user_name)"
-                :to="{ name: 'vendor', params: { id: adDetail?.user_client?.user_id } }">
-                <h2 class="profile-name">{{
-                    adDetail?.user_client?.user_name }}</h2>
-            </RouterLink>
-            <!-- El rating de donde sale? -->
-            <div style="color: #8a6cf6;" class="rating">
-                <StarRating /> (16)
+            <div class="d-flex w-75 mb-3">
+                <div class="profile-image d-flecx gap-3">
+                    <img src="@/assets/avatar-profile.svg" alt="Profile Image">
+                </div>
+                <RouterLink v-if="!(currentUserName === adDetail?.user_client?.user_name)"
+                    :to="{ name: 'vendor', params: { id: adDetail?.user_client?.user_id } }">
+                    <h2 class="profile-name">{{
+                        adDetail?.user_client?.user_name }}</h2>
+                </RouterLink>
             </div>
         </div>
-
         <div id="ad-info">
             <div class="img-box mb-3">
                 <img :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">

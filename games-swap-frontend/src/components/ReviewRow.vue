@@ -18,8 +18,7 @@ const props = defineProps<{
             <h3 class="price-box">{{ review.post.post_title }}</h3>
             <Rating :model-value="review.review_punctuation" :cancel="false" readonly></Rating>
             <p class="mt-4">{{ review.review_description }}</p>
-            <p> Por <b>{{ review.user_buyer.user_name }}</b></p>
-
+            <p>Por <b>{{ review.user_buyer.user_name }}</b></p>
             <div>
                 <img :src="review.user_buyer.user_photo" alt="user_buyer_photo">
             </div>

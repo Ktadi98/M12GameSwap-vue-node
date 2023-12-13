@@ -18,7 +18,7 @@ const props = defineProps<{
                 <Rating :model-value="userStats?.averageScore" :cancel="false" readonly></Rating>
             </div>
         </div>
-        <div>
+        <div class="d-flex gap-2">
             <p>{{ userStats?.numSells }} Ventas</p>
             <p>{{ userStats?.numPurchases }} Compras</p>
         </div>

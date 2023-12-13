@@ -37,6 +37,17 @@ const { open: openDeleteModal, close } = useModal({
     }
 });
 
+function formatPurchaseDate() {
+    return `${props.purchaseDate?.getDay()}/${props.purchaseDate?.getMonth()}/${props.purchaseDate?.getFullYear()}`;
+}
+
+function formatCreationDate(date: string) {
+
+    let formattedDate = date.substring(0, 9);
+    return formattedDate.split("-").reverse().join("-").substring(0, 9);
+}
+
+
 </script>
 <template>
     <article
@@ -51,15 +62,15 @@ const { open: openDeleteModal, close } = useModal({
         <div v-if="!purchased" class="dates-box d-none d-lg-flex gap-2 mx-5 flex-grow-1">
             <div class="published d-flex flex-column">
                 <h4>Actualizado</h4>
-                <p>{{ props.post.post_created_at }}</p>
+                <p>{{ formatCreationDate(props.post.post_created_at) }}</p>
             </div>
             <div class="updated flex-cloumn">
                 <h4>Publicado</h4>
-                <p>{{ props.post.post_created_at }}</p>
+                <p>{{ formatCreationDate(props.post.post_created_at) }}</p>
             </div>
         </div>
         <div v-else>
-            <p>Comprado el {{ purchaseDate }}</p>
+            <p>Comprado el {{ formatPurchaseDate() }}</p>
         </div>
         <div v-if="!purchased" class="icons-box position-relative d-flex gap-2">
             <div class="icon-box">

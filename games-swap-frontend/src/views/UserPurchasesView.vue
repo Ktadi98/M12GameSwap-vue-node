@@ -38,14 +38,12 @@ onMounted(() => {
 
 </script>
 <template>
-    <main>
-        <section class="w-100">
-            <template v-for="purchase in  purchases " :key="purchase.purchase_id">
-                <PostRow :post="purchase?.post" :purchaseDate="new Date(purchase?.purchase_created_at)" :purchased="true">
-                </PostRow>
-            </template>
-        </section>
-    </main>
+    <section class="w-75">
+        <template v-for="purchase in purchases" :key="purchase.purchase_id">
+            <PostRow :post="purchase?.post" :purchaseDate="new Date(purchase?.purchase_created_at)" :purchased="true">
+            </PostRow>
+        </template>
+    </section>
 </template>
 
 <style scoped></style>
