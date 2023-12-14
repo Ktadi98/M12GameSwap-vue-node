@@ -324,4 +324,33 @@ export class PostModel {
 
         return [1, purchases];
     }
+
+    static async setReservation(userId, vendorId, postId) {
+
+        const post = await prismadb.post.findFirst({
+            where: {
+                post_id: postId
+            }
+        });
+
+        const statusReview = post.post_reviewed;
+
+        const postReservation = await prismadb.post.update({
+            where: {
+                post_id: post.post_id
+            },
+            data: {
+                post_reserved: !statusReview
+            }
+        })
+
+        const newReservation = await prismadb.reservation.create({
+            data: {
+                user_reserver_id: userId,
+                post_id: postReservation.post_id
+            }
+        })
+
+        return [postReservation, newReservation];
+    }
 }

@@ -8,6 +8,8 @@ import NavBar from '@/components/NavBar.vue';
 import type { Product } from '@/interfaces/Product';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
+import BookMarkFilledCheck from "@/components/Icons/BookMarkFilledCheck.vue"
+import BookMarkFilled from '@/components/Icons/BookMarkFilled.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -33,7 +35,6 @@ async function getPost() {
         }
         const data: { post: Product } = await response.json();
         adDetail.value = data.post;
-        console.log(adDetail.value);
     }
     catch (error) {
         console.error(error);
@@ -69,6 +70,27 @@ onMounted(() => {
     }
 })
 
+//TODO
+async function setReservation() {
+    try {
+        const response: Response = await fetch(`${apiEndpoint}/posts/reservation/${adDetail?.user_client?.user_id}/${adDetail?.post_id}`, {
+            method: 'PATCH',
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token.value}`
+            }
+        });
+
+        if (!response.ok) return;
+
+
+
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 </script>
 
 <template>
@@ -89,9 +111,21 @@ onMounted(() => {
                         adDetail?.user_client?.user_name }}</h2>
                 </RouterLink>
             </div>
+            <div @click="setReservation()" v-if="userIsLoggedIn" class="reserved-box">
+                <span v-if="!adDetail?.post_reserved">No Reservado
+                    <i class="book-mark">
+                        <BookMarkFilled class="ms-2"></BookMarkFilled>
+                    </i>
+                </span>
+                <span v-else> Reservado
+                    <i class="book-mark">
+                        <BookMarkFilledCheck></BookMarkFilledCheck>
+                    </i>
+                </span>
+            </div>
         </div>
         <div id="ad-info">
-            <div class="img-box mb-3">
+            <div class="img-box mb-3 mt-3">
                 <img :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
             </div>
             <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
@@ -239,5 +273,29 @@ h3 {
 
 #ad-info {
     margin-bottom: 50px;
+}
+
+.reserved-box {
+    color: #8a6cf6;
+    font-size: larger;
+
+}
+
+.reserved-box span {
+    border: 2px solid #8a6cf6;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.2s ease-in;
+    cursor: pointer;
+}
+
+.reserved-box span:hover {
+    background-color: #8a6cf6;
+    color: white;
+}
+
+.book-mark {
+    border-left: 2px solid #8a6cf6;
+
 }
 </style>

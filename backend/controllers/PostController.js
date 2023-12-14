@@ -172,4 +172,14 @@ export class PostController {
         return res.status(500).json({ error: "Purchases could not be obtained..." });
     };
 
+    setReservation = async (req, res) => {
+        const userId = req.user_id;
+        const vendorId = Number(req.params.vendorId);
+        const postId = Number(req.params.postId);
+
+        const [postReservation, newReservation] = await this.postModel.setReservation(userId, vendorId, postId);
+
+        return res.json({ post: postReservation, reservation: newReservation });
+    };
+
 }

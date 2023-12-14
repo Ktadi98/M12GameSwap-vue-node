@@ -13,15 +13,16 @@
       </form>
     </section>
     <div class="w-100 criteria-box align-self-left">
-      <select v-model="criteria">
+      <Dropdown v-model="criteria" :options="filterCriterias" placeholder="Selecciona un filtro" />
+      <!-- <select v-model="criteria">
         <option value="A-Z">A-Z</option>
         <option value="Z-A" selected>Z-A</option>
         <option value="priceDesc">Precio (menor a mayor)</option>
         <option value="priceAsc">Precio (mayor a menor)</option>
-      </select>
+      </select> -->
     </div>
     <section class="post-box container-fluid">
-      <div v-if="products.length > 0" class="row gap-3 w-100">
+      <div v-if="products.length > 0" class="row">
         <PostCard v-for=" product in filteredProducts" :key="product.post_id" :product="product"></PostCard>
       </div>
       <div v-else>
@@ -45,6 +46,8 @@ import type { Product } from "../interfaces/Product.ts";
 import type { Genre } from '@/interfaces/Genre';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
+import Dropdown from 'primevue/dropdown';
+
 
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
@@ -66,6 +69,13 @@ const categoryId = ref(route.params.id);
 const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
 const criteria: Ref<string> = ref("A-Z");
+
+const filterCriterias = ref<string[]>([
+  "A-Z",
+  "Z-A",
+  "priceDesc",
+  "priceAsc"
+]);
 
 const filteredProducts = computed(() => {
   if (genreFilter.value === -1 && criteria.value === "") {
@@ -211,5 +221,9 @@ input[type="submit"]:hover {
   background-color: #9f87f5;
   color: white;
 }
+
+/* .criteria-box * {
+  border-color: #9f87f5 !important;
+} */
 </style>
 
