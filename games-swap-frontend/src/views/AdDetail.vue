@@ -111,9 +111,8 @@ async function setReservation() {
                         adDetail?.user_client?.user_name }}</h2>
                 </RouterLink>
             </div>
-            <div v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)" @click="setReservation()"
-                class="reserved-box">
-                <span v-if="!adDetail?.post_reserved">No Reservado
+            <div v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)" class="reserved-box">
+                <span class="no-reserved-box" v-if="!adDetail?.post_reserved" @click="setReservation()">No Reservado
                     <i class="book-mark">
                         <BookMarkFilled class="ms-2"></BookMarkFilled>
                     </i>
@@ -287,6 +286,9 @@ h3 {
     border-radius: 8px;
     padding: 10px;
     transition: all 0.2s ease-in;
+}
+
+.no-reserved-box {
     cursor: pointer;
 }
 

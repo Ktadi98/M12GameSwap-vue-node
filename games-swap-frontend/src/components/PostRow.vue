@@ -8,6 +8,8 @@ import TrashCan from '@/components/Icons/TrashBinIcon.vue';
 import { useModal } from 'vue-final-modal';
 import DeletePostModal from './DeletePostModal.vue';
 import type { Purchase } from '@/interfaces/Purchase';
+import BookMarkRemove from './Icons/BookMarkRemove.vue';
+import ShoppingCart from './Icons/ShoppingCart.vue';
 
 const props = defineProps<{
     sell?: Purchase,
@@ -42,13 +44,17 @@ const { open: openDeleteModal, close } = useModal({
 });
 
 function formatPurchaseDate() {
-    return `${props.purchaseDate?.getDay()}/${props.purchaseDate?.getMonth()}/${props.purchaseDate?.getFullYear()}`;
+
+    const dayOfPurchase: number | undefined = props.purchaseDate?.getDate();
+    const monthOfPurchase: number = (props.purchaseDate?.getMonth()) as number + 1;
+    const yearOfPurchase: number | undefined = props.purchaseDate?.getFullYear();
+
+    return `${dayOfPurchase}/${monthOfPurchase}/${yearOfPurchase}`;
 }
 
 function formatCreationDate(date: string) {
-
-    let formattedDate = date.substring(0, 9);
-    return formattedDate.split("-").reverse().join("-").substring(0, 9);
+    let formattedDate = date.substring(0, 10);
+    return formattedDate.split("-").reverse().join("-").substring(0, 10);
 }
 
 
@@ -127,9 +133,23 @@ function formatCreationDate(date: string) {
                 <ReviewIcon></ReviewIcon>
             </div>
         </RouterLink>
+        <section class="reservation-options-box" v-else-if="reserved && !purchased && !post.post_reviewed">
+            <RouterLink to="/">
+                Cancelar Reserva
+                <BookMarkRemove></BookMarkRemove>
+            </RouterLink>
+            <RouterLink to="/">
+                Tramitar compra
+                <ShoppingCart></ShoppingCart>
+            </RouterLink>
+        </section>
     </article>
 </template>
 <style scoped>
+.reservation-options-box {
+    color: #9f87f5;
+}
+
 .img-box {
     width: 150px;
     border-radius: 10px;
