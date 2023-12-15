@@ -44,8 +44,9 @@ onMounted(
     <main class="d-flex flex-column justify-content-center align-items-center mt-3 px-2 w-100">
         <VendorSummary :userStats="userStats"></VendorSummary>
         <section class="tabs-box d-flex justify-content-around gap-3 w-75 mb-4">
+            <RouterLink :to="{ name: 'reservations' }">Reservas</RouterLink>
             <RouterLink :to="{ name: 'purchases' }">Compras</RouterLink>
-            <RouterLink :to="{ name: 'purchases' }">Ventas</RouterLink>
+            <RouterLink :to="{ name: 'sells' }">Ventas</RouterLink>
         </section>
         <RouterView></RouterView>
     </main>

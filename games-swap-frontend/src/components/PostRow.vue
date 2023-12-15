@@ -7,10 +7,14 @@ import ReviewIcon from './Icons/ReviewIcon.vue';
 import TrashCan from '@/components/Icons/TrashBinIcon.vue';
 import { useModal } from 'vue-final-modal';
 import DeletePostModal from './DeletePostModal.vue';
+import type { Purchase } from '@/interfaces/Purchase';
 
 const props = defineProps<{
-    post: Product
+    sell?: Purchase,
+    post: Product,
     purchased?: Boolean,
+    reserved?: Boolean
+    selled?: Boolean
     purchaseDate?: Date
 }>()
 
@@ -59,7 +63,7 @@ function formatCreationDate(date: string) {
             <h3 class="price-box">{{ props.post.post_price }}€</h3>
             <p class="title-box">{{ props.post.post_title }}</p>
         </div>
-        <div v-if="!purchased" class="dates-box d-none d-lg-flex gap-2 mx-5 flex-grow-1">
+        <div v-if="!purchased && !selled && !reserved" class="dates-box d-none d-lg-flex gap-2 mx-5 flex-grow-1">
             <div class="published d-flex flex-column">
                 <h4>Actualizado</h4>
                 <p>{{ formatCreationDate(props.post.post_created_at) }}</p>
@@ -69,10 +73,26 @@ function formatCreationDate(date: string) {
                 <p>{{ formatCreationDate(props.post.post_created_at) }}</p>
             </div>
         </div>
-        <div v-else>
+        <div v-else-if="purchased && !selled">
             <p>Comprado el {{ formatPurchaseDate() }}</p>
+            <RouterLink :to="{ name: 'vendor', params: { id: post.user_client?.user_id } }">
+                <p> a {{ post.user_client?.user_name }}</p>
+            </RouterLink>
         </div>
-        <div v-if="!purchased" class="icons-box position-relative d-flex gap-2">
+        <div v-else-if="reserved && !purchased && !selled">
+            <p>Reservado el {{ formatPurchaseDate() }}</p>
+            <RouterLink :to="{ name: 'vendor', params: { id: post.user_client?.user_id } }">
+                <p> a {{ post.user_client?.user_name }}</p>
+            </RouterLink>
+        </div>
+        <div v-else>
+            <p>Vendido el {{ formatPurchaseDate() }}</p>
+            <RouterLink :to="{ name: 'vendor', params: { id: sell?.user?.user_id } }">
+                <p> a {{ sell?.user?.user_name }}</p>
+            </RouterLink>
+
+        </div>
+        <div v-if="!purchased && !selled && !reserved" class="icons-box position-relative d-flex gap-2">
             <div class="icon-box">
                 <Bookmark></Bookmark>
             </div>
@@ -98,7 +118,7 @@ function formatCreationDate(date: string) {
                 </RouterLink>
             </div>
         </div>
-        <div v-if="!purchased" class="text-end ms-4 ms-md-0" @click="openDeleteModal">
+        <div v-if="!purchased && !selled && !reserved" class="text-end ms-4 ms-md-0" @click="openDeleteModal">
             <TrashCan></TrashCan>
         </div>
         <RouterLink v-else-if="purchased && !post.post_reviewed"

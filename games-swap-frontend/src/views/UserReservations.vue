@@ -2,17 +2,17 @@
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
-import type { Purchase } from '@/interfaces/Purchase';
+import type { Reservation } from '@/interfaces/Reservation';
 import PostRow from '@/components/PostRow.vue';
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
-const purchases = ref<Purchase[]>([]);
+const reservations = ref<Reservation[]>([]);
 
-async function getPurchasedProducts() {
+async function getReservedProducts() {
 
     try {
-        const response: Response = await fetch(`${apiEndpoint}/posts/purchases`, {
+        const response: Response = await fetch(`${apiEndpoint}/posts/reservations`, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -22,30 +22,29 @@ async function getPurchasedProducts() {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        const purchasesData: { purchasesData: Purchase[] } = await response.json();
-        purchases.value = purchasesData.purchasesData;
+        const reservationsData: { reservationsData: Reservation[] } = await response.json();
+        reservations.value = reservationsData.reservationsData;
 
     } catch (error) {
         console.error(error);
     }
-
-
 }
 
 onMounted(() => {
-    getPurchasedProducts();
+    getReservedProducts();
 })
 
 </script>
 <template>
-    <section v-if="purchases.length > 0" class="w-75">
-        <template v-for="purchase in purchases" :key="purchase.purchase_id">
-            <PostRow :post="purchase?.post" :purchaseDate="new Date(purchase?.purchase_created_at)" :purchased="true">
+    <section v-if="reservations.length > 0" class="w-75">
+        <template v-for="reservation in reservations" :key="reservation.reservation_id">
+            <PostRow :post="reservation?.post" :purchaseDate="new Date(reservation?.reservation_created_at)"
+                :purchased="false" :selled="false" :reserved="true">
             </PostRow>
         </template>
     </section>
     <section v-else>
-        No has comprado nada todavía.
+        No has realizado la reserva de ningún producto todavía
     </section>
 </template>
 

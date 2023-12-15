@@ -73,7 +73,7 @@ onMounted(() => {
 //TODO
 async function setReservation() {
     try {
-        const response: Response = await fetch(`${apiEndpoint}/posts/reservation/${adDetail?.user_client?.user_id}/${adDetail?.post_id}`, {
+        const response: Response = await fetch(`${apiEndpoint}/posts/reservation/${post_id}`, {
             method: 'PATCH',
             headers: {
                 "Accept": "application/json",
@@ -83,7 +83,7 @@ async function setReservation() {
 
         if (!response.ok) return;
 
-
+        await getPost();
 
 
     } catch (error) {
@@ -111,7 +111,8 @@ async function setReservation() {
                         adDetail?.user_client?.user_name }}</h2>
                 </RouterLink>
             </div>
-            <div @click="setReservation()" v-if="userIsLoggedIn" class="reserved-box">
+            <div v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)" @click="setReservation()"
+                class="reserved-box">
                 <span v-if="!adDetail?.post_reserved">No Reservado
                     <i class="book-mark">
                         <BookMarkFilled class="ms-2"></BookMarkFilled>

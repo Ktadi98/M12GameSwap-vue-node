@@ -20,5 +20,6 @@ export interface Product {
         platform_id: number,
         platform_name: string
     },
-    user_client?: UserClient
+    user_client?: UserClient,
+    user?: UserClient
 }

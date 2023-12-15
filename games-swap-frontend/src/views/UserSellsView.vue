@@ -7,12 +7,12 @@ import PostRow from '@/components/PostRow.vue';
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
-const purchases = ref<Purchase[]>([]);
+const sells = ref<Purchase[]>([]);
 
 async function getPurchasedProducts() {
 
     try {
-        const response: Response = await fetch(`${apiEndpoint}/posts/purchases`, {
+        const response: Response = await fetch(`${apiEndpoint}/posts/sells`, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -22,8 +22,8 @@ async function getPurchasedProducts() {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        const purchasesData: { purchasesData: Purchase[] } = await response.json();
-        purchases.value = purchasesData.purchasesData;
+        const sellsData: { sellsData: Purchase[] } = await response.json();
+        sells.value = sellsData.sellsData;
 
     } catch (error) {
         console.error(error);
@@ -38,14 +38,15 @@ onMounted(() => {
 
 </script>
 <template>
-    <section v-if="purchases.length > 0" class="w-75">
-        <template v-for="purchase in purchases" :key="purchase.purchase_id">
-            <PostRow :post="purchase?.post" :purchaseDate="new Date(purchase?.purchase_created_at)" :purchased="true">
+    <section v-if="sells.length > 0" class="w-75">
+        <template v-for="sell in sells" :key="sell.purchase_id">
+            <PostRow :sell="sell" :post="sell?.post" :purchaseDate="new Date(sell?.purchase_created_at)" :purchased="true"
+                :selled="true">
             </PostRow>
         </template>
     </section>
     <section v-else>
-        No has comprado nada todavía.
+        No han habido ventas todavía.
     </section>
 </template>
 

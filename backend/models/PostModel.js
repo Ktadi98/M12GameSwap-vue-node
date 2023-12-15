@@ -318,14 +318,19 @@ export class PostModel {
                 user_buyer_id: userId
             },
             include: {
-                post: true
+                post: {
+                    include: {
+                        user_client: true
+                    }
+                }
+
             }
         });
 
         return [1, purchases];
     }
 
-    static async setReservation(userId, vendorId, postId) {
+    static async setReservation(userId, postId) {
 
         const post = await prismadb.post.findFirst({
             where: {
@@ -333,14 +338,14 @@ export class PostModel {
             }
         });
 
-        const statusReview = post.post_reviewed;
+        const statusReserved = post.post_reserved ? false : true;
 
         const postReservation = await prismadb.post.update({
             where: {
                 post_id: post.post_id
             },
             data: {
-                post_reserved: !statusReview
+                post_reserved: statusReserved
             }
         })
 
@@ -352,5 +357,35 @@ export class PostModel {
         })
 
         return [postReservation, newReservation];
+    }
+
+    static async getSells(userId) {
+        const purchases = await prismadb.purchase.findMany({
+            include: {
+                post: true,
+                user: true
+            }
+        });
+
+        const userSells = purchases.filter(purchase => purchase.post.user_id === userId);
+
+        return [1, userSells];
+    }
+
+    static async getReservations(userId) {
+        const reservations = await prismadb.reservation.findMany({
+            where: {
+                user_reserver_id: userId
+            },
+            include: {
+                post: {
+                    include: {
+                        user_client: true
+                    }
+                }
+            }
+        });
+
+        return [1, reservations];
     }
 }

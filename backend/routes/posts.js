@@ -16,6 +16,8 @@ export const createPostRouter = (postModel) => {
     postRouter.get("/query/:searchQuery", postController.getPostsByQuery);
     postRouter.get("/query/auth/:searchQuery", authenticateToken, postController.getPostsByQueryLogIn);
     postRouter.get("/purchases", authenticateToken, postController.getPurchases);
+    postRouter.get("/reservations", authenticateToken, postController.getReservations);
+    postRouter.get("/sells", authenticateToken, postController.getSells);
     postRouter.get("/:id", postController.getById);
     postRouter.get("/vendor/:id", postController.getVendorPosts);
     postRouter.post("/upload", authenticateToken, upload.single('images'), postController.create);
@@ -24,7 +26,7 @@ export const createPostRouter = (postModel) => {
     postRouter.get("/category/auth/:id", authenticateToken, postController.getPostByCategoryLogIn);
     postRouter.patch("/update/:id", authenticateToken, upload.single('images'), postController.updatePost);
 
-    postRouter.patch("/reservation/:vendorId/:postId", authenticateToken, postController.setReservation);
+    postRouter.patch("/reservation/:postId", authenticateToken, postController.setReservation);
 
     return postRouter;
 };

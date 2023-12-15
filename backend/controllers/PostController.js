@@ -172,12 +172,30 @@ export class PostController {
         return res.status(500).json({ error: "Purchases could not be obtained..." });
     };
 
+    getSells = async (req, res) => {
+        const [exitState, selledPosts] = await this.postModel.getSells(req.user_id);
+        if (exitState === 1) {
+            return res.json({ sellsData: selledPosts });
+        }
+
+        return res.status(500).json({ error: "Sells for this could not be retrieved..." });
+    };
+
+    getReservations = async (req, res) => {
+        const [exitState, reservedPosts] = await this.postModel.getReservations(req.user_id);
+        if (exitState === 1) {
+            return res.json({ reservationsData: reservedPosts });
+        }
+
+        return res.status(500).json({ error: "Reservations for this user could not be retrieved..." });
+    };
+
     setReservation = async (req, res) => {
         const userId = req.user_id;
-        const vendorId = Number(req.params.vendorId);
+
         const postId = Number(req.params.postId);
 
-        const [postReservation, newReservation] = await this.postModel.setReservation(userId, vendorId, postId);
+        const [postReservation, newReservation] = await this.postModel.setReservation(userId, postId);
 
         return res.json({ post: postReservation, reservation: newReservation });
     };
