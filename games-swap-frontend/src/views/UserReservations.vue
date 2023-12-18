@@ -34,12 +34,33 @@ onMounted(() => {
     getReservedProducts();
 })
 
+const dropReservation = async (reservation: Reservation) => {
+    reservations.value.splice(reservations.value.findIndex(res => res.reservation_id === reservation.reservation_id), 1);
+    try {
+        const response = await fetch(`${apiEndpoint}/posts/reservation/${reservation.reservation_id}`, {
+            method: 'DELETE',
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token.value}`
+            }
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 </script>
 <template>
     <section v-if="reservations.length > 0" class="w-75">
         <template v-for="reservation in reservations" :key="reservation.reservation_id">
-            <PostRow :post="reservation?.post" :purchaseDate="new Date(reservation?.reservation_created_at)"
-                :purchased="false" :selled="false" :reserved="true">
+            <PostRow @deleteReservation="dropReservation(reservation)" :post="reservation?.post"
+                :purchaseDate="new Date(reservation?.reservation_created_at)" :purchased="false" :selled="false"
+                :reserved="true">
             </PostRow>
         </template>
     </section>

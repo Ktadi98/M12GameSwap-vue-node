@@ -7,9 +7,11 @@ import ReviewIcon from './Icons/ReviewIcon.vue';
 import TrashCan from '@/components/Icons/TrashBinIcon.vue';
 import { useModal } from 'vue-final-modal';
 import DeletePostModal from './DeletePostModal.vue';
+import RemoveReserveModal from './RemoveReserveModal.vue';
 import type { Purchase } from '@/interfaces/Purchase';
 import BookMarkRemove from './Icons/BookMarkRemove.vue';
 import ShoppingCart from './Icons/ShoppingCart.vue';
+import type { Reservation } from '@/interfaces/Reservation';
 
 const props = defineProps<{
     sell?: Purchase,
@@ -21,11 +23,16 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-    deletePost: [post: Product]
+    deletePost: [post: Product],
+    deleteReservation: []
 }>()
 
 function drop() {
     emit('deletePost', props.post);
+}
+
+function dropReservation() {
+    emit('deleteReservation');
 }
 
 const { open: openDeleteModal, close } = useModal({
@@ -37,6 +44,21 @@ const { open: openDeleteModal, close } = useModal({
         },
         onCancel() {
             close();
+        },
+        post_image: props.post.post_photos[0],
+        post_title: props.post.post_title
+    }
+});
+
+const { open: openRemoveReserveModal, close: closeRemoveReserveModal } = useModal({
+    component: RemoveReserveModal,
+    attrs: {
+        onConfirm() {
+            closeRemoveReserveModal();
+            dropReservation();
+        },
+        onCancel() {
+            closeRemoveReserveModal();
         },
         post_image: props.post.post_photos[0],
         post_title: props.post.post_title
@@ -133,19 +155,31 @@ function formatCreationDate(date: string) {
                 <ReviewIcon></ReviewIcon>
             </div>
         </RouterLink>
-        <section class="reservation-options-box" v-else-if="reserved && !purchased && !post.post_reviewed">
-            <RouterLink to="/">
-                Cancelar Reserva
-                <BookMarkRemove></BookMarkRemove>
-            </RouterLink>
-            <RouterLink to="/">
-                Tramitar compra
-                <ShoppingCart></ShoppingCart>
-            </RouterLink>
+        <section class="reservation-options-box d-flex flex-column flex-md-row gap-2"
+            v-else-if="reserved && !purchased && !post.post_reviewed">
+            <div class="icon-box reserve d-flex py-1 px-2" @click="openRemoveReserveModal">
+                <div class="d-flex">
+                    <p>Cancelar Reserva</p>
+                    <BookMarkRemove></BookMarkRemove>
+                </div>
+            </div>
+            <div class="icon-box reserve d-flex py-1 px-2">
+                <div class="d-flex ">
+                    <p> Tramitar compra</p>
+                    <RouterLink to="/">
+                        <ShoppingCart></ShoppingCart>
+                    </RouterLink>
+                </div>
+            </div>
         </section>
     </article>
 </template>
 <style scoped>
+.reserve:hover {
+    background-color: #9f87f5;
+    color: white;
+}
+
 .reservation-options-box {
     color: #9f87f5;
 }
@@ -189,7 +223,7 @@ function formatCreationDate(date: string) {
     cursor: pointer;
 }
 
-.icon-box {
+.icon-box:not(.reserve) {
     height: 2.9rem;
 }
 

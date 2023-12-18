@@ -388,4 +388,34 @@ export class PostModel {
 
         return [1, reservations];
     }
+
+    static async deleteReservation(reservationIdToDelete) {
+        const reservation = await prismadb.reservation.findFirst({
+            where: {
+                reservation_id: reservationIdToDelete
+            },
+            include: {
+                post: true
+            }
+        });
+
+        //Actualizar el estado de reserva del producto concreto.
+        const post = await prismadb.post.update({
+            where: {
+                post_id: reservation.post_id
+            },
+            data: {
+                post_reserved: false
+            }
+        })
+
+        //Eliminar el la reserva de la tabla pertinente.
+        const deletion = await prismadb.reservation.delete({
+            where: {
+                reservation_id: reservation.reservation_id
+            }
+        });
+
+        return [1, deletion];
+    }
 }

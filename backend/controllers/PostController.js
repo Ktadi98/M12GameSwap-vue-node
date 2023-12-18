@@ -200,4 +200,15 @@ export class PostController {
         return res.json({ post: postReservation, reservation: newReservation });
     };
 
+    deleteReservation = async (req, res) => {
+        const reservationIdToDelete = Number(req.params.id);
+        const [exitState, reservation] = await this.postModel.deleteReservation(reservationIdToDelete);
+
+        if (exitState === 1) {
+            return res.json({ reservation: reservation });
+        }
+
+        return res.status(500).json({ error: "Reservation could not be removed" })
+    };
+
 }

@@ -27,6 +27,7 @@ export const createPostRouter = (postModel) => {
     postRouter.patch("/update/:id", authenticateToken, upload.single('images'), postController.updatePost);
 
     postRouter.patch("/reservation/:postId", authenticateToken, postController.setReservation);
+    postRouter.delete("/reservation/:id", authenticateToken, postController.deleteReservation);
 
     return postRouter;
 };
