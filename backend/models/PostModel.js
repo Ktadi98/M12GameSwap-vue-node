@@ -124,7 +124,8 @@ export class PostModel {
                 where: {
                     AND: [
                         { platform_id: category_id },
-                        { post_status: true }
+                        { post_status: true },
+                        { post_buyed: false }
                     ]
                 }
             });
@@ -145,6 +146,7 @@ export class PostModel {
                     AND: [
                         { platform_id: category_id },
                         { post_status: true },
+                        { post_buyed: false }
                     ],
                     NOT: {
                         user_id: userId
@@ -195,7 +197,8 @@ export class PostModel {
                         }
                     },
                     {
-                        post_status: true
+                        post_status: true,
+                        post_buyed: false
                     }
                 ]
 
@@ -221,7 +224,8 @@ export class PostModel {
                         }
                     },
                     {
-                        post_status: true
+                        post_status: true,
+                        post_buyed: false
                     }
                 ],
                 NOT: {
@@ -244,7 +248,8 @@ export class PostModel {
             where: {
                 AND: [
                     { user_id: vendorId },
-                    { post_status: true }
+                    { post_status: true },
+                    { post_buyed: false }
                 ]
             }
         });
