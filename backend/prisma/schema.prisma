@@ -59,6 +59,7 @@ model User_Client {
   Reservation    Reservation[]
   Purchase       Purchase[]
   User_Favorites User_Favorites[]
+  Complaint      Complaint[]
 }
 
 model Platform {
@@ -104,6 +105,7 @@ model Post {
   Review         Review[]
   Reservation    Reservation[]
   Purchase       Purchase[]
+  Complaint      Complaint[]
 }
 
 model User_Favorites {
@@ -143,4 +145,16 @@ model Purchase {
   purchase_created_at DateTime    @default(now()) @db.Timestamptz(6)
   user                User_Client @relation(fields: [user_buyer_id], references: [user_id])
   post                Post        @relation(fields: [post_id], references: [post_id])
+}
+
+model Complaint {
+  complaint_id         Int         @id @default(autoincrement())
+  complaint_motive     String      @db.VarChar(50)
+  complaint_text       String      @db.VarChar(255)
+  complaint_created_at DateTime    @default(now()) @db.Timestamptz(6)
+  complaint_status     Boolean     @default(true)
+  user_id              Int
+  user                 User_Client @relation(fields: [user_id], references: [user_id])
+  post_id              Int
+  post                 Post        @relation(fields: [post_id], references: [post_id])
 }
