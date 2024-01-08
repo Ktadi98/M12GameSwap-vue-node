@@ -110,13 +110,13 @@ function formatCreationDate(date: string) {
         <div v-else-if="reserved && !purchased && !selled">
             <p>Reservado el {{ formatPurchaseDate() }}</p>
             <RouterLink :to="{ name: 'vendor', params: { id: post.user_client?.user_id } }">
-                <p> a {{ post.user_client?.user_name }}</p>
+                <p class="underline"> a {{ post.user_client?.user_name }}</p>
             </RouterLink>
         </div>
         <div v-else>
             <p>Vendido el {{ formatPurchaseDate() }}</p>
             <RouterLink :to="{ name: 'vendor', params: { id: sell?.user?.user_id } }">
-                <p> a {{ sell?.user?.user_name }}</p>
+                <p class="underline"> a {{ sell?.user?.user_name }}</p>
             </RouterLink>
 
         </div>
@@ -149,7 +149,7 @@ function formatCreationDate(date: string) {
         <div v-if="!purchased && !selled && !reserved" class="text-end ms-4 ms-md-0" @click="openDeleteModal">
             <TrashCan></TrashCan>
         </div>
-        <RouterLink v-else-if="purchased && !post.post_reviewed"
+        <RouterLink v-else-if="purchased && !post.post_reviewed && !sell"
             :to="{ name: 'review', params: { postId: props.post.post_id }, query: { postName: props.post.post_title } }">
             <div class="text-end ms-4 ms-md-0">
                 <ReviewIcon></ReviewIcon>
@@ -175,6 +175,11 @@ function formatCreationDate(date: string) {
     </article>
 </template>
 <style scoped>
+.underline {
+    text-decoration: underline;
+    color: #795aea;
+}
+
 .reserve:hover {
     background-color: #9f87f5;
     color: white;

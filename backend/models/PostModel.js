@@ -367,7 +367,11 @@ export class PostModel {
     static async getSells(userId) {
         const purchases = await prismadb.purchase.findMany({
             include: {
-                post: true,
+                post: {
+                    include: {
+                        platform: true
+                    }
+                },
                 user: true
             }
         });
