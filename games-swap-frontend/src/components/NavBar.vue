@@ -13,7 +13,8 @@
         </template>
       </div>
       <div class="nav-links">
-        <router-link v-if="authStore.userIsLoggedIn" class="nav-link" to="/protected/uploadPost">
+        <router-link v-tooltip.bottom="'Sube un producto'" v-if="authStore.userIsLoggedIn" class="nav-link"
+          to="/protected/uploadPost">
           <PostUploadIcon></PostUploadIcon>
         </router-link>
         <div v-if="authStore.userIsLoggedIn" class="profile-dropdown" @click="toggleDropdown">
@@ -28,6 +29,7 @@
       </div>
     </div>
   </nav>
+  <Divider></Divider>
 </template>
 
 <script setup lang="ts">
@@ -39,6 +41,7 @@ import RegisterModal from './Register.vue';
 import { useAuthStore } from "@/stores/auth";
 import BackArrowIcon from "@/components/Icons/BackArrow.vue";
 import PostUploadIcon from './Icons/PostUploadIcon.vue';
+import Divider from 'primevue/divider';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -87,11 +90,11 @@ const isProfileManagement = computed(() => {
 
 <style scoped>
 .navbar {
-  background-color: #f8f9fa;
+  background-color: white;
   padding: 10px;
 }
 
-.nav-links{
+.nav-links {
   display: flex;
   gap: 10px;
 }
@@ -141,6 +144,8 @@ const isProfileManagement = computed(() => {
   display: none;
 }
 
+
+
 .dropdown-menu a,
 .dropdown-menu div {
   padding: 10px;
@@ -149,7 +154,12 @@ const isProfileManagement = computed(() => {
   cursor: pointer;
 }
 
-.dropdown-menu a:hover, .dropdown-menu div:hover {
+.dropdown-menu a {
+  height: 100%;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu div:hover {
   background-color: #9F87F5;
 }
 
@@ -162,6 +172,6 @@ const isProfileManagement = computed(() => {
   width: 5rem;
   display: flex;
   justify-content: center;
-  
+
 }
 </style>

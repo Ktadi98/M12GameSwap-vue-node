@@ -13,9 +13,42 @@ export class ReviewModel {
                 review_title: reviewTitle,
                 review_description: reviewDescription,
                 review_punctuation: reviewPuntuaction,
+            },
+            include: {
+                post: true
             }
         })
 
+        const userVendorId = reviewCreated.post.user_id;
+
+        //We need to calculate the average score of the user who has been reviewed when we create a new review
+        const reviews = await prismadb.review.findMany({
+            include: {
+                post: true
+            }
+        });
+
+        //Getting the reviews that the vendor has.
+        const postReviewed = reviews.filter(review => review.post.user_id === userVendorId);
+        //console.log(postReviewed);
+        //Adding all scores
+        const sumOfReviews = postReviewed.map(review => review.review_punctuation).reduce((acc, current) => acc + current, 0);
+        //console.log(sumOfReviews);
+        const numOfReviews = postReviewed.length;
+        //Getting average score (integer)
+        const averageScore = Math.floor((sumOfReviews / numOfReviews)) || 0;
+
+        //Updating vendor score
+        const vendorUpdated = await prismadb.user_Client.update({
+            where: {
+                user_id: userVendorId
+            },
+            data: {
+                user_ranking: averageScore
+            }
+        })
+
+        //Updating state of the post reviewed.
         const postUpdated = await prismadb.post.update({
             where: {
                 post_id: postId

@@ -105,7 +105,7 @@ async function setReservation() {
                 <div class="profile-image d-flecx gap-3">
                     <img src="@/assets/avatar-profile.svg" alt="Profile Image">
                 </div>
-                <RouterLink v-if="!(currentUserName === adDetail?.user_client?.user_name)"
+                <RouterLink v-tooltip.top="'Ir al vendedor'" v-if="!(currentUserName === adDetail?.user_client?.user_name)"
                     :to="{ name: 'vendor', params: { id: adDetail?.user_client?.user_id } }">
                     <h2 class="profile-name">{{
                         adDetail?.user_client?.user_name }}</h2>

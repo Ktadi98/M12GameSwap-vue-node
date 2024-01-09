@@ -10,6 +10,7 @@ import DeletePostModal from './DeletePostModal.vue';
 import RemoveReserveModal from './RemoveReserveModal.vue';
 import type { Purchase } from '@/interfaces/Purchase';
 import BookMarkRemove from './Icons/BookMarkRemove.vue';
+import BookMarkFilledAlt from './Icons/BookMarkFilledAlt.vue';
 import ShoppingCart from './Icons/ShoppingCart.vue';
 import type { Reservation } from '@/interfaces/Reservation';
 
@@ -101,10 +102,10 @@ function formatCreationDate(date: string) {
                 <p>{{ formatCreationDate(props.post.post_created_at) }}</p>
             </div>
         </div>
-        <div v-else-if="purchased && !selled">
+        <div class="flex-grow-2" v-else-if="purchased && !selled">
             <p>Comprado el {{ formatPurchaseDate() }}</p>
             <RouterLink :to="{ name: 'vendor', params: { id: post.user_client?.user_id } }">
-                <p> a {{ post.user_client?.user_name }}</p>
+                <p class="underline"> a {{ post.user_client?.user_name }}</p>
             </RouterLink>
         </div>
         <div v-else-if="reserved && !purchased && !selled">
@@ -121,11 +122,14 @@ function formatCreationDate(date: string) {
 
         </div>
         <div v-if="!purchased && !selled && !reserved" class="icons-box position-relative d-flex gap-2">
-            <div class="icon-box">
+            <div v-tooltip.top="'No reservado'" v-if="!post.post_reserved" class="icon-box reservation">
                 <Bookmark></Bookmark>
             </div>
+            <div v-tooltip.top="'Reservado'" v-else class="purple icon-box">
+                <BookMarkFilledAlt></BookMarkFilledAlt>
+            </div>
             <div class="icon-box">
-                <RouterLink :to="{
+                <RouterLink v-tooltip.top="'Actualizar anuncio'" :to="{
                     name: 'updatePost', query:
                     {
                         id: props.post.post_id,
@@ -141,17 +145,19 @@ function formatCreationDate(date: string) {
 
             </div>
             <div class="icon-box">
-                <RouterLink :to="{ name: 'adDetail', params: { id: props.post.post_id } }">
+                <RouterLink v-tooltip.right="'Detalle del anuncio'"
+                    :to="{ name: 'adDetail', params: { id: props.post.post_id } }">
                     <PostDetail></PostDetail>
                 </RouterLink>
             </div>
         </div>
-        <div v-if="!purchased && !selled && !reserved" class="text-end ms-4 ms-md-0" @click="openDeleteModal">
+        <div v-tooltip.bottom="'Eliminar anuncio'" v-if="!purchased && !selled && !reserved"
+            class="text-center ms-4 ms-md-0" @click="openDeleteModal">
             <TrashCan></TrashCan>
         </div>
         <RouterLink v-else-if="purchased && !post.post_reviewed && !sell"
             :to="{ name: 'review', params: { postId: props.post.post_id }, query: { postName: props.post.post_title } }">
-            <div class="text-end ms-4 ms-md-0">
+            <div v-tooltip="'Escribe una reseña'" class="text-end ms-4 ms-md-0">
                 <ReviewIcon></ReviewIcon>
             </div>
         </RouterLink>
@@ -175,6 +181,10 @@ function formatCreationDate(date: string) {
     </article>
 </template>
 <style scoped>
+.purple {
+    color: #795aea;
+}
+
 .underline {
     text-decoration: underline;
     color: #795aea;
