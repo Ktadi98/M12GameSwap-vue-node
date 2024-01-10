@@ -145,4 +145,11 @@ export class UserController {
 
   }
 
+  getRanking = async (req, res) => {
+
+    const topVendors = await this.userModel.getRanking();
+
+    return res.json({ topVendors: topVendors });
+  };
+
 }

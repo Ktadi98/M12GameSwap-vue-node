@@ -123,6 +123,13 @@ async function setReservation() {
                     </i>
                 </span>
             </div>
+            <div v-else class="reserved-box">
+                <span v-if="adDetail?.post_reserved"> Reservado
+                    <i class="book-mark">
+                        <BookMarkFilledCheck></BookMarkFilledCheck>
+                    </i>
+                </span>
+            </div>
         </div>
         <div id="ad-info">
             <div class="img-box mb-3 mt-3">

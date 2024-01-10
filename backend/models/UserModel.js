@@ -271,4 +271,24 @@ export class UserModel {
         }
     }
 
+    static async getRanking() {
+        const topVendors = await prismadb.user_Client.findMany({
+            take: 3,
+            orderBy: [
+                {
+                    user_ranking: 'desc'
+                }
+            ],
+            where: {
+                NOT: [{
+                    user_ranking: null
+                }
+
+                ]
+            }
+        })
+
+        return topVendors;
+    }
+
 }
