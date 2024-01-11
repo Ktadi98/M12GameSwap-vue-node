@@ -105,17 +105,17 @@ export class PostModel {
 
     static async getPostsByCategory(category_id) {
         try {
-            // const platform = await prismadb.post.findMany({
-            //     where: {
-            //         platform_id: {
-            //             contains: categoryName,
-            //             mode: "insensitive",
-            //         },
-            //     },
-            // });
-            // if (!platform) {
-            //     return [];
-            // }
+            /**const platform = await prismadb.post.findMany({
+                where: {
+                    platform_id: {
+                        contains: categoryName,
+                        mode: "insensitive",
+                    },
+                },
+            });
+            if (!platform) {
+                return [];
+            }**/
             const posts = await prismadb.post.findMany({
                 where: {
                     AND: [

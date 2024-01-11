@@ -7,8 +7,8 @@
                 <div class="button-container">
                     <button class="rounded-button">Cambiar Contraseña</button>
                     <router-link to="/editUserData"> <button class="rounded-button">Cambiar Datos del Perfil</button></router-link>
-                    <button class="rounded-button" @click="open">Buzón de sugerencias</button>
-                    <button type="submit" class="rounded-button">Eliminar Cuenta</button>
+                    <button class="rounded-button" @click="openMailbox">Buzón de sugerencias</button>
+                    <button class="rounded-button" @click="openDeleteUser">Eliminar Cuenta</button>
                 </div>
             </div>
         </main>
@@ -21,6 +21,7 @@ import { useRouter } from 'vue-router';
 import NavBar from '@/components/NavBar.vue';
 import {useModal} from 'vue-final-modal';
 import SuggestionsMailbox from '@/components/SuggestionsMailbox.vue';
+import DeleteUserProfile from '@/components/DeleteUserProfile.vue';
 
 const router = useRouter();
 
@@ -48,19 +49,29 @@ const sendData = () => {
 }
 
 
-const { open, close } = useModal({
+const { open:openMailbox, close: closeMailbox } = useModal({
     component: SuggestionsMailbox,
     attrs: {
         onConfirm() {
-            close();
+            openMailbox();
         },
         onCancel() {
-            close();
+            closeMailbox();
         },
-    }
+    },
 });
 
-
+const { open: openDeleteUser, close: closeDeleteUser } = useModal({
+    component: DeleteUserProfile,
+    attrs: {
+        onConfirm() {
+            openDeleteUser();
+        },
+        onCancel() {
+            closeDeleteUser();
+        },
+    },
+});
 
 </script>
 
