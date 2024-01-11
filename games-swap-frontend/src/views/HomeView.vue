@@ -6,10 +6,13 @@ import Platforms from "../components/Platforms.vue";
 import Footer from "../components/Footer.vue";
 import AppBar from "../components/AppBar.vue";
 import VendorsRanking from "../components/VendorsRanking.vue";
+import PostsHistory from "@/components/PostsHistory.vue";
 import { usePlatformsStore } from "@/stores/platforms";
 import { storeToRefs } from "pinia";
 
+
 const platformsStore = usePlatformsStore();
+
 
 platformsStore.fetchPlatforms();
 
@@ -65,7 +68,7 @@ platformsStore.fetchPlatforms();
     <VendorsRanking></VendorsRanking>
   </main>
   <AppBar></AppBar>
-
+  <PostsHistory></PostsHistory>
   <Footer></Footer>
 </template>
 <style scoped>

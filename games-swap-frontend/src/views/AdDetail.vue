@@ -7,6 +7,7 @@ import StarRating from '../components/Icons/StarRating.vue';
 import NavBar from '@/components/NavBar.vue';
 import type { Product } from '@/interfaces/Product';
 import { useAuthStore } from '@/stores/auth';
+import { usePostsHistoryStore } from '@/stores/postsHistory';
 import { storeToRefs } from 'pinia';
 import BookMarkFilledCheck from "@/components/Icons/BookMarkFilledCheck.vue"
 import BookMarkFilled from '@/components/Icons/BookMarkFilled.vue';
@@ -15,6 +16,7 @@ const route = useRoute();
 const router = useRouter();
 
 
+const { updateHistory } = usePostsHistoryStore();
 
 //To use in fetch request
 const post_id = route.params.id;
@@ -63,11 +65,15 @@ async function getUserData() {
     }
 }
 
-onMounted(() => {
-    getPost();
+onMounted(async () => {
+
+    await getPost();
     if (userIsLoggedIn.value) {
         getUserData();
     }
+
+    //We add the current product to the history
+    updateHistory(adDetail.value);
 })
 
 //TODO
