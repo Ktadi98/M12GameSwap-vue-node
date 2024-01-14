@@ -66,9 +66,10 @@ platformsStore.fetchPlatforms();
       </div>
     </div>
     <VendorsRanking></VendorsRanking>
+    <PostsHistory></PostsHistory>
   </main>
-  <AppBar></AppBar>
-  <PostsHistory></PostsHistory>
+  <!-- <AppBar></AppBar> -->
+
   <Footer></Footer>
 </template>
 <style scoped>

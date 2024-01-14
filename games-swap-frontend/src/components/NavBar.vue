@@ -42,9 +42,11 @@ import { useAuthStore } from "@/stores/auth";
 import BackArrowIcon from "@/components/Icons/BackArrow.vue";
 import PostUploadIcon from './Icons/PostUploadIcon.vue';
 import Divider from 'primevue/divider';
+import { usePostsHistoryStore } from '@/stores/postsHistory';
 
 const authStore = useAuthStore();
 const router = useRouter();
+const { reset } = usePostsHistoryStore();
 const showDropdown = ref(false);
 
 const { open, close } = useModal({
@@ -75,6 +77,8 @@ const { open: openRegister, close: closeRegister } = useModal({
 const logOut = () => {
   authStore.deleteToken();
   router.push("/");
+  //Clearing posts history
+  reset();
 };
 
 const toggleDropdown = () => {

@@ -17,13 +17,23 @@ export const usePostsHistoryStore = defineStore('postsHistory', () => {
 
         //We need to check that we don't add the same product twice.
         const postIndex = history.value.findIndex(p => p.post_id === post.post_id);
-        console.log(postIndex);
-        if (postIndex !== -1) {
+
+        if (postIndex === -1) {
+
+            if (history.value.length === 4) {
+                history.value.shift();
+            }
+
             history.value.push({ ...post });
+            return;
         }
 
         //If is duplicated we do nothing.
     };
 
-    return { history, updateHistory }
+    const reset = () => {
+        history.value = []
+    };
+
+    return { reset, history, updateHistory }
 })
