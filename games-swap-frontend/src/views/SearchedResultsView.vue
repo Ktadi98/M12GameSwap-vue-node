@@ -22,7 +22,8 @@
         </div>
         <section class="post-box container-fluid">
             <div v-if="products.length > 0" class="row">
-                <PostCard v-for="product in filteredProducts" :key="product.post_id" :product="product"></PostCard>
+                <PostCard v-tooltip="'Ir al detalle'" v-for="product in filteredProducts" :key="product.post_id"
+                    :product="product"></PostCard>
             </div>
             <div v-else>
                 <h2>No hay anuncios disponibles para esta búsqueda. Prueba a buscar otra cosa.</h2>

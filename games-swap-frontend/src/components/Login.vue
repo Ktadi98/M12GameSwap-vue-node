@@ -4,6 +4,9 @@ import { VueFinalModal } from 'vue-final-modal';
 import { useAuthStore } from "@/stores/auth";
 import ErrorMessages from './ErrorMessages.vue';
 import router from '@/router';
+import { usePostsHistoryStore } from '@/stores/postsHistory';
+
+const { reset } = usePostsHistoryStore();
 
 const emit = defineEmits<{
   (e: 'confirm'): void,
@@ -84,10 +87,16 @@ const sendData = async () => {
 
     emit("confirm");
 
+    //Clearing posts history
+    reset();
+
     //ADMIN CREDENTIALS
     //Username: admin, Correu: admin@gmail.com, Contraseña:admin2023
     if (formData.value.email === "admin@gmail.com") {
       router.push("/controlPanel");
+    }
+    else {
+      router.push("/");
     }
 
   } catch (err) {
