@@ -6,9 +6,11 @@ import "dotenv/config";
 import { createUserRouter } from "./routes/users.js";
 import { createPostRouter } from "./routes/posts.js";
 import { createReviewRouter } from "./routes/reviews.js";
+import { createComplaintRouter } from "./routes/complaints.js";
 import { UserModel } from './models/UserModel.js';
 import { PostModel } from './models/PostModel.js';
 import { ReviewModel } from "./models/ReviewModel.js";
+import { ComplaintModel } from "./models/ComplaintModel.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -34,7 +36,7 @@ app.disable("x-powered-by");
 app.use("/users", createUserRouter(UserModel));
 app.use("/posts", createPostRouter(PostModel));
 app.use("/reviews", createReviewRouter(ReviewModel));
-
+app.use("/complaints", createComplaintRouter(ComplaintModel));
 
 const PORT = process.env.PORT ?? 1234;
 

@@ -1,57 +1,140 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
+import { ref, watch, type Ref } from 'vue';
 import { VueFinalModal } from 'vue-final-modal';
 import { useAuthStore } from "@/stores/auth";
+import Dropdown from 'primevue/dropdown';
+import ErrorMessages from './ErrorMessages.vue';
+import { storeToRefs } from 'pinia';
+import { useRoute, useRouter } from 'vue-router';
+import useCustomToast from "@/composables/useCustomToast"
 
 const emit = defineEmits<{
     (e: 'confirm'): void,
     (e: 'cancel'): void
 }>()
 
-const props = defineProps<{
-    post_title: string | undefined,
-}>()
-
 function closeModal() {
     emit('confirm');
 }
 
-const authStore = useAuthStore();
+const { triggerToast } = useCustomToast("Reporte enviado con éxito. El administrador se encarga.")
 
-const error: Ref<Error | string> = ref("");
+const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
+
+const reportMotive = ref<string>("");
+
+const reportMotives = ref<string[]>([
+    "Uso inadecuado",
+    "Contenido fraudulento",
+    "Spam",
+    "Otros"
+]);
+
+const route = useRoute();
+
+const reportExplanation = ref<string>("");
+
+const error: Ref<boolean | string> = ref(false);
+const errorMessages: Ref<string[]> = ref([]);
+
+const validateReport = () => {
+    if (
+        reportExplanation.value.length > 250 || reportExplanation.value.length < 0
+    ) {
+        errorMessages.value.push("La descripción de la queja no puede tener más de 250 carácteres.");
+        error.value = true;
+    }
+    if (!reportMotives.value.includes(reportMotive.value)) {
+        errorMessages.value.push("El motivo de la queja indicado no es válido.");
+        error.value = true;
+    }
+}
+
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+
+const sendReport = async () => {
+
+    errorMessages.value = [];
+    error.value = false;
+    validateReport();
+
+    if (error.value) return;
+
+    try {
+        const response: Response = await fetch(`${apiEndpoint}/complaints/${route.params.id}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token.value}`
+            },
+            body: JSON.stringify({
+                motive: reportMotive.value,
+                text: reportExplanation.value
+            })
+        });
+
+        if (!response.ok) {
+            errorMessages.value.push("Los datos de la queja son incorrectos. Inténtalo de nuevo.");
+            error.value = true;
+            return;
+        }
+
+        const data: { message: string } = await response.json();
+
+        triggerToast();
+
+        emit("confirm");
+
+    } catch (err) {
+        errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
+    }
+}
+
+//To limit the characters written in the textarea.
+watch(reportExplanation, () => {
+    if (reportExplanation.value.length > 250) {
+        reportExplanation.value = reportExplanation.value.substring(0, 251);
+    }
+})
 
 </script>
 
 <template>
     <VueFinalModal class="confirm-modal" content-class="confirm-modal-content border-0" overlay-transition="vfm-fade"
         content-transition="vfm-fade">
-        <form class="d-flex flex-column gap-5 absolute inset-0" @submit.prevent="emit('cancel')">
-            <h1 class="display-4">Reporte para {{ post_title }}</h1>
-            <div class="d-flex align-items-center justify-content-center gap-3">
-                <!-- <div class="img-box w-40 text-center">
-                    <img :src="props.post_image">
-                </div> -->
-                <div class="w-50">
-                    <h2>{{ props?.post_title }}</h2>
-                </div>
-            </div>
-            <div class="warning-box text-center p-3">
-                <p class="h4">Una vez eliminado este producto no podrás recuperarlo. ¿Estás seguro de que lo quieres
-                    eliminar?
-                </p>
+        <form class="d-flex flex-column gap-3 absolute inset-0" @submit.prevent="sendReport()">
+            <Dropdown v-model="reportMotive" :options="reportMotives" placeholder="Selecciona un el motivo de tu queja" />
+            <h3>Describe tu queja (opcional)</h3>
+            <div>
+                <textarea v-model="reportExplanation" cols="40" rows="10"></textarea>
             </div>
             <div class="d-flex flex-column gap-3">
-                <button class="delete-button" @click="closeModal">Eliminar</button>
-                <button class="exit-button" type="submit">Volver</button>
+                <button type="submit" class="exit-button">Enviar reporte</button>
+                <button class="exit-button" @click="closeModal">Volver</button>
             </div>
         </form>
-        <div v-if="error !== ''">{{ error }}</div>
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
     </VueFinalModal>
 </template>
 
 <style scoped>
 h1 {
     font-size: large;
+}
+
+textarea {
+    border: 2px dashed #9F87F5;
+    border-radius: 0px;
+    background-color: white;
+    outline: none;
+    padding: 10px;
+    resize: none;
+    font-size: 18px;
+}
+
+.exit-button:hover {
+    background-color: #805ffa;
 }
 
 .img-box {

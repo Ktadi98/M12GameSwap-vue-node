@@ -95,6 +95,9 @@ const sendData = async () => {
     if (formData.value.email === "admin@gmail.com") {
       router.push("/controlPanel");
     }
+    else {
+      router.push("/");
+    }
 
   } catch (err) {
     errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
