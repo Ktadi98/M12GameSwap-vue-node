@@ -37,7 +37,8 @@ export class UserModel {
                 data: {
                     user_email: user_data.email,
                     user_password: hashedPassword,
-                    user_salt: salt
+                    user_salt: salt,
+                    user_name: user_data.username
                 }
             });
 

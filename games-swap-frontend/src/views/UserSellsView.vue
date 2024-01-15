@@ -39,7 +39,8 @@ async function getPurchasedProducts() {
 }
 
 onMounted(async () => {
-    getPurchasedProducts();
+    //We need the data before plotting the graphic.
+    await getPurchasedProducts();
     chartData.value = await setChartData();
     chartOptions.value = setChartOptions();
 })
@@ -121,21 +122,27 @@ const categoriesToSalesMap = (categories: any, sales: any) => {
     const catMap = categories.map((c: any) => {
         return sales.reduce((prev: any, cur: any) => cur.post.platform_id === c.platform_id ? prev + 1 : prev, 0)
     })
+
     return catMap
 }
 </script>
 <template>
-    <section v-if="sells.length > 0" class="w-75">
+    <section v-if="sells.length > 0" class="w-75 px-5">
         <Chart type="bar" :data="chartData" :options="chartOptions" />
-        <template v-for="sell in sells" :key="sell.purchase_id">
+        <section class="mt-5 mb-1" v-for="sell in sells" :key="sell.purchase_id">
             <PostRow :sell="sell" :post="sell?.post" :purchaseDate="new Date(sell?.purchase_created_at)" :purchased="true"
                 :selled="true">
             </PostRow>
-        </template>
+        </section>
     </section>
     <section v-else>
         No han habido ventas todavía.
     </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+.p-chart {
+    padding: 0;
+    margin-bottom: 50px;
+}
+</style>

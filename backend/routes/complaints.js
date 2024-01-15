@@ -8,6 +8,7 @@ export const createComplaintRouter = (complaintModel) => {
     const complaintController = new ComplaintController(complaintModel);
 
     complaintRouter.post("/:postId", authenticateToken, complaintController.create);
+    complaintRouter.get("/:userId", authenticateToken, complaintController.getAll);
 
     return complaintRouter;
 };

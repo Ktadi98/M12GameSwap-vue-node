@@ -19,6 +19,18 @@ export class ComplaintModel {
         return 1;
     }
 
+    static async getAll(userId) {
+        const complaints = await prismadb.complaint.findMany({
+            where: {
+                user_id: userId
+            },
+            include: {
+                post: true,
+                user: true
+            }
+        });
 
+        return complaints;
+    }
 
 }

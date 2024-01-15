@@ -33,11 +33,12 @@ const toggleFavorite = () => {
 <style scoped>
 .img-box {
   overflow: hidden;
+  height: 600px;
 }
 
 .img-box>img {
   width: 100%;
-  height: 400px;
+  height: auto;
 }
 
 .product-card {

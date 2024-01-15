@@ -30,4 +30,10 @@ export class ComplaintController {
 
     }
 
+    getAll = async (req, res) => {
+        const userId = Number(req.params.userId);
+        const complaints = await this.complaintModel.getAll(userId);
+        return res.json({ complaints: complaints });
+    }
+
 }
