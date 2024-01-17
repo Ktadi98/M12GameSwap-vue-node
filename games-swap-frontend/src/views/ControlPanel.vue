@@ -6,14 +6,24 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import ModifyUser from '@/components/Icons/ModifyUser.vue';
 import DeleteUser from '@/components/Icons/DeleteUser.vue';
-import { ref, onMounted } from "vue"
+import { ref, onMounted } from "vue";
+import { useAuthStore } from '@/stores/auth';
 import type { User } from "@/interfaces/User";
+import type { Reservation } from "@/interfaces/Reservation";
+import { storeToRefs } from "pinia";
+import type { Complaint } from "@/interfaces/Complaint";
+
+const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
 const users = ref<User[]>([]);
 const columns = [
   { field: "user_name", header: "Usuario" },
   { field: "user_email", header: "Email" },
 ];
+
+const userSelected = ref<null | string>(null);
+
+const complaints = ref<Complaint[]>([]);
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
@@ -48,52 +58,127 @@ const deleteUser = async (data: any) => {
 
 }
 
+const getReports = async (userData: any) => {
+  //console.log(userData.user_id);
+  try {
+    const response: Response = await fetch(`${apiEndpoint}/complaints/${userData.user_id}`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${token.value}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const complaintsData: { complaints: Complaint[] } = await response.json();
+    complaints.value = complaintsData.complaints;
+    console.log(complaints.value);
+
+    //Set Current User to show his reports
+    userSelected.value = userData.user_name;
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const dropPost = async (data: any) => {
+  if (confirm(`¿Quieres dar de baja el anuncio "${data.post.post_title}"`)) {
+    await fetch(`${apiEndpoint}/posts/drop/${data.post.post_id}`, {
+      method: "PATCH", headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${token.value}`
+      }
+    })
+    await getReports(data);
+  }
+};
+
 </script>
 
 <template>
-  <header>
-    <div class="logo">
-      <img src="@/assets/logo.png" alt="logo" />
-    </div>
-    <div class="profile-name">Admin</div>
-  </header>
-
-  <body>
-    <aside class="left-menu">
+  <!-- <aside class="left-menu">
       <h2>
         <UserInfo /> Usuarios
       </h2>
-    </aside>
+    </aside> -->
 
-    <main>
-      <div class="heading" style="color: #8a6cf6">
-        <h1>Bienvenido al panel de control</h1>
-      </div>
-      <h2>Listado de usuarios</h2>
-      <DataTable :value="users" table-class="display">
-        <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
-        <Column key="modify" header="Modificar">
+  <main class="px-5">
+    <div class="heading" style="color: #8a6cf6">
+      <h1>Bienvenido al panel de control</h1>
+    </div>
+    <h2>Listado de usuarios</h2>
+    <DataTable :value="users" table-class="display">
+      <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
+      <Column key="modify" header="Modificar">
+        <template #body="slotProps">
+          <button class="table-options select-modify" @click="modifyUser(slotProps.data)">
+            <ModifyUser />
+          </button>
+        </template>
+      </Column>
+      <Column key="delete" header="Eliminar">
+        <template #body="slotProps">
+          <button class="table-options select-delete" @click="deleteUser(slotProps.data)">
+            <DeleteUser />
+          </button>
+        </template>
+      </Column>
+      <Column class="report" key="delete" header="Denuncias">
+        <template #body="slotProps">
+          <button class="table-options select-delete" @click="getReports(slotProps.data)">
+            Mostrar Denuncias
+          </button>
+        </template>
+      </Column>
+    </DataTable>
+    <template v-if="userSelected && complaints.length">
+      <h2>Listado de denuncias de {{ userSelected }}</h2>
+      <DataTable :value="complaints" table-class="display">
+        <Column key="delete" header="Foto del anuncio">
           <template #body="slotProps">
-            <button class="table-options select-modify" @click="modifyUser(slotProps.data)">
-              <ModifyUser />
-            </button>
+            <img :src="slotProps.data.post.post_photos[0]" alt="photo of product">
           </template>
         </Column>
-        <Column key="delete" header="Eliminar">
+        <Column field="post.post_title" header="Nombre del producto">
+        </Column>
+        <Column class="report" field="complaint_motive" header="Motivo">
+        </Column>
+        <Column class="report" field="complaint_text" header="Detalle">
+        </Column>
+        <Column class="report" header="">
           <template #body="slotProps">
-            <button class="table-options select-delete" @click="deleteUser(slotProps.data)">
-              <DeleteUser />
+            <button class="table-options select-delete" @click="dropPost(slotProps.data)">
+              Dar de baja
             </button>
           </template>
         </Column>
       </DataTable>
-    </main>
-  </body>
+    </template>
+    <div v-else>
+      Este usuario no ha enviado ninguna denuncia.
+    </div>
+  </main>
+
 
   <Footer></Footer>
 </template>
 
 <style scoped>
+img {
+  width: 100px;
+  height: 100px;
+  border-radius: 6px;
+}
+
+.p-datatable {
+  margin-bottom: 35px;
+}
+
 header {
   display: flex;
   justify-content: space-between;
@@ -101,6 +186,11 @@ header {
   margin: 0;
   align-items: center;
   border-bottom: 1px solid #8a6cf6;
+}
+
+td.report,
+button {
+  padding: 0;
 }
 
 .logo img {
@@ -152,7 +242,7 @@ main h1 {
 main h2 {
   color: #8a6cf6;
   font-size: 25px;
-
+  font-weight: 700;
 }
 
 .table-options {

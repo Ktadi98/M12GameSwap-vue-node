@@ -1,7 +1,7 @@
 <template>
   <RouterLink class="col-12 col-md-4 col-lg-3" :to="{ name: 'adDetail', params: { id: props.product.post_id } }">
-    <div class="product-card" v-if="product">
-      <div class="img-box">
+    <div class="product-card w-100" v-if="product">
+      <div class="w-75 img-box">
         <img :src="props.product.post_photos[0]" alt="Product Image">
       </div>
       <div class="product-info">
@@ -33,6 +33,7 @@ const toggleFavorite = () => {
 <style scoped>
 .img-box {
   overflow: hidden;
+  height: 600px;
 }
 
 .img-box>img {
@@ -43,7 +44,7 @@ const toggleFavorite = () => {
 .product-card {
   border: 1px solid #e1e1e1;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  padding-top: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

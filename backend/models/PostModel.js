@@ -367,7 +367,11 @@ export class PostModel {
     static async getSells(userId) {
         const purchases = await prismadb.purchase.findMany({
             include: {
-                post: true,
+                post: {
+                    include: {
+                        platform: true
+                    }
+                },
                 user: true
             }
         });
@@ -423,4 +427,19 @@ export class PostModel {
 
         return [1, deletion];
     }
+
+    static async deactivatePost(postId) {
+        const postDeactivated = await prismadb.post.update({
+            where: {
+                post_id: postId
+            },
+            data: {
+                post_status: {
+                    set: false
+                }
+            }
+        });
+
+        return 1;
+    };
 }

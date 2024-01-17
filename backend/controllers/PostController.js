@@ -211,4 +211,16 @@ export class PostController {
         return res.status(500).json({ error: "Reservation could not be removed" })
     };
 
+    deactivatePost = async (req, res) => {
+        const postId = Number(req.params.postId);
+
+        const exitState = await this.postModel.deactivatePost(postId);
+
+        if (exitState === 1) {
+            return res.json({ message: "Post deactivated successfully" });
+        }
+
+        return res.status(500).json({ error: "Post could not be deactivated" })
+    };
+
 }

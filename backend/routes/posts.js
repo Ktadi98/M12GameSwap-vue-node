@@ -10,6 +10,7 @@ export const createPostRouter = (postModel) => {
 
     postRouter.delete("/delete/:id", authenticateToken, postController.deletePost);
     postRouter.get("/", postController.getAll);
+    postRouter.patch("/drop/:postId", authenticateToken, postController.deactivatePost);
     postRouter.get("/categories", postController.getCategories);
     postRouter.get("/genres", postController.getGenres);
     postRouter.get("/user/posts", authenticateToken, postController.getPostsByUserId);

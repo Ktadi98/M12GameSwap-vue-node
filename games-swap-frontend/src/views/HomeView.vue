@@ -5,9 +5,14 @@ import SearchBar from "../components/SearchBar.vue";
 import Platforms from "../components/Platforms.vue";
 import Footer from "../components/Footer.vue";
 import AppBar from "../components/AppBar.vue";
+import VendorsRanking from "../components/VendorsRanking.vue";
+import PostsHistory from "@/components/PostsHistory.vue";
 import { usePlatformsStore } from "@/stores/platforms";
+import { storeToRefs } from "pinia";
+
 
 const platformsStore = usePlatformsStore();
+
 
 platformsStore.fetchPlatforms();
 
@@ -60,8 +65,11 @@ platformsStore.fetchPlatforms();
         <p>Súmergete en una comunidad fantástica para hacer realidad tus sueños</p>
       </div>
     </div>
+    <VendorsRanking></VendorsRanking>
+    <PostsHistory></PostsHistory>
   </main>
-  <AppBar></AppBar>
+  <!-- <AppBar></AppBar> -->
+
   <Footer></Footer>
 </template>
 <style scoped>

@@ -7,14 +7,19 @@ import StarRating from '../components/Icons/StarRating.vue';
 import NavBar from '@/components/NavBar.vue';
 import type { Product } from '@/interfaces/Product';
 import { useAuthStore } from '@/stores/auth';
+import { usePostsHistoryStore } from '@/stores/postsHistory';
 import { storeToRefs } from 'pinia';
 import BookMarkFilledCheck from "@/components/Icons/BookMarkFilledCheck.vue"
 import BookMarkFilled from '@/components/Icons/BookMarkFilled.vue';
+import ReportFlag from '@/components/Icons/ReportFlag.vue';
+import ReportModal from '@/components/ReportModal.vue';
+import { useModal } from 'vue-final-modal';
 
 const route = useRoute();
 const router = useRouter();
 
 
+const { updateHistory } = usePostsHistoryStore();
 
 //To use in fetch request
 const post_id = route.params.id;
@@ -26,6 +31,22 @@ const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 const currentUserName = ref<string>("");
+
+
+const { open: openReportModal, close: closeReportModal } = useModal({
+    component: ReportModal,
+    attrs: {
+        onConfirm() {
+            closeReportModal();
+            //We need to send the report and show a toast notification
+        },
+        onCancel() {
+            closeReportModal();
+        },
+        post_title: adDetail?.post_title,
+    }
+});
+
 
 async function getPost() {
     try {
@@ -63,11 +84,15 @@ async function getUserData() {
     }
 }
 
-onMounted(() => {
-    getPost();
+onMounted(async () => {
+
+    await getPost();
     if (userIsLoggedIn.value) {
         getUserData();
     }
+
+    //We add the current product to the history
+    updateHistory(adDetail.value);
 })
 
 //TODO
@@ -105,11 +130,15 @@ async function setReservation() {
                 <div class="profile-image d-flecx gap-3">
                     <img src="@/assets/avatar-profile.svg" alt="Profile Image">
                 </div>
-                <RouterLink v-if="!(currentUserName === adDetail?.user_client?.user_name)"
+                <RouterLink v-tooltip.top="'Ir al vendedor'" v-if="!(currentUserName === adDetail?.user_client?.user_name)"
                     :to="{ name: 'vendor', params: { id: adDetail?.user_client?.user_id } }">
                     <h2 class="profile-name">{{
                         adDetail?.user_client?.user_name }}</h2>
                 </RouterLink>
+                <i v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)" @click="openReportModal"
+                    class="justify-self-end report">
+                    <ReportFlag></ReportFlag>
+                </i>
             </div>
             <div v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)" class="reserved-box">
                 <span class="no-reserved-box" v-if="!adDetail?.post_reserved" @click="setReservation()">No Reservado
@@ -118,6 +147,13 @@ async function setReservation() {
                     </i>
                 </span>
                 <span v-else> Reservado
+                    <i class="book-mark">
+                        <BookMarkFilledCheck></BookMarkFilledCheck>
+                    </i>
+                </span>
+            </div>
+            <div v-else class="reserved-box">
+                <span v-if="adDetail?.post_reserved"> Reservado
                     <i class="book-mark">
                         <BookMarkFilledCheck></BookMarkFilledCheck>
                     </i>
@@ -144,6 +180,10 @@ async function setReservation() {
 </template>
 
 <style scoped>
+.report {
+    cursor: pointer;
+}
+
 .img-box {
     width: 100%;
     overflow: hidden;

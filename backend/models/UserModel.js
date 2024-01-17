@@ -37,7 +37,8 @@ export class UserModel {
                 data: {
                     user_email: user_data.email,
                     user_password: hashedPassword,
-                    user_salt: salt
+                    user_salt: salt,
+                    user_name: user_data.username
                 }
             });
 
@@ -269,6 +270,26 @@ export class UserModel {
         } catch (err) {
             console.log(err);
         }
+    }
+
+    static async getRanking() {
+        const topVendors = await prismadb.user_Client.findMany({
+            take: 3,
+            orderBy: [
+                {
+                    user_ranking: 'desc'
+                }
+            ],
+            where: {
+                NOT: [{
+                    user_ranking: null
+                }
+
+                ]
+            }
+        })
+
+        return topVendors;
     }
 
 }
