@@ -85,81 +85,96 @@ const getReports = async (userData: any) => {
   }
 }
 
+const dropPost = async (data: any) => {
+  if (confirm(`¿Quieres dar de baja el anuncio "${data.post.post_title}"`)) {
+    await fetch(`${apiEndpoint}/posts/drop/${data.post.post_id}`, {
+      method: "PATCH", headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${token.value}`
+      }
+    })
+    await getReports(data);
+  }
+};
+
 </script>
 
 <template>
-  <header>
-    <div class="logo">
-      <img src="@/assets/logo.png" alt="logo" />
-    </div>
-    <div class="profile-name">Admin</div>
-  </header>
-
-  <body>
-    <!-- <aside class="left-menu">
+  <!-- <aside class="left-menu">
       <h2>
         <UserInfo /> Usuarios
       </h2>
     </aside> -->
 
-    <main class="px-5">
-      <div class="heading" style="color: #8a6cf6">
-        <h1>Bienvenido al panel de control</h1>
-      </div>
-      <h2>Listado de usuarios</h2>
-      <DataTable :value="users" table-class="display">
-        <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
-        <Column key="modify" header="Modificar">
+  <main class="px-5">
+    <div class="heading" style="color: #8a6cf6">
+      <h1>Bienvenido al panel de control</h1>
+    </div>
+    <h2>Listado de usuarios</h2>
+    <DataTable :value="users" table-class="display">
+      <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
+      <Column key="modify" header="Modificar">
+        <template #body="slotProps">
+          <button class="table-options select-modify" @click="modifyUser(slotProps.data)">
+            <ModifyUser />
+          </button>
+        </template>
+      </Column>
+      <Column key="delete" header="Eliminar">
+        <template #body="slotProps">
+          <button class="table-options select-delete" @click="deleteUser(slotProps.data)">
+            <DeleteUser />
+          </button>
+        </template>
+      </Column>
+      <Column class="report" key="delete" header="Denuncias">
+        <template #body="slotProps">
+          <button class="table-options select-delete" @click="getReports(slotProps.data)">
+            Mostrar Denuncias
+          </button>
+        </template>
+      </Column>
+    </DataTable>
+    <template v-if="userSelected && complaints.length">
+      <h2>Listado de denuncias de {{ userSelected }}</h2>
+      <DataTable :value="complaints" table-class="display">
+        <Column key="delete" header="Foto del anuncio">
           <template #body="slotProps">
-            <button class="table-options select-modify" @click="modifyUser(slotProps.data)">
-              <ModifyUser />
-            </button>
+            <img :src="slotProps.data.post.post_photos[0]" alt="photo of product">
           </template>
         </Column>
-        <Column key="delete" header="Eliminar">
-          <template #body="slotProps">
-            <button class="table-options select-delete" @click="deleteUser(slotProps.data)">
-              <DeleteUser />
-            </button>
-          </template>
+        <Column field="post.post_title" header="Nombre del producto">
         </Column>
-        <Column class="report" key="delete" header="Denuncias">
+        <Column class="report" field="complaint_motive" header="Motivo">
+        </Column>
+        <Column class="report" field="complaint_text" header="Detalle">
+        </Column>
+        <Column class="report" header="">
           <template #body="slotProps">
-            <button class="table-options select-delete" @click="getReports(slotProps.data)">
-              Mostrar Denuncias
+            <button class="table-options select-delete" @click="dropPost(slotProps.data)">
+              Dar de baja
             </button>
           </template>
         </Column>
       </DataTable>
-      <template v-if="userSelected">
-        <h2>Listado de denuncias de {{ userSelected }}</h2>
-        <DataTable :value="complaints" table-class="display">
-          <Column field="complaint_text" header="Producto">
-            <!-- <template #body="slotProps">
-              <button class="table-options select-modify" @click="modifyUser(slotProps.data)">
-                <ModifyUser />
-              </button>
-              {{ slotProps.data }}
-            </template> -->
-          </Column>
-          <Column key="delete" header="Eliminar">
-            <template #body="slotProps">
-              <button class="table-options select-delete" @click="deleteUser(slotProps.data)">
-                <DeleteUser />
-              </button>
-            </template>
-          </Column>
-          <Column class="report" field="complaint_motive" header="Motivo">
-          </Column>
-        </DataTable>
-      </template>
-    </main>
-  </body>
+    </template>
+    <div v-else>
+      Este usuario no ha enviado ninguna denuncia.
+    </div>
+  </main>
+
 
   <Footer></Footer>
 </template>
 
 <style scoped>
+img {
+  width: 100px;
+  height: 100px;
+  border-radius: 6px;
+}
+
 .p-datatable {
   margin-bottom: 35px;
 }
