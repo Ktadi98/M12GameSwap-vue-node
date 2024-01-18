@@ -1,12 +1,16 @@
 <template>
   <NavBar />
-  <Platforms :platforms="platformsStore.platforms"></Platforms>
+  <Platforms></Platforms>
   <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5 mt-5">
     <SearchBar />
     <section class="filters-section w-100 d-flex flex-row gap-5 justify-content-center">
       <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
         @submit.prevent='updateGenreFilter(genre.genre_id)'>
-        <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
+        <div class="genre-div">
+          <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
+          <!-- <component :is="genreToIcon[genre.genre_name]"></component> -->
+        </div>
+
       </form>
       <form class="genre-box" @submit.prevent='genreFilter = -1'>
         <input type="submit" value="Todos">
@@ -42,13 +46,12 @@ import Footer from "../components/Footer.vue";
 import PostCard from "../components/PostCard.vue";
 import Platforms from '@/components/Platforms.vue';
 import { useRoute } from 'vue-router';
-import { usePlatformsStore } from '@/stores/platforms';
 import type { Product } from "../interfaces/Product.ts";
 import type { Genre } from '@/interfaces/Genre';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import Dropdown from 'primevue/dropdown';
-
+import RPGIcon from '@/components/Icons/RPGIcon.vue';
 
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
@@ -57,12 +60,6 @@ onMounted(() => {
 
 })
 
-
-
-const platformsStore = usePlatformsStore();
-platformsStore.fetchPlatforms();
-
-
 const genreFilter: Ref<number> = ref(-1);
 const genres: Ref<Genre[]> = ref([]);
 const route = useRoute();
@@ -70,6 +67,10 @@ const categoryId = ref(route.params.id);
 const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
 const criteria: Ref<string> = ref("A-Z");
+
+const genreToIcon: any = {
+  "RPG": RPGIcon
+}
 
 const filterCriterias = ref<string[]>([
   "A-Z",
@@ -222,6 +223,8 @@ input[type="submit"]:hover {
   background-color: #9f87f5;
   color: white;
 }
+
+.genre-div {}
 
 /* .criteria-box * {
   border-color: #9f87f5 !important;

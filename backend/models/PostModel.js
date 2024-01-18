@@ -100,7 +100,29 @@ export class PostModel {
         try {
             const categories = await prismadb.platform.findMany();
             //console.log(categories);
-            return [1, categories]
+
+            //Count how many post are in each category.
+            const conteoPostsPorPlataforma = await prismadb.post.groupBy({
+                by: ['platform_id'],
+                where: {
+                    post_status: true,
+                    post_buyed: false
+                },
+                _count: true,
+            });
+
+            console.log(conteoPostsPorPlataforma);
+
+            const agrupacion = []
+
+            conteoPostsPorPlataforma.forEach(counter => {
+                const c2 = categories.find(category => counter.platform_id === category.platform_id);
+                agrupacion.push({ platform_name: c2.platform_name, platform_count: counter._count, platform_id: c2.platform_id });
+            })
+
+            console.log(agrupacion);
+
+            return [1, categories, agrupacion]
         }
         catch (error) {
             console.log(error);

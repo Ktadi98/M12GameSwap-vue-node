@@ -54,9 +54,9 @@ export class PostController {
     };
 
     getCategories = async (req, res) => {
-        const [status, categories] = await this.postModel.getCategories(req.body);
+        const [status, categories, grouped] = await this.postModel.getCategories(req.body);
 
-        return res.json({ message: "Categories retrieved successfully!", categories: categories });
+        return res.json({ message: "Categories retrieved successfully!", categories: categories, grouped: grouped });
     };
 
     getPostByCategory = async (req, res) => {

@@ -7,20 +7,11 @@ import Footer from "../components/Footer.vue";
 import AppBar from "../components/AppBar.vue";
 import VendorsRanking from "../components/VendorsRanking.vue";
 import PostsHistory from "@/components/PostsHistory.vue";
-import { usePlatformsStore } from "@/stores/platforms";
-import { storeToRefs } from "pinia";
-
-
-const platformsStore = usePlatformsStore();
-
-
-platformsStore.fetchPlatforms();
-
 </script>
 
 <template>
   <NavBar></NavBar>
-  <Platforms :platforms="platformsStore.platforms"></Platforms>
+  <Platforms></Platforms>
   <main class="d-flex flex-column flex-grow-1 justify-content-center align-items-center">
     <div class="jumbotron jumbotron-fluid text-center my-4">
       <div class="container">
