@@ -4,7 +4,7 @@
       <div class="w-75 img-box">
         <img :src="props.product.post_photos[0]" alt="Product Image">
       </div>
-      <div class="product-info">
+      <div class="product-info px-3">
         <div class="product-name">{{ props.product.post_title }}</div>
         <div class="product-price">{{ props.product.post_price }}€</div>
         <div class="favorite-icon" @click="toggleFavorite">
@@ -66,12 +66,13 @@ const toggleFavorite = () => {
 }
 
 .product-info {
-  text-align: center;
+  align-self: start;
+  text-align: left;
 }
 
 .product-price {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 34px;
   color: #333;
   margin-bottom: 8px;
 }
