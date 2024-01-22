@@ -1,15 +1,16 @@
 <template>
-  <RouterLink class="col-12 col-md-4 col-lg-3" :to="{ name: 'adDetail', params: { id: props.product.post_id } }">
+  <RouterLink class="col-6 col-md-4 col-lg-2" :to="{ name: 'adDetail', params: { id: props.product.post_id } }">
     <div class="product-card w-100" v-if="product">
       <div class="w-75 img-box">
         <img :src="props.product.post_photos[0]" alt="Product Image">
       </div>
-      <div class="product-info px-3">
+      <div class="product-info px-3 py-2">
         <div class="product-name">{{ props.product.post_title }}</div>
         <div class="product-price">{{ props.product.post_price }}€</div>
         <div class="favorite-icon" @click="toggleFavorite">
           <i class="fas fa-heart" :class="{ 'favorited': isFavorited }"></i>
         </div>
+        <Chip :label="props.product.genre?.genre_name"></Chip>
       </div>
     </div>
   </RouterLink>
@@ -18,6 +19,7 @@
 <script setup lang="ts">
 import { ref, defineProps } from 'vue';
 import type { Product } from '@/interfaces/Product';
+import Chip from 'primevue/chip';
 
 const props = defineProps<{
   product: Product
@@ -33,7 +35,7 @@ const toggleFavorite = () => {
 <style scoped>
 .img-box {
   overflow: hidden;
-  height: 600px;
+  height: 20vw;
 }
 
 .img-box>img {
@@ -111,6 +113,19 @@ favorite-icon.favorited {
 
 .product-actions a:hover {
   background-color: #1976D2;
+}
+
+.p-chip {
+  background-color: #9f87f5;
+  color: white;
+
+}
+
+
+@media screen and (max-width: 700px) {
+  .img-box {
+    height: 600px;
+  }
 }
 </style>
 

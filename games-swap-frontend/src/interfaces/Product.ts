@@ -20,6 +20,10 @@ export interface Product {
         platform_id: number,
         platform_name: string
     },
+    genre?: {
+        genre_id: number,
+        genre_name: string
+    },
     user_client?: UserClient,
     user?: UserClient
 }

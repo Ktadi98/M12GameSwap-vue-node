@@ -149,6 +149,9 @@ export class PostModel {
                         { post_status: true },
                         { post_buyed: false }
                     ]
+                },
+                include: {
+                    genre: true
                 }
             });
 
@@ -173,6 +176,9 @@ export class PostModel {
                     NOT: {
                         user_id: userId
                     }
+                },
+                include: {
+                    genre: true
                 }
             });
 
@@ -229,6 +235,7 @@ export class PostModel {
             include:
             {
                 platform: true,
+                genre: true
             }
         });
 
@@ -253,12 +260,11 @@ export class PostModel {
                 NOT: {
                     user_id: userId
                 }
-
-                //TODO:Añadir tags incluidos??
             },
             include:
             {
                 platform: true,
+                genre: true
             }
         });
 

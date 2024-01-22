@@ -135,8 +135,9 @@ async function setReservation() {
                     <h2 class="profile-name">{{
                         adDetail?.user_client?.user_name }}</h2>
                 </RouterLink>
-                <i v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)" @click="openReportModal"
-                    class="justify-self-end report">
+                <i v-tooltip="'Poner queja'"
+                    v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)"
+                    @click="openReportModal" class="justify-self-end report">
                     <ReportFlag></ReportFlag>
                 </i>
             </div>

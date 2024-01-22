@@ -25,6 +25,13 @@ const props = defineProps<{
         </div>
     </article>
 </template>
+<style>
+/*Vue star color */
+.p-rating-icon {
+    color: #9F87F5;
+}
+</style>
+
 <style scoped>
 .img-box {
     min-width: 15%;
@@ -78,3 +85,4 @@ const props = defineProps<{
     }
 }
 </style>
+
