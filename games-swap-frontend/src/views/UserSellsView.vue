@@ -127,11 +127,11 @@ const categoriesToSalesMap = (categories: any, sales: any) => {
 }
 </script>
 <template>
-    <section v-if="sells.length > 0" class="w-75 px-5">
-        <Chart type="bar" :data="chartData" :options="chartOptions" />
-        <section class="mt-5 mb-1" v-for="sell in sells" :key="sell.purchase_id">
-            <PostRow :sell="sell" :post="sell?.post" :purchaseDate="new Date(sell?.purchase_created_at)" :purchased="true"
-                :selled="true">
+    <section v-if="sells.length > 0" class="d-flex gap-3 flex-column flex-lg-row w-75 px-5">
+        <Chart class="w-100" type="bar" :data="chartData" :options="chartOptions" />
+        <section class="w-100 mb-1 d-flex gap-2 flex-column sells-box">
+            <PostRow v-for="sell in sells" :sell="sell" :post="sell?.post"
+                :purchaseDate="new Date(sell?.purchase_created_at)" :purchased="true" :selled="true">
             </PostRow>
         </section>
     </section>
@@ -144,5 +144,16 @@ const categoriesToSalesMap = (categories: any, sales: any) => {
 .p-chart {
     padding: 0;
     margin-bottom: 50px;
+    width: 60%;
+}
+
+.sells-box {
+    width: 40%;
+}
+
+@media (max-width:568px) {
+    .p-chart {
+        width: 100%;
+    }
 }
 </style>

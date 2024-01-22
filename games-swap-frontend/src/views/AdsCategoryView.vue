@@ -3,19 +3,20 @@
   <Platforms></Platforms>
   <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5 mt-5">
     <SearchBar />
-    <section class="filters-section w-100 d-flex flex-row gap-5 justify-content-center">
+    <Divider></Divider>
+    <section class="filters-section w-100 d-flex flex-row gap-5 justify-content-start">
       <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
         @submit.prevent='updateGenreFilter(genre.genre_id)'>
         <div class="genre-div">
           <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
           <!-- <component :is="genreToIcon[genre.genre_name]"></component> -->
         </div>
-
       </form>
       <form class="genre-box" @submit.prevent='genreFilter = -1'>
         <input type="submit" value="Todos">
       </form>
     </section>
+    <Divider></Divider>
     <div class="w-100 criteria-box align-self-left">
       <Dropdown v-model="criteria" :options="filterCriterias" placeholder="Selecciona un filtro" />
       <!-- <select v-model="criteria">
@@ -52,7 +53,7 @@ import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import Dropdown from 'primevue/dropdown';
 import RPGIcon from '@/components/Icons/RPGIcon.vue';
-import Chip from 'primevue/chip';
+import Divider from 'primevue/divider';
 
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
