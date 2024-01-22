@@ -52,6 +52,7 @@ import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import Dropdown from 'primevue/dropdown';
 import RPGIcon from '@/components/Icons/RPGIcon.vue';
+import Chip from 'primevue/chip';
 
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
@@ -190,6 +191,8 @@ async function getPostsLogIn() {
 }
 
 fetchGenres();
+
+//If the user is logged in we don't need to retrieve his posts.
 if (!userIsLoggedIn.value) {
   getPosts();
 }
@@ -224,7 +227,10 @@ input[type="submit"]:hover {
   color: white;
 }
 
-.genre-div {}
+.post-box {
+  padding: 5vw;
+}
+
 
 /* .criteria-box * {
   border-color: #9f87f5 !important;
