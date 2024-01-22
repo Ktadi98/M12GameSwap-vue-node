@@ -17,7 +17,7 @@ const emit = defineEmits<{
   </VueFinalModal>
 </template>
 
-<style>
+<style scoped>
 .confirm-modal {
   display: flex;
   justify-content: center;
@@ -31,7 +31,8 @@ const emit = defineEmits<{
   border: 1px solid var(--Color-3, #000);
   background: var(--Color, #F6F6F6);
   padding: 2rem;
-  height: auto;
+  height: 250px;
+  width: auto;
 }
 
 .dark .confirm-modal-content {
@@ -51,7 +52,7 @@ h1 {
 .btn-delete {
   background-color: #f12121;
   color: white;
-  margin: 0 auto;
+  margin: auto;
   width: 70%;
 }
 
@@ -59,7 +60,7 @@ h1 {
   border-color: #9F87F5;
   color: #9F87F5;
   background-color: white;
-  margin: 0 auto;
+  margin: auto;
   width: 70%;
 }
 </style>

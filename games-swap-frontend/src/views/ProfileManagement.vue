@@ -5,13 +5,10 @@
         <main>
             <div>
                 <div class="button-container">
-                    <router-link to="/userProfile"> <button class="rounded-button">Ver reservas y
-                            compras</button></router-link>
                     <button class="rounded-button">Cambiar Contraseña</button>
-                    <router-link to="/editUserData"> <button class="rounded-button">Cambiar Datos del
-                            Perfil</button></router-link>
-                    <button class="rounded-button" @click="open">Buzón de sugerencias</button>
-                    <button type="submit" class="rounded-button">Eliminar Cuenta</button>
+                    <router-link to="/editUserData"> <button class="rounded-button">Cambiar Datos del Perfil</button></router-link>
+                    <button class="rounded-button" @click="openMailbox">Buzón de sugerencias</button>
+                    <button class="rounded-button" @click="openDeleteUser">Eliminar Cuenta</button>
                 </div>
             </div>
         </main>
@@ -22,8 +19,9 @@
 import { type Ref, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import NavBar from '@/components/NavBar.vue';
-import { useModal } from 'vue-final-modal';
+import {useModal} from 'vue-final-modal';
 import SuggestionsMailbox from '@/components/SuggestionsMailbox.vue';
+import DeleteUserProfile from '@/components/DeleteUserProfile.vue';
 
 const router = useRouter();
 
@@ -51,43 +49,53 @@ const sendData = () => {
 }
 
 
-const { open, close } = useModal({
+const { open:openMailbox, close: closeMailbox } = useModal({
     component: SuggestionsMailbox,
     attrs: {
         onConfirm() {
-            close();
+            openMailbox();
         },
         onCancel() {
-            close();
+            closeMailbox();
         },
-    }
+    },
 });
 
-
+const { open: openDeleteUser, close: closeDeleteUser } = useModal({
+    component: DeleteUserProfile,
+    attrs: {
+        onConfirm() {
+            openDeleteUser();
+        },
+        onCancel() {
+            closeDeleteUser();
+        },
+    },
+});
 
 </script>
 
 <style scoped>
 /* Estilos para los botones redondeados */
 .rounded-button {
-    display: block;
-    margin: 20px auto;
-    padding: 8px 8px;
-    background-color: #9f87f5;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
+  display: block;
+  margin: 20px auto; 
+  padding: 8px 8px; 
+  background-color: #9f87f5;
+  color: #fff;
+  border: none;
+  border-radius: 10px; 
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .rounded-button:hover {
-    background-color: #8a6cf6;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  background-color: #8a6cf6;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); 
 }
 
 /* Estilos para el contenedor de botones */
 .button-container {
-    text-align: center;
+  text-align: center;
 }
 </style>
