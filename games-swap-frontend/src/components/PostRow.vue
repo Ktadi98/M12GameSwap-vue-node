@@ -180,6 +180,12 @@ function formatCreationDate(date: string) {
         </section>
     </article>
 </template>
+<style>
+/*Vue star color */
+.p-rating-icon {
+    color: #9F87F5;
+}
+</style>
 <style scoped>
 .purple {
     color: #795aea;

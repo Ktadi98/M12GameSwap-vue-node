@@ -177,7 +177,8 @@ async function setReservation() {
             </div>
         </div>
     </main>
-    <Footer></Footer>
+    <!-- Footer commented to fix styles-->
+    <!-- <Footer></Footer> -->
 </template>
 
 <style scoped>

@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import Rating from 'primevue/rating';
 import type { Review } from '@/interfaces/Review';
+import { watch } from 'vue';
 
 
 const props = defineProps<{
-    review: Review
+    review: Review,
+    userId: number,
+    //fetchReviews: () => any
 }>()
+
+//When changing link in review, fetch vendor profile
+watch(() => props.userId, () => {
+    //props.fetchReviews();
+})
 
 </script>
 <template>
@@ -18,7 +26,9 @@ const props = defineProps<{
             <h3 class="price-box">{{ review.post.post_title }}</h3>
             <Rating :model-value="review.review_punctuation" :cancel="false" readonly></Rating>
             <p class="mt-4">{{ review.review_description }}</p>
-            <p>Por <b>{{ review.user_buyer.user_name }}</b></p>
+            <RouterLink :to="{ name: 'vendor', params: { id: review?.user_buyer?.user_id } }">
+                <p class="underline"><b> Por {{ review.user_buyer.user_name }}</b></p>
+            </RouterLink>
             <div>
                 <img :src="review.user_buyer.user_photo" alt="user_buyer_photo">
             </div>
@@ -33,6 +43,11 @@ const props = defineProps<{
 </style>
 
 <style scoped>
+.underline {
+    text-decoration: underline;
+    color: #795aea;
+}
+
 .img-box {
     min-width: 15%;
 }

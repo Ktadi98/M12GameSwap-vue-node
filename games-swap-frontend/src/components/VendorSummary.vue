@@ -24,6 +24,12 @@ const props = defineProps<{
         </div>
     </section>
 </template>
+<style>
+/*Vue star color */
+.p-rating-icon {
+    color: #9F87F5;
+}
+</style>
 <style scoped>
 .vendor-box {
     width: 90%;

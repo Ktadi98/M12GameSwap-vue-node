@@ -42,7 +42,7 @@ onMounted(async () => {
 <template>
     <section class="w-75">
         <h2 class="mb-4">Número de Valoraciones : {{ numberOfReviews }}</h2>
-        <ReviewRow v-for="review in reviews" :review="review" :key="review.review_id"></ReviewRow>
+        <ReviewRow v-for="review in reviews" :userId="props.id" :review="review" :key="review.review_id"></ReviewRow>
     </section>
 </template>
 <style scoped></style>
