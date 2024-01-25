@@ -2,6 +2,10 @@
     <div>
         <NavBar>
         </NavBar>
+        <section class="px-5">
+            <BreadCrumbs :items="items"></BreadCrumbs>
+
+        </section>
         <main>
             <div>
                 <div class="button-container">
@@ -25,8 +29,14 @@ import NavBar from '@/components/NavBar.vue';
 import { useModal } from 'vue-final-modal';
 import SuggestionsMailbox from '@/components/SuggestionsMailbox.vue';
 import DeleteUserProfile from '@/components/DeleteUserProfile.vue';
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 const router = useRouter();
+
+const items = ref([
+    { label: 'Home', route: '/' },
+    { label: 'Mi perfil ' },
+]);
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 

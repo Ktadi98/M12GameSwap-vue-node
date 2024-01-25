@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useToast, POSITION } from "vue-toastification";
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import { useRouter } from 'vue-router';
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 interface PostType {
     title: string,
@@ -180,9 +181,17 @@ async function sendPost() {
     }
 
 }
+
+const items = ref([
+    { label: 'Home', route: '/' },
+    { label: 'Subir anuncio' }
+]);
 </script>
 <template>
     <NavBar></NavBar>
+    <section class="px-5">
+        <BreadCrumbs :items="items"></BreadCrumbs>
+    </section>
     <header class="text-left text-md-center px-2 py-1 responsive-text ">Tu nuevo producto</header>
     <main
         class="d-flex flex-column flex-grow-1 justify-content-left align-items-center justify-content-md-center px-4 py-3 w-100">

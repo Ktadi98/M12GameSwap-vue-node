@@ -6,12 +6,18 @@ import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import router from '@/router';
-
+import Divider from 'primevue/divider';
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 const userStats = ref<Stats | null | any>(null as any);
 
+const items = ref([
+    { label: 'Home', route: '/' },
+    { label: 'Perfil ', route: '/profileManagement' },
+    { label: 'Reservas y Compras' }
+]);
 
 const getUserStats = async () => {
     try {
@@ -41,6 +47,10 @@ onMounted(
 </script>
 <template>
     <NavBar></NavBar>
+    <section class="px-4">
+        <BreadCrumbs :items="items"></BreadCrumbs>
+    </section>
+    <Divider></Divider>
     <main class="d-flex flex-column justify-content-center align-items-center mt-3 px-2 w-100">
         <VendorSummary :userStats="userStats"></VendorSummary>
         <section class="tabs-box d-flex justify-content-around gap-3 w-75 mb-4">

@@ -4,6 +4,9 @@
   <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5 mt-5">
     <SearchBar />
     <Divider></Divider>
+    <BreadCrumbs :items="items"></BreadCrumbs>
+    <Divider></Divider>
+
     <section class="filters-section w-100 d-flex flex-row gap-5 justify-content-start">
       <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
         @submit.prevent='updateGenreFilter(genre.genre_id)'>
@@ -54,9 +57,15 @@ import { storeToRefs } from 'pinia';
 import Dropdown from 'primevue/dropdown';
 import RPGIcon from '@/components/Icons/RPGIcon.vue';
 import Divider from 'primevue/divider';
-
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
+
+
+const items = ref([
+  { label: 'Home', route: '/' },
+  { label: 'Anuncios ' },
+]);
 
 onMounted(() => {
 
@@ -214,7 +223,6 @@ watch(route, () => {
 }, { immediate: true, deep: true })
 
 </script>
-  
 <style scoped>
 input[type="submit"]:hover {
   background-color: white;

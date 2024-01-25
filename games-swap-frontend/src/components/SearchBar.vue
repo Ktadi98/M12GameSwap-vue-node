@@ -57,7 +57,7 @@ async function fetchResults() {
       <button class="button" type="submit">Buscar</button>
     </div>
     <section v-if="showResults && numberOfResults > 0 && searchTerm.length > 0"
-      class="results search-results-box w-100 z-1 position-absolute">
+      class="results search-results-box w-100 position-absolute">
       <ul class="w-100 ">
         <li class="px-3 pt-3 pb-1" v-for="post in searchResults" :key="post.post_id">
           <RouterLink :to="{ name: 'searchResults', query: { search: searchTerm } }" @click.prevent="clearResults">

@@ -3,6 +3,8 @@
     <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5 mt-5">
         <SearchBar />
         <Divider></Divider>
+        <BreadCrumbs :items="items"></BreadCrumbs>
+        <Divider></Divider>
         <section class="filters-section w-100 d-flex flex-row gap-5 justify-content-start">
             <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
                 @submit.prevent='updateGenreFilter(genre.genre_id)'>
@@ -42,12 +44,14 @@ import SearchBar from "../components/SearchBar.vue";
 import Footer from "../components/Footer.vue";
 import PostCard from "../components/PostCard.vue";
 import { useRoute, type LocationQuery } from 'vue-router';
-import type { Product } from "../interfaces/Product.ts";
+import type { Product } from "../interfaces/Product";
 import type { Genre } from '@/interfaces/Genre';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import Dropdown from 'primevue/dropdown';
 import Divider from 'primevue/divider';
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
+
 
 onMounted(() => {
     // fetchGenres();
@@ -62,6 +66,11 @@ const route = useRoute();
 const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
 const criteria: Ref<string> = ref("A-Z");
+
+const items = ref([
+    { label: 'Home', route: '/' },
+    { label: 'Anuncios ' },
+]);
 const filterCriterias = ref<string[]>([
     "A-Z",
     "Z-A",
@@ -197,6 +206,27 @@ watch(route, () => {
 }, { immediate: true, deep: true })
 
 </script>
+
+<style>
+.p-breadcrumb {
+    width: fit-content !important;
+    padding: 5px !important;
+}
+
+.p-breadcrumb-home {
+    display: none;
+}
+
+.p-breadcrumb-list {
+    margin: 0;
+    padding: 0;
+}
+
+/* .p-menuitem-link {
+  color: #9f87f5 !important;
+} */
+</style>
+
     
 <style scoped>
 input[type="submit"]:hover {

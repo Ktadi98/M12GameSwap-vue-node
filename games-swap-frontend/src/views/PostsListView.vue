@@ -6,7 +6,13 @@ import { useUserPosts } from '@/stores/userPosts';
 import { onBeforeMount, onMounted, reactive, ref, watch, type Ref } from 'vue';
 import type { Product } from '@/interfaces/Product';
 import PostRow from '@/components/PostRow.vue';
+import Divider from 'primevue/divider';
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
+const items = ref([
+    { label: 'Home', route: '/' },
+    { label: 'Tus anuncios' }
+]);
 
 const authStore = useAuthStore();
 
@@ -77,6 +83,11 @@ onMounted(() => {
         <p class="header-title px-4 py-2">Tus anuncios</p>
         <p class="header-description px-4 py-2">Aquí puedes gestionar todos los anuncios que has subido</p>
     </header>
+    <Divider></Divider>
+    <section class="px-4">
+        <BreadCrumbs :items="items"></BreadCrumbs>
+    </section>
+    <Divider></Divider>
     <main class="d-flex flex-column px-md-4 mx-3 mx-md-0 align-items-md-center">
         <section v-if="loading">
             <h2>Cargando tus anuncios...</h2>

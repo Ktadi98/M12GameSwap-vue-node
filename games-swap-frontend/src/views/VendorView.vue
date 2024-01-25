@@ -6,6 +6,8 @@ import type { Product } from '@/interfaces/Product';
 import type { Stats } from '@/interfaces/Stats';
 import router from '@/router';
 import { computed, onMounted, ref } from 'vue';
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
 const props = defineProps<{
     id: number,
@@ -55,14 +57,22 @@ onMounted(
     }
 );
 
+const items = ref([
+    { label: 'Home', route: '/' },
+    { label: 'Perfil vendedor' }
+]);
 
 </script>
 <template>
     <NavBar></NavBar>
+    <section class="px-5">
+        <BreadCrumbs :items="items"></BreadCrumbs>
+    </section>
     <main class="d-flex flex-column justify-content-center align-items-center mt-3 w-100">
         <SearchBar></SearchBar>
         <VendorSummary :userStats="userStats"></VendorSummary>
         <!-- <h2>{{ id }}</h2> -->
+        {{ $route.redirectedFrom }}
         <section class="tabs-box d-flex justify-content-around gap-3 w-75">
             <div class="d-flex flex-column align-items-center justify-content-center">
                 <RouterLink :to="{ name: 'vendor_posts' }">
