@@ -1,11 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import UploadPostViewVue from '@/views/UploadPostView.vue';
-import AdDetail from '@/views/AdDetail.vue';
-import AdsCategoryViewVue from '@/views/AdsCategoryView.vue';
-import ControlPanelVue from '@/views/ControlPanel.vue';
-import PostListView from '@/views/PostsListView.vue';
-import FavoritesListVue from '@/views/FavoritesList.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,20 +9,6 @@ const router = createRouter({
       name: 'home',
       component: () => import('../views/HomeView.vue')
     },
-    // {
-    //   path: '/profile',
-    //   name: 'profile',
-    //   component: () => import('../views/ProfileView.vue'),
-    //   beforeEnter: (to, from, next) => {
-    //     const authStore = useAuthStore();
-    //     // Verificar si el usuario tiene un token válido
-    //     if (authStore.userIsLoggedIn) {
-    //       next();
-    //     } else {
-    //       next('/'); // Redirigir al usuario a la página de inicio 
-    //     }
-    //   }
-    // },
     {
       path: '/profileManagement',
       name: 'profileManagement',
@@ -72,6 +52,15 @@ const router = createRouter({
       path: '/controlPanel',
       name: 'controlPanel',
       component: () => import('@/views/ControlPanel.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     },
     {
       path: '/postsList',
@@ -114,7 +103,16 @@ const router = createRouter({
     {
       path: '/editUserData',
       name: 'editUserData',
-      component: () => import('@/views/EditUserData.vue')
+      component: () => import('@/views/EditUserData.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     },
     {
       path: '/vendor/:id',
@@ -146,21 +144,57 @@ const router = createRouter({
       path: '/userProfile',
       name: 'user_profile',
       component: () => import('@/views/UserProfileView.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      },
       children: [
         {
           path: 'purchases',
           name: 'purchases',
           component: () => import('@/views/UserPurchasesView.vue'),
+          beforeEnter: (to, from, next) => {
+            const authStore = useAuthStore();
+            // Verificar si el usuario tiene un token válido
+            if (authStore.userIsLoggedIn) {
+              next();
+            } else {
+              next('/'); // Redirigir al usuario a la página de inicio 
+            }
+          }
         },
         {
           path: 'sells',
           name: 'sells',
-          component: () => import('@/views/UserSellsView.vue')
+          component: () => import('@/views/UserSellsView.vue'),
+          beforeEnter: (to, from, next) => {
+            const authStore = useAuthStore();
+            // Verificar si el usuario tiene un token válido
+            if (authStore.userIsLoggedIn) {
+              next();
+            } else {
+              next('/'); // Redirigir al usuario a la página de inicio 
+            }
+          }
         },
         {
           path: 'reservations',
           name: 'reservations',
-          component: () => import("@/views/UserReservations.vue")
+          component: () => import("@/views/UserReservations.vue"),
+          beforeEnter: (to, from, next) => {
+            const authStore = useAuthStore();
+            // Verificar si el usuario tiene un token válido
+            if (authStore.userIsLoggedIn) {
+              next();
+            } else {
+              next('/'); // Redirigir al usuario a la página de inicio 
+            }
+          }
         }
       ]
     },
@@ -169,6 +203,18 @@ const router = createRouter({
       name: 'review',
       component: () => import('@/views/WriteReviewView.vue'),
       props: route => ({ ...route.params, ...route.query, postName: route.query.postName, postId: parseInt(route.params.id as string) }),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (authStore.userIsLoggedIn) {
+          next();
+        } else {
+          next('/'); // Redirigir al usuario a la página de inicio 
+        }
+      }
+    },
+    {
+      path: '/:pathMatch(.*)*', component: () => import('../views/PageNotFound.vue')
     }
   ]
 })

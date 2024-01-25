@@ -79,6 +79,7 @@ const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
 const criteria: Ref<string> = ref("A-Z");
 
+//TODO
 const genreToIcon: any = {
   "RPG": RPGIcon
 }
@@ -223,6 +224,16 @@ watch(route, () => {
 }, { immediate: true, deep: true })
 
 </script>
+<style>
+.p-dropdown:not(.p-disabled):hover {
+  border-color: #9f87f5;
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  color: #9f87f5;
+  background: #F0FDFA;
+}
+</style>
 <style scoped>
 input[type="submit"]:hover {
   background-color: white;
