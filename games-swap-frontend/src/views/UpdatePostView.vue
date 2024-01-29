@@ -4,42 +4,27 @@ import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
-import { useToast, POSITION } from "vue-toastification";
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import useCustomToast from "@/composables/useCustomToast";
 
-interface PostType {
-    title: string,
-    description: string,
-    category: string,
-    genre: string,
-    price: number,
-    images: any[],
-    state: string
-}
 
-const toast = useToast();
+// interface PostType {
+//     title: string,
+//     description: string,
+//     category: string,
+//     genre: string,
+//     price: number,
+//     images: any[],
+//     state: string
+// }
+
 const authStore = useAuthStore();
 
 const route = useRoute();
 const router = useRouter();
 
-
-function triggerToast() {
-    toast.success("¡Producto actualizado con éxito!", {
-        position: POSITION.BOTTOM_RIGHT,
-        timeout: 2000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: true,
-        hideProgressBar: false,
-        closeButton: false,
-        icon: "fas fa-rocket",
-        rtl: false
-    });
-}
+const { triggerToast } = useCustomToast("¡Producto actualizado con éxito!");
 
 const platforms = ["PS5", "PS4", "PS3", "Nintendo Switch", "Xbox One", "Xbox Series X/S", "Retro"];
 const genres = ["Acción", "Aventura", "Plataformas", "RPG", "Puzzle", "Indie", "Lucha"];
@@ -171,8 +156,8 @@ async function sendPost() {
 
         const data: any = await response.json();
         triggerToast();
-        router.back();
-        console.log(data);
+        router.push("/postsList");
+        // console.log(data);
 
     } catch (err: any) {
         errorMessages.value.push("Ha habido un problema al actualizar tu anuncio. Por favor, inténtalo de nuevo más tarde.");

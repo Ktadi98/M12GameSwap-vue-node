@@ -17,7 +17,7 @@ function closeModal() {
     emit('confirm');
 }
 
-const { triggerToast } = useCustomToast("Reporte enviado con éxito. El administrador se encarga.")
+const { triggerToast } = useCustomToast("Reporte enviado con éxito. El administrador se encargará de revisarlo.")
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 

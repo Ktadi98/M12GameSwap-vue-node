@@ -83,6 +83,9 @@ function formatCreationDate(date: string) {
 
 </script>
 <template>
+    <!-- <template v-if="!post.post_buyed">
+
+    </template> -->
     <article
         class="w-100 post-row d-flex flex-wrap position-relative flex-md-nowrap gap-2 align-items-center justify-content-start py-2 px-3">
         <div class="img-box">
@@ -92,6 +95,7 @@ function formatCreationDate(date: string) {
             <h3 class="price-box">{{ props.post.post_price }}€</h3>
             <p class="title-box">{{ props.post.post_title }}</p>
         </div>
+        <!-- Rendering information for user post list -->
         <div v-if="!purchased && !selled && !reserved" class="dates-box d-none d-lg-flex gap-2 mx-5 flex-grow-1">
             <div class="published d-flex flex-column">
                 <h4>Actualizado</h4>
@@ -102,25 +106,28 @@ function formatCreationDate(date: string) {
                 <p>{{ formatCreationDate(props.post.post_created_at) }}</p>
             </div>
         </div>
+        <!-- Rendering information for user buyed products in his profile -->
         <div class="flex-grow-2" v-else-if="purchased && !selled">
             <p>Comprado el {{ formatPurchaseDate() }}</p>
             <RouterLink :to="{ name: 'vendor', params: { id: post.user_client?.user_id } }">
                 <p class="underline"> a {{ post.user_client?.user_name }}</p>
             </RouterLink>
         </div>
+        <!-- Rendering information for user reservations in his profile -->
         <div v-else-if="reserved && !purchased && !selled">
             <p>Reservado el {{ formatPurchaseDate() }}</p>
             <RouterLink :to="{ name: 'vendor', params: { id: post.user_client?.user_id } }">
                 <p class="underline"> a {{ post.user_client?.user_name }}</p>
             </RouterLink>
         </div>
+        <!-- Rendering information for user sells in his profile -->
         <div v-else>
             <p>Vendido el {{ formatPurchaseDate() }}</p>
             <RouterLink :to="{ name: 'vendor', params: { id: sell?.user?.user_id } }">
                 <p class="underline"> a {{ sell?.user?.user_name }}</p>
             </RouterLink>
-
         </div>
+        <!-- Rendering product detail for the post list view of the user-->
         <div v-if="!purchased && !selled && !reserved" class="icons-box position-relative d-flex gap-2">
             <div v-tooltip.top="'No reservado'" v-if="!post.post_reserved" class="icon-box reservation">
                 <Bookmark></Bookmark>
@@ -155,12 +162,14 @@ function formatCreationDate(date: string) {
             class="text-center ms-4 ms-md-0" @click="openDeleteModal">
             <TrashCan></TrashCan>
         </div>
+        <!-- Rendering information for user buyed products that can be reviewed -->
         <RouterLink v-else-if="purchased && !post.post_reviewed && !sell"
             :to="{ name: 'review', params: { postId: props.post.post_id }, query: { postName: props.post.post_title } }">
             <div v-tooltip="'Escribe una reseña'" class="text-end ms-4 ms-md-0">
                 <ReviewIcon></ReviewIcon>
             </div>
         </RouterLink>
+        <!-- Rendering information for user products that had been already reserved -->
         <section class="reservation-options-box d-flex flex-column flex-md-row gap-2"
             v-else-if="reserved && !purchased && !post.post_reviewed">
             <div class="icon-box reserve d-flex py-1 px-2" @click="openRemoveReserveModal">

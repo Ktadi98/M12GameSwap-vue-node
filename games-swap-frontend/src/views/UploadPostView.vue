@@ -3,22 +3,23 @@ import NavBar from '@/components/NavBar.vue';
 import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
-import { useToast, POSITION } from "vue-toastification";
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import { useRouter } from 'vue-router';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import useCustomToast from "@/composables/useCustomToast";
 
-interface PostType {
-    title: string,
-    description: string,
-    category: string,
-    genre: string,
-    price: number,
-    images: any[],
-    state: string
-}
+// interface PostType {
+//     title: string,
+//     description: string,
+//     category: string,
+//     genre: string,
+//     price: number,
+//     images: any[],
+//     state: string
+// }
 
-const toast = useToast();
+const { triggerToast } = useCustomToast("¡Tu nuevo producto se ha subido!");
+
 
 const platforms = ["PS5", "PS4", "PS3", "Nintendo Switch", "Xbox One", "Xbox Series X/S", "Retro"];
 const genres = ["Acción", "Aventura", "Plataformas", "RPG", "Puzzle", "Indie", "Lucha"];
@@ -57,25 +58,6 @@ const validatePost = () => {
         error.value = true;
     }
 }
-
-function triggerToast() {
-
-    toast.success("¡Producto subido!", {
-        position: POSITION.BOTTOM_RIGHT,
-        timeout: 5000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: true,
-        hideProgressBar: false,
-        closeButton: false,
-        icon: "fas fa-rocket",
-        rtl: false
-    });
-
-}
-
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -168,13 +150,15 @@ async function sendPost() {
             return;
         }
 
-        const data: any = await response.json();
+        //const data: any = await response.json();
 
-        console.log(data);
+        //console.log(data);
 
-        //Toast trigger
+        //Toast success trigger
         triggerToast();
-        router.back();
+
+        //We redirect to the user's posts list.
+        router.push("/postsList");
 
     } catch (err: any) {
         errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
