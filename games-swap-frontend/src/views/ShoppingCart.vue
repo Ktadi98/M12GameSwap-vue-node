@@ -1,53 +1,52 @@
 <template>
-<head>
+  <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="globals.css" />
-    <link rel="stylesheet" href="styleguide.css" />
-    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="tiquet-de-compra">
-      <div class="overlap-group-wrapper">
-        <div class="overlap-group">
-          <div class="text-wrapper">Mi Carro</div>
-          <div class="div">DETALLE DE LA COMPRA</div>
-          <img class="rectangle" src="img/rectangle-237.png" />
-          <p class="nombre-resident-evil">
-            <span class="span">Nombre: </span> <span class="text-wrapper-2">Resident evil 7</span>
-          </p>
-          <p class="tipo-videojuego">
-            <span class="text-wrapper-3">Tipo:</span> <span class="text-wrapper-4"> PS4, Videojuego</span>
-          </p>
-          <p class="precio"><span class="text-wrapper-3">Precio: </span> <span class="text-wrapper-4">10€</span></p>
-          <div class="text-wrapper-5">Dirección de envío</div>
-          <div class="overlap">
-            <div class="layer-wrapper"><img class="layer" src="img/layer-1.svg" /></div>
-            <div class="overlap-2">
-              <div class="text-wrapper-6">Carrer Major, 44</div>
-              <div class="text-wrapper-7">08211, Castellar del vallès</div>
+        <div class="overlap-group-wrapper">
+            <div class="overlap-group">
+                <div class="text-wrapper title">Mi Carro</div>
+                <div class="div">DETALLE DE LA COMPRA</div>
+                <img class="rectangle" src="" />
+                <p class="nombre-resident-evil">
+                    <span class="span">Nombre: </span> <span class="text-wrapper-2 producto-nombre">Resident evil 7</span>
+                </p>
+                <p class="tipo-videojuego">
+                    <span class="text-wrapper-3">Tipo:</span> <span class="text-wrapper-4 producto-tipo">PS4, Videojuego</span>
+                </p>
+                <p class="precio"><span class="text-wrapper-3">Precio: </span> <span class="text-wrapper-4 producto-precio">10€</span></p>
+                <div class="text-wrapper-5">Dirección de envío</div>
+                <div class="overlap direccion-envio">
+                    <div class="layer-wrapper"><img class="layer" src="../../public/imgs/home.svg" /></div>
+                    <div class="overlap-2">
+                        <div class="text-wrapper-6 direccion-calle">Carrer Major, 44</div>
+                        <div class="text-wrapper-7 direccion-codigo">08211, Castellar del vallès</div>
+                    </div>
+                    <div class="text-wrapper-8">&gt;</div>
+                </div>
+                <div class="overlap-3">
+                    <div class="text-wrapper-9 metodo-pago">VISA</div>
+                    <div class="frame-wrapper"><img class="frame" src="../../public/imgs/visa.png" /></div>
+                    <div class="text-wrapper-10 tarjeta-numero">*******03</div>
+                    <div class="text-wrapper-11">&gt;</div>
+                </div>
+                <div class="text-wrapper-12">Método de pago</div>
+                <div class="text-wrapper-13 subtotal">13€</div>
+                <div class="text-wrapper-14 total">10€</div>
+                <div class="text-wrapper-15 gastos-envio">3€</div>
+                <div class="text-wrapper-16">Información de la compra</div>
+                <div class="text-wrapper-17">Subtotal</div>
+                <div class="text-wrapper-18">Total</div>
+                <div class="text-wrapper-19">Gastos de envío</div>
+                <div class="div-wrapper"><div class="text-wrapper-20 boton-comprar">COMPRAR</div></div>
             </div>
-            <div class="text-wrapper-8">&gt;</div>
-          </div>
-          <div class="overlap-3">
-            <div class="text-wrapper-9">VISA</div>
-            <div class="frame-wrapper"><img class="frame" src="img/frame.svg" /></div>
-            <div class="text-wrapper-10">*******03</div>
-            <div class="text-wrapper-11">&gt;</div>
-          </div>
-          <div class="text-wrapper-12">Método de pago</div>
-          <div class="text-wrapper-13">13€</div>
-          <div class="text-wrapper-14">10€</div>
-          <div class="text-wrapper-15">3€</div>
-          <div class="text-wrapper-16">Información de la compra</div>
-          <div class="text-wrapper-17">Subtotal</div>
-          <div class="text-wrapper-18">Total</div>
-          <div class="text-wrapper-19">Gastos de envío</div>
-          <div class="div-wrapper"><div class="text-wrapper-20">COMPRAR</div></div>
         </div>
-      </div>
     </div>
   </body>
 </template>
+
+
 <style scoped>
 .tiquet-de-compra {
   background-color: #ffffff;

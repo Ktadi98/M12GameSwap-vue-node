@@ -169,7 +169,13 @@ const router = createRouter({
       name: 'review',
       component: () => import('@/views/WriteReviewView.vue'),
       props: route => ({ ...route.params, ...route.query, postName: route.query.postName, postId: parseInt(route.params.id as string) }),
-    }
+    },
+    {
+      path: '/ShoppingCart',
+      name: 'cart',
+      component: () => import('@/views/ShoppingCart.vue'),
+      props: route => ({ ...route.params, ...route.query, postName: route.query.postName, postId: parseInt(route.params.id as string) }),
+    },
   ]
 })
 

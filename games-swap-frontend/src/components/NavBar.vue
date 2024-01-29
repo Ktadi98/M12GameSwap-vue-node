@@ -25,7 +25,12 @@
             <div @click="logOut">Cerrar sesión</div>
           </div>
         </div>
+      
         <button v-else class="button access" @click="open">Acceder</button>
+        <router-link v-tooltip.bottom="'Accede al carrito'" v-if="authStore.userIsLoggedIn" class="shopping_cart" to="/ShoppingCart" >
+          <shoppingCart></shoppingCart>
+        </router-link>
+        
       </div>
     </div>
   </nav>
@@ -43,6 +48,7 @@ import BackArrowIcon from "@/components/Icons/BackArrow.vue";
 import PostUploadIcon from './Icons/PostUploadIcon.vue';
 import Divider from 'primevue/divider';
 import { usePostsHistoryStore } from '@/stores/postsHistory';
+import ShoppingCart from './Icons/ShoppingCart.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
