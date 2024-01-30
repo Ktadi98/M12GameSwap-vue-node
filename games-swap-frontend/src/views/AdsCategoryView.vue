@@ -38,6 +38,8 @@
         <h2>No hay anuncios disponibles para esta categoria. Échale un vistazo a las demás.</h2>
       </div>
     </section>
+    <VendorsRanking></VendorsRanking>
+    <PostsHistory></PostsHistory>
   </main>
   <Footer></Footer>
 </template>
@@ -58,6 +60,8 @@ import Dropdown from 'primevue/dropdown';
 import RPGIcon from '@/components/Icons/RPGIcon.vue';
 import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import VendorsRanking from "../components/VendorsRanking.vue";
+import PostsHistory from "@/components/PostsHistory.vue";
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 

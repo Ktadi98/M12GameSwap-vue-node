@@ -33,6 +33,8 @@
                 <h2>No hay anuncios disponibles para esta búsqueda. Prueba a buscar otra cosa.</h2>
             </div>
         </section>
+        <VendorsRanking></VendorsRanking>
+        <PostsHistory></PostsHistory>
     </main>
     <Footer></Footer>
 </template>
@@ -51,7 +53,8 @@ import { storeToRefs } from 'pinia';
 import Dropdown from 'primevue/dropdown';
 import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
-
+import VendorsRanking from "../components/VendorsRanking.vue";
+import PostsHistory from "@/components/PostsHistory.vue";
 
 onMounted(() => {
     // fetchGenres();

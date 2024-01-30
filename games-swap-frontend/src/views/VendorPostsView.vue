@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Product } from '@/interfaces/Product';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import PostCard from '@/components/PostCard.vue';
 const props = defineProps<{
     id: number,
@@ -9,6 +9,7 @@ const props = defineProps<{
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const posts = ref<Product[]>([]);
 
+const filteredPosts = computed<Product[]>(() => filterTerm.value === "" ? posts.value : posts.value.filter(post => post.post_title.toLowerCase().startsWith(filterTerm.value)))
 
 onMounted(async () => {
     try {
@@ -23,11 +24,27 @@ onMounted(async () => {
         console.error(error);
     }
 })
+
+const filterTerm = ref<string>("");
+
+watch(() => filterTerm, (newSearchterm, oldSearchTerm) => {
+    filterTerm.value = filterTerm.value.toLowerCase();
+});
+
 </script>
 <template>
+    <form class="d-flex mb-3 w-75 position-relative">
+        <div class="search w-100 d-flex gap-2 flex-row align-items-center justify-content-center me-2">
+            <div class="d-flex justify-content-center align-items-center">
+                <img src="/imgs/search-icon.svg" alt="magnifying glass" />
+            </div>
+            <input type="text" v-model.trim="filterTerm" class="rounded-5 flex-grow-1 w-100"
+                placeholder="Filtrar productos del vendedor" aria-label="Search" />
+        </div>
+    </form>
     <section class="post-box container-fluid">
         <div v-if="posts.length > 0" class="row">
-            <PostCard v-for="post in posts" :key="post.post_id" :product="post"></PostCard>
+            <PostCard v-for="post in filteredPosts" :key="post.post_id" :product="post"></PostCard>
         </div>
         <div v-else>
             <h2>No hay anuncios disponibles.</h2>

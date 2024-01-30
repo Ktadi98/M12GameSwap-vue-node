@@ -7,6 +7,8 @@ import type { Stats } from '@/interfaces/Stats';
 import router from '@/router';
 import { computed, onMounted, ref } from 'vue';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import VendorsRanking from "../components/VendorsRanking.vue";
+import PostsHistory from "@/components/PostsHistory.vue";
 import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
 const props = defineProps<{
@@ -84,6 +86,8 @@ const items = ref([
             </RouterLink>
         </section>
         <RouterView></RouterView>
+        <VendorsRanking></VendorsRanking>
+        <PostsHistory></PostsHistory>
     </main>
 </template>
 <style scoped>
