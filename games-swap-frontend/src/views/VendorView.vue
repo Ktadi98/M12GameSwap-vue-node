@@ -86,7 +86,7 @@ const items = ref([
             </RouterLink>
         </section>
         <RouterView></RouterView>
-        <VendorsRanking></VendorsRanking>
+        <!-- <VendorsRanking></VendorsRanking> -->
         <PostsHistory></PostsHistory>
     </main>
 </template>

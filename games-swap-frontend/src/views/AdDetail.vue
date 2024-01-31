@@ -135,9 +135,9 @@ async function setReservation() {
                     <h2 class="profile-name">{{
                         adDetail?.user_client?.user_name }}</h2>
                 </RouterLink>
-                <i v-tooltip="'Poner queja'"
+                <i v-tooltip.top="'Poner queja'"
                     v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)"
-                    @click="openReportModal" class="justify-self-end report">
+                    @click="openReportModal" class="justify-self-end ms-2 report">
                     <ReportFlag></ReportFlag>
                 </i>
             </div>
@@ -184,6 +184,18 @@ async function setReservation() {
 <style scoped>
 .report {
     cursor: pointer;
+    border: 1px solid lightgray;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.report:hover {
+    transform: translateY(-6px);
 }
 
 .img-box {

@@ -234,8 +234,15 @@ watch(route, () => {
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  color: #9f87f5;
-  background: #F0FDFA;
+  color: black;
+  background: #c1b2f7;
+}
+
+.p-dropdown:not(.p-disabled).p-focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #c1b2f7;
+  border-color: #9f87f5;
 }
 </style>
 <style scoped>

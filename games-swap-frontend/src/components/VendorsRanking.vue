@@ -10,7 +10,7 @@ const star = ref(1);
 </script>
 <template>
     <section class="w-100 text-center">
-        <h2>Top vendedores</h2>
+        <h2 class=" mt-4 mb-3 display-6 font-weight-bold">Top vendedores</h2>
         <section class="d-flex justify-content-center gap-2 px-4">
             <article class="vendor-card" v-for="vendor in bestVendors" :key="vendor.user_id">
                 <!-- <Avatar image="../../public/imgs/logo-app-2.png" :label="vendor.user_name.substring(1)" size="xlarge"

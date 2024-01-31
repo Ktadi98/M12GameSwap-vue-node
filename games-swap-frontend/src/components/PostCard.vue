@@ -4,13 +4,16 @@
       <div class="w-75 img-box">
         <img :src="props.product.post_photos[0]" alt="Product Image">
       </div>
-      <div class="product-info px-3 py-2">
+      <div class="product-info w-100 px-3 py-2">
         <div class="product-name">{{ props.product.post_title }}</div>
         <div class="product-price">{{ props.product.post_price }}€</div>
         <div class="favorite-icon" @click="toggleFavorite">
           <i class="fas fa-heart" :class="{ 'favorited': isFavorited }"></i>
         </div>
         <Chip :label="props.product.genre?.genre_name"></Chip>
+        <div v-if="props.product.post_reserved" class="purple icon-box px-2  reserve-box">
+          <BookMarkFilledAlt></BookMarkFilledAlt><span>Reservado</span>
+        </div>
       </div>
     </div>
   </RouterLink>
@@ -20,6 +23,7 @@
 import { ref, defineProps } from 'vue';
 import type { Product } from '@/interfaces/Product';
 import Chip from 'primevue/chip';
+import BookMarkFilledAlt from './Icons/BookMarkFilledAlt.vue';
 
 const props = defineProps<{
   product: Product
@@ -33,6 +37,12 @@ const toggleFavorite = () => {
 </script>
 
 <style scoped>
+.reserve-box {
+  position: absolute;
+  top: -30px;
+  left: 10px;
+}
+
 .img-box {
   overflow: hidden;
   height: 20vw;
@@ -70,6 +80,7 @@ const toggleFavorite = () => {
 .product-info {
   align-self: start;
   text-align: left;
+  position: relative;
 }
 
 .product-price {
@@ -119,6 +130,18 @@ favorite-icon.favorited {
   background-color: #9f87f5;
   color: white;
 
+}
+
+.purple {
+  color: #795aea;
+}
+
+.icon-box {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 10px;
+  border: 2px solid rgb(229, 229, 229);
+  transition: all 0.2s ease-out;
+  cursor: pointer;
 }
 
 
