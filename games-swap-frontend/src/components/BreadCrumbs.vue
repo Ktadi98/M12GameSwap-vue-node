@@ -28,6 +28,7 @@ const props = defineProps<{
 .p-breadcrumb {
     width: fit-content !important;
     padding: 5px !important;
+    border: none;
 }
 
 .p-breadcrumb-home {

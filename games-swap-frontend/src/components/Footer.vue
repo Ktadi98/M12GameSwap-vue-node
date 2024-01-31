@@ -1,6 +1,6 @@
 <template>
   <!-- Footer -->
-  <footer class="text-center text-lg-start bg-light text-muted w-100">
+  <footer class="text-center text-lg-start bg-light text-muted w-100 mt-3">
     <!-- Section: Links  -->
     <section class="py-4 w-100">
       <div class="container text-center text-md-start mt-5">
@@ -10,9 +10,9 @@
           <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
             <!-- Content -->
             <h6 class="text-uppercase fw-bold mb-4"><i class="fas fa-gem me-3"></i>GAMESWAP</h6>
-            <div class="overflow-hidden">
+            <!-- <div class="overflow-hidden">
               <img src="/imgs/logo-1.png" class="d-block mw-25 w-100 m" alt="brand logo" />
-            </div>
+            </div>  -->
           </div>
           <!-- Grid column -->
 
@@ -65,9 +65,9 @@
 
           <!-- Left -->
           <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-            <span>Redes sociales : </span>
+            <!-- <span>Redes sociales : </span> -->
             <!-- Right -->
-            <div class="d-flex flex-row gap-3">
+            <!-- <div class="d-flex flex-row gap-3">
               <a href="" class="me-4 text-reset">
                 <i class="fab fa-facebook-f">FACEBOOK</i>
               </a>
@@ -77,7 +77,7 @@
               <a href="" class="me-4 text-reset">
                 <i class="fab fa-instagram">INSTAGRAM</i>
               </a>
-            </div>
+            </div> -->
 
             <!-- Right -->
           </div>

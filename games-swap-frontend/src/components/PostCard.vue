@@ -51,6 +51,8 @@ const toggleFavorite = () => {
 .img-box>img {
   width: 100%;
   height: auto;
+  border-radius: 10px;
+  border: 3px solid #9f87f5;
 }
 
 .product-card {
@@ -65,6 +67,7 @@ const toggleFavorite = () => {
   transition: transform 0.2s ease-in-out;
   cursor: pointer;
   overflow: hidden;
+  min-height: 20vw;
 }
 
 .product-card:hover {
@@ -148,6 +151,16 @@ favorite-icon.favorited {
 @media screen and (max-width: 700px) {
   .img-box {
     height: 600px;
+  }
+}
+
+@media screen and (max-width: 568px) {
+  /* .img-box {
+    height: 600px;
+  } */
+
+  .product-card {
+    height: 400px;
   }
 }
 </style>
