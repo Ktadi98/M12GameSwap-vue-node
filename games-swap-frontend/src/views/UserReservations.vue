@@ -66,6 +66,9 @@ const dropReservation = async (reservation: Reservation) => {
     </section>
     <section v-else>
         No has realizado la reserva de ningún producto todavía
+        <div>
+            <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+        </div>
     </section>
 </template>
 

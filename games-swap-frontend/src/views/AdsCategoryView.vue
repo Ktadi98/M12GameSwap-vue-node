@@ -34,8 +34,16 @@
         <PostCard v-tooltip="'Ir al detalle'" v-for=" product in filteredProducts" :key="product.post_id"
           :product="product"></PostCard>
       </div>
+      <div v-else-if="isLoading">
+        <div class="card flex justify-content-center">
+          <ProgressSpinner />
+        </div>
+      </div>
       <div v-else>
         <h2>No hay anuncios disponibles para esta categoria. Échale un vistazo a las demás.</h2>
+        <div>
+          <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+        </div>
       </div>
     </section>
     <VendorsRanking></VendorsRanking>
@@ -62,9 +70,9 @@ import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import VendorsRanking from "../components/VendorsRanking.vue";
 import PostsHistory from "@/components/PostsHistory.vue";
+import ProgressSpinner from 'primevue/progressspinner';
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
-
 
 const items = ref([
   { label: 'Home', route: '/' },
@@ -80,7 +88,7 @@ const genres: Ref<Genre[]> = ref([]);
 const route = useRoute();
 const categoryId = ref(route.params.id);
 const products = ref<Array<Product>>([]);
-const isLoading = ref(true);
+const isLoading = ref<boolean>(true);
 const criteria: Ref<string> = ref("A-Z");
 
 //TODO
@@ -166,16 +174,20 @@ async function getPosts() {
 
     if (!response.ok) {
       console.log(response.status);
+      isLoading.value = false;
       return;
     }
 
     const data: { message: string, posts: Product[] } = await response.json();
 
     products.value = data.posts;
-    isLoading.value = false;
 
   } catch (error) {
     console.error('Error al obtener los productos', error);
+  }
+  finally {
+    isLoading.value = false;
+
   }
 }
 
@@ -198,10 +210,12 @@ async function getPostsLogIn() {
     const data: { message: string, posts: Product[] } = await response.json();
 
     products.value = data.posts;
-    isLoading.value = false;
-
+    // isLoading.value = false;
   } catch (error) {
     console.error('Error al obtener los productos', error);
+  }
+  finally {
+    isLoading.value = false;
   }
 }
 

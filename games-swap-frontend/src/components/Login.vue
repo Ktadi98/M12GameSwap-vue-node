@@ -93,6 +93,7 @@ const sendData = async () => {
     //ADMIN CREDENTIALS
     //Username: admin, Correu: admin@gmail.com, Contraseña:admin2023
     if (formData.value.email === "admin@gmail.com") {
+      authStore.isAdmin = true;
       router.push("/controlPanel");
     }
     else {

@@ -120,8 +120,8 @@ async function setReservation() {
 
 <template>
     <NavBar></NavBar>
-    <div class="arrow-box" style="color: #8a6cf6" @click="router.back()">
-        <BackArrow />
+    <div class="arrow-box ms-4" style="color: #8a6cf6" @click="router.back()">
+        <BackArrow /><span>Volver Atrás</span>
     </div>
     <!-- falta devolver datos del vendedor para pintarlos aqui -->
     <main class="ad-container">

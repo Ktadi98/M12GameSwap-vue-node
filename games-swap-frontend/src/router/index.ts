@@ -7,7 +7,16 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/HomeView.vue'),
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore();
+        // Verificar si el usuario tiene un token válido
+        if (!authStore.userIsLoggedIn || !authStore.isAdmin) {
+          next();
+        } else {
+          next('/controlPanel'); // Redirigir al usuario a la página de inicio 
+        }
+      }
     },
     {
       path: '/profileManagement',
@@ -16,7 +25,7 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
+        if (authStore.userIsLoggedIn && !authStore.isAdmin) {
           next();
         } else {
           next('/'); // Redirigir al usuario a la página de inicio 
@@ -30,7 +39,7 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
+        if (authStore.userIsLoggedIn && !authStore.isAdmin) {
           next();
         } else {
           next('/'); // Redirigir al usuario a la página de inicio 
@@ -55,9 +64,11 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
+        //console.log(to, from);
+        if (authStore.userIsLoggedIn && authStore.isAdmin) {
           next();
-        } else {
+        }
+        else {
           next('/'); // Redirigir al usuario a la página de inicio 
         }
       }
@@ -69,7 +80,7 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
+        if (authStore.userIsLoggedIn && !authStore.isAdmin) {
           next();
         } else {
           next('/'); // Redirigir al usuario a la página de inicio 
@@ -93,7 +104,7 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
+        if (authStore.userIsLoggedIn && !authStore.isAdmin) {
           next();
         } else {
           next('/'); // Redirigir al usuario a la página de inicio 
@@ -107,7 +118,7 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
+        if (authStore.userIsLoggedIn && !authStore.isAdmin) {
           next();
         } else {
           next('/'); // Redirigir al usuario a la página de inicio 
@@ -147,7 +158,7 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
+        if (authStore.userIsLoggedIn && !authStore.isAdmin) {
           next();
         } else {
           next('/'); // Redirigir al usuario a la página de inicio 
@@ -161,7 +172,7 @@ const router = createRouter({
           beforeEnter: (to, from, next) => {
             const authStore = useAuthStore();
             // Verificar si el usuario tiene un token válido
-            if (authStore.userIsLoggedIn) {
+            if (authStore.userIsLoggedIn && !authStore.isAdmin) {
               next();
             } else {
               next('/'); // Redirigir al usuario a la página de inicio 
@@ -175,7 +186,7 @@ const router = createRouter({
           beforeEnter: (to, from, next) => {
             const authStore = useAuthStore();
             // Verificar si el usuario tiene un token válido
-            if (authStore.userIsLoggedIn) {
+            if (authStore.userIsLoggedIn && !authStore.isAdmin) {
               next();
             } else {
               next('/'); // Redirigir al usuario a la página de inicio 
@@ -189,7 +200,7 @@ const router = createRouter({
           beforeEnter: (to, from, next) => {
             const authStore = useAuthStore();
             // Verificar si el usuario tiene un token válido
-            if (authStore.userIsLoggedIn) {
+            if (authStore.userIsLoggedIn && !authStore.isAdmin) {
               next();
             } else {
               next('/'); // Redirigir al usuario a la página de inicio 
@@ -206,7 +217,7 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const authStore = useAuthStore();
         // Verificar si el usuario tiene un token válido
-        if (authStore.userIsLoggedIn) {
+        if (authStore.userIsLoggedIn && !authStore.isAdmin) {
           next();
         } else {
           next('/'); // Redirigir al usuario a la página de inicio 

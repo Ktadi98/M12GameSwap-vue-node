@@ -7,11 +7,12 @@ import Column from "primevue/column";
 import ModifyUser from '@/components/Icons/ModifyUser.vue';
 import DeleteUser from '@/components/Icons/DeleteUser.vue';
 import { ref, onMounted } from "vue";
-import { useAuthStore } from '@/stores/auth';
 import type { User } from "@/interfaces/User";
 import type { Reservation } from "@/interfaces/Reservation";
 import { storeToRefs } from "pinia";
 import type { Complaint } from "@/interfaces/Complaint";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
@@ -98,6 +99,15 @@ const dropPost = async (data: any) => {
   }
 };
 
+const authStore = useAuthStore();
+const router = useRouter();
+
+const logOut = () => {
+  authStore.deleteToken();
+  authStore.isAdmin = false;
+  router.push("/");
+};
+
 </script>
 
 <template>
@@ -108,7 +118,12 @@ const dropPost = async (data: any) => {
     </aside> -->
 
   <main class="px-5">
-    <div class="heading" style="color: #8a6cf6">
+    <header class="d-flex flex-row-reverse">
+      <ul>
+        <li><button class="logOut-btn p-2" @click="logOut()">Cerrar Sesión</button></li>
+      </ul>
+    </header>
+    <div class="heading py-3">
       <h1>Bienvenido al panel de control</h1>
     </div>
     <h2>Listado de usuarios</h2>
@@ -185,7 +200,6 @@ header {
   padding: 10px;
   margin: 0;
   align-items: center;
-  border-bottom: 1px solid #8a6cf6;
 }
 
 td.report,
@@ -224,12 +238,6 @@ main {
   padding: 1rem;
 }
 
-main .heading {
-  display: flex;
-  align-items: center;
-  margin-bottom: 60px;
-}
-
 main h1 {
   font-size: 2.5rem;
   font-weight: 400;
@@ -257,5 +265,14 @@ main h2 {
 
 .select-delete:hover {
   color: #FF1493;
+}
+
+main .heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 60px;
+  background-color: #8a6cf6;
+  color: white !important;
+  border-radius: 10px;
 }
 </style>
