@@ -221,7 +221,7 @@ export class UserModel {
                     Post_Favorites: true
                 }
             })
-            //console.log(user);
+            // console.log(userId, favorites);
             return favorites.Post_Favorites;
         } catch (err) {
             console.log(err);

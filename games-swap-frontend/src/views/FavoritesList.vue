@@ -3,7 +3,8 @@ import NavBar from "@/components/NavBar.vue";
 import BackArrow from "@/components/Icons/BackArrow.vue";
 import HeartLike from "@/components/Icons/HeartLike.vue";
 import Footer from "@/components/Footer.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
 
 
 const articles = ref([
@@ -44,6 +45,20 @@ const articles = ref([
     image: "https://cdn1.epicgames.com/offer/602a0ef0aceb46cca62445439661d712/EGS_STALKER2HeartofChornobyl_GSCGameWorld_S2_1200x1600-15b4c44396ad63e7dd881b3a5ef353cc"
   }
 ])
+const authStore = useAuthStore()
+
+onMounted(async () => {
+  const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+  const resp = await fetch(`${apiEndpoint}/users/favorites`, {
+    headers: {
+      "Accept": "application/json",
+      "Authorization": `Bearer ${authStore.token}`
+    }
+  })
+  const data = await resp.json()
+
+  console.log(data)
+})
 
 </script>
 <template>
@@ -64,18 +79,16 @@ const articles = ref([
   <main>
     <div class="articles-grid">
       <article v-for="article of articles" :key="article.id">
-        <img
-          class="article-image"
-          :src="article.image"
-          alt="portada"
-        />
+        <img class="article-image" :src="article.image" alt="portada" />
         <div class="article-body">
-          <span class="produc-price">{{article.price}}€</span>
+          <span class="produc-price">{{ article.price }}€</span>
           <button class="like-heart">
             <HeartLike></HeartLike>
           </button>
         </div>
-        <div class="article-footer"><h6>{{article.name}}</h6></div>
+        <div class="article-footer">
+          <h6>{{ article.name }}</h6>
+        </div>
       </article>
     </div>
   </main>
@@ -101,6 +114,7 @@ main {
   display: flex;
   justify-content: center;
 }
+
 .articles-grid {
   display: grid;
   width: 90rem;
@@ -129,8 +143,8 @@ article div.article-body {
   justify-content: space-around;
 }
 
-div.article-body button.like-heart{
-  background:none; 
+div.article-body button.like-heart {
+  background: none;
   border: 0px;
   padding: 0px;
   margin: 0px;
@@ -140,13 +154,13 @@ div.article-body button.like-heart{
 button.like-heart {
   color: #9F87F5;
 }
-button.like-heart:hover{
+
+button.like-heart:hover {
   color: transparent;
 }
 
-div.article-footer h6{
-text-align: center;
-font-weight: bold;
+div.article-footer h6 {
+  text-align: center;
+  font-weight: bold;
 }
-
 </style>
