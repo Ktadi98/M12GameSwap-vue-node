@@ -213,16 +213,26 @@ export class UserModel {
 
     static async getFavorites(userId) {
         try {
-            const favorites = await prismadb.user.findUnique({
+
+            //Getting data for the logged user.
+            const userFavoriteData = await prismadb.user_Favorites.findMany({
                 where: {
                     user_id: userId
-                },
-                include: {
-                    Post_Favorites: true
                 }
             })
-            // console.log(userId, favorites);
-            return favorites.Post_Favorites;
+
+            //Getting the favorites posts ids.
+            const favoritesPostsId = userFavoriteData.map(register => register.post_id);
+
+            //Getting the favorites posts objects.
+            const favoritesPosts = await prismadb.post.findMany({
+                where: {
+                    post_id: {
+                        in: favoritesPostsId
+                    }
+                }
+            })
+            return favoritesPosts;
         } catch (err) {
             console.log(err);
         }
