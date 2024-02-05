@@ -2,6 +2,9 @@
 import type { Product } from '@/interfaces/Product';
 import { computed, onMounted, ref, watch } from 'vue';
 import PostCard from '@/components/PostCard.vue';
+import ProgressSpinner from 'primevue/progressspinner';
+
+
 const props = defineProps<{
     id: number,
 }>()
@@ -11,7 +14,12 @@ const posts = ref<Product[]>([]);
 
 const filteredPosts = computed<Product[]>(() => filterTerm.value === "" ? posts.value : posts.value.filter(post => post.post_title.toLowerCase().startsWith(filterTerm.value)))
 
+const loading = ref<boolean>(true);
+
+
 onMounted(async () => {
+
+    loading.value = true;
     try {
         const response: Response = await fetch(`${apiEndpoint}/posts/vendor/${props.id}`);
         if (!response.ok) {
@@ -22,12 +30,14 @@ onMounted(async () => {
         posts.value = data.posts;
     } catch (error) {
         console.error(error);
+    } finally {
+        loading.value = false;
     }
 })
 
 const filterTerm = ref<string>("");
 
-watch(() => filterTerm, (newSearchterm, oldSearchTerm) => {
+watch(filterTerm, (newSearchterm, oldSearchTerm) => {
     filterTerm.value = filterTerm.value.toLowerCase();
 });
 
@@ -45,6 +55,9 @@ watch(() => filterTerm, (newSearchterm, oldSearchTerm) => {
     <section class="post-box container-fluid">
         <div v-if="posts.length > 0" class="row">
             <PostCard v-for="post in filteredPosts" :key="post.post_id" :product="post"></PostCard>
+        </div>
+        <div v-else-if="loading">
+            <ProgressSpinner></ProgressSpinner>
         </div>
         <div v-else>
             <h2>No hay anuncios disponibles.</h2>
