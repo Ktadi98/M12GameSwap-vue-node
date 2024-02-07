@@ -16,6 +16,7 @@
                             Perfil</button></router-link>
                     <button class="rounded-button" @click="openMailbox">Buzón de sugerencias</button>
                     <button class="rounded-button" @click="openDeleteUser">Eliminar Cuenta</button>
+                    <router-link to="/favoritesList"> <button class="rounded-button">Mis Favoritos</button></router-link>
                 </div>
             </div>
         </main>

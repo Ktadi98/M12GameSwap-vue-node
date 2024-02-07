@@ -7,47 +7,10 @@ import { onMounted, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 
 
-const articles = ref([
-  {
-    id: 1,
-    name: "STALKER 2",
-    price: 60,
-    image: "https://cdn1.epicgames.com/offer/602a0ef0aceb46cca62445439661d712/EGS_STALKER2HeartofChornobyl_GSCGameWorld_S2_1200x1600-15b4c44396ad63e7dd881b3a5ef353cc"
-  },
-  {
-    id: 2,
-    name: "STALKER 2",
-    price: 60,
-    image: "https://cdn1.epicgames.com/offer/602a0ef0aceb46cca62445439661d712/EGS_STALKER2HeartofChornobyl_GSCGameWorld_S2_1200x1600-15b4c44396ad63e7dd881b3a5ef353cc"
-  },
-  {
-    id: 3,
-    name: "STALKER 2",
-    price: 60,
-    image: "https://cdn1.epicgames.com/offer/602a0ef0aceb46cca62445439661d712/EGS_STALKER2HeartofChornobyl_GSCGameWorld_S2_1200x1600-15b4c44396ad63e7dd881b3a5ef353cc"
-  },
-  {
-    id: 4,
-    name: "STALKER 2",
-    price: 60,
-    image: "https://cdn1.epicgames.com/offer/602a0ef0aceb46cca62445439661d712/EGS_STALKER2HeartofChornobyl_GSCGameWorld_S2_1200x1600-15b4c44396ad63e7dd881b3a5ef353cc"
-  },
-  {
-    id: 5,
-    name: "STALKER 2",
-    price: 60,
-    image: "https://cdn1.epicgames.com/offer/602a0ef0aceb46cca62445439661d712/EGS_STALKER2HeartofChornobyl_GSCGameWorld_S2_1200x1600-15b4c44396ad63e7dd881b3a5ef353cc"
-  },
-  {
-    id: 6,
-    name: "STALKER 2",
-    price: 60,
-    image: "https://cdn1.epicgames.com/offer/602a0ef0aceb46cca62445439661d712/EGS_STALKER2HeartofChornobyl_GSCGameWorld_S2_1200x1600-15b4c44396ad63e7dd881b3a5ef353cc"
-  }
-])
+const articles = ref<any>([])
 const authStore = useAuthStore()
 
-onMounted(async () => {
+const fetchFavorites = async () => {
   const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
   const resp = await fetch(`${apiEndpoint}/users/favorites`, {
     headers: {
@@ -56,9 +19,26 @@ onMounted(async () => {
     }
   })
   const data = await resp.json()
+  articles.value = data
+}
 
-  console.log(data)
+onMounted(async () => {
+  await fetchFavorites()
 })
+
+const removeFavorite = async (id: number) => {
+  const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+  await fetch(`${apiEndpoint}/users/favorites`, {
+    method: 'put',
+    headers: {
+      "Accept": "application/json",
+      "Authorization": `Bearer ${authStore.token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ post_id: id })
+  })
+  await fetchFavorites()
+}
 
 </script>
 <template>
@@ -78,16 +58,16 @@ onMounted(async () => {
   </div>
   <main>
     <div class="articles-grid">
-      <article v-for="article of articles" :key="article.id">
-        <img class="article-image" :src="article.image" alt="portada" />
+      <article v-for="article of articles" :key="article.post_id">
+        <img class="article-image" :src="`data:image/png;base64, ${article.post_photos[0]}`" alt="portada" />
         <div class="article-body">
-          <span class="produc-price">{{ article.price }}€</span>
-          <button class="like-heart">
+          <span class="produc-price">{{ article.post_price }}€</span>
+          <button class="like-heart" @click="removeFavorite(article.post_id)">
             <HeartLike></HeartLike>
           </button>
         </div>
         <div class="article-footer">
-          <h6>{{ article.name }}</h6>
+          <h6>{{ article.post_title }}</h6>
         </div>
       </article>
     </div>

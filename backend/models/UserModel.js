@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import fs from 'fs'
 
 const prismadb = new PrismaClient(); //Move to external module
 
@@ -232,7 +233,12 @@ export class UserModel {
                     }
                 }
             })
-            return favoritesPosts;
+            return favoritesPosts.map(p => ({
+                ...p, post_photos: [...p.post_photos.map((i) => {
+                    const image = fs.readFileSync(i)
+                    return image.toString('base64')
+                })]
+            }));
         } catch (err) {
             console.log(err);
         }
@@ -240,38 +246,26 @@ export class UserModel {
 
     static async toggleFavorite(userId, postId) {
         try {
-            const post = await prismadb.post.findUnique({
+            const userFavoriteData = await prismadb.user_Favorites.findMany({
                 where: {
-                    post_id: postId
-                },
-                include: {
-                    User_Favorites: true
+                    user_id: userId
                 }
             })
-            let curFavorite = post.User_Favorites.filter((u => u.user_id === userId))
 
+            const curFavorite = userFavoriteData.find((p => p.post_id === postId))
             let fav = {}
-
-            if (curFavorite.length > 0) {
-                fav = await prismadb.user.update({
+            if (curFavorite) {
+                console.log("LO ENCONTREEEEEE")
+                fav = await prismadb.user_Favorites.delete({
                     where: {
-                        user_id: userId,
-                    },
-                    data: {
-                        Post_Favorites: {
-                            disconnect: { post_id: postId }
-                        }
+                        user_favorites_id: curFavorite.user_favorites_id
                     }
                 })
-            } else if (post) {
-                fav = await prismadb.user.update({
-                    where: {
-                        user_id: userId,
-                    },
+            } else {
+                fav = await prismadb.user_Favorites.create({
                     data: {
-                        Post_Favorites: {
-                            connect: { post_id: postId }
-                        }
+                        user_id: userId,
+                        post_id: postId
                     }
                 })
             }
