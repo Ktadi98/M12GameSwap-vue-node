@@ -260,7 +260,7 @@ export class UserModel {
             })
             return favoritesPosts.map(p => ({
                 ...p, post_photos: [...p.post_photos.map((i) => {
-                    const image = fs.readFileSync(i)
+                    const image = fs.readFileSync(i.replace("http://localhost:8080/", ""))
                     return image.toString('base64')
                 })]
             }));
