@@ -8,6 +8,8 @@ import type { Product } from '@/interfaces/Product';
 import PostRow from '@/components/PostRow.vue';
 import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import ProgressSpinner from 'primevue/progressspinner';
+
 
 const items = ref([
     { label: 'Home', route: '/' },
@@ -50,6 +52,8 @@ const dropPost = async (postEmitted: Product) => {
 
 async function fetchUserPosts(token: string) {
 
+    loading.value = true;
+
     try {
         const response: Response = await fetch(`${apiEndpoint}/posts/user/posts`, {
             headers: {
@@ -90,10 +94,13 @@ onMounted(() => {
     <Divider></Divider>
     <main class="d-flex flex-column px-md-4 mx-3 mx-md-0 align-items-md-center">
         <section v-if="loading">
-            <h2>Cargando tus anuncios...</h2>
+            <ProgressSpinner></ProgressSpinner>
         </section>
         <section v-else-if="posts.length === 0">
             <h2>Todavía no has colgado ningún anuncio.</h2>
+            <div>
+                <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+            </div>
         </section>
         <section v-else-if="posts !== undefined && !loading" class="posts-box w-100">
             <template v-for="post in posts" :key="post.post_id">

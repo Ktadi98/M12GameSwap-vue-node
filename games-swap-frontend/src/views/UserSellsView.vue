@@ -2,9 +2,8 @@
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
-
 import Chart from 'primevue/chart';
-
+import ProgressSpinner from 'primevue/progressspinner';
 import type { Purchase } from '@/interfaces/Purchase';
 import PostRow from '@/components/PostRow.vue';
 
@@ -14,10 +13,12 @@ const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 const sells = ref<Purchase[]>([]);
 const chartData = ref();
 const chartOptions = ref();
+const loading = ref<boolean>(true);
 
 async function getPurchasedProducts() {
 
     try {
+        loading.value = true;
         const response: Response = await fetch(`${apiEndpoint}/posts/sells`, {
             method: "GET",
             headers: {
@@ -33,6 +34,8 @@ async function getPurchasedProducts() {
 
     } catch (error) {
         console.error(error);
+    } finally {
+        loading.value = false;
     }
 
 
@@ -127,7 +130,7 @@ const categoriesToSalesMap = (categories: any, sales: any) => {
 }
 </script>
 <template>
-    <section v-if="sells.length > 0" class="d-flex gap-3 flex-column flex-lg-row w-75 px-5">
+    <section v-if="sells.length > 0 && !loading" class="d-flex gap-3 flex-column flex-lg-row w-75 px-5">
         <Chart class="w-100" type="bar" :data="chartData" :options="chartOptions" />
         <section class="w-100 mb-1 d-flex gap-2 flex-column sells-box">
             <PostRow v-for="sell in sells" :sell="sell" :post="sell?.post"
@@ -135,8 +138,14 @@ const categoriesToSalesMap = (categories: any, sales: any) => {
             </PostRow>
         </section>
     </section>
+    <section v-else-if="loading">
+        <ProgressSpinner></ProgressSpinner>
+    </section>
     <section v-else>
         No han habido ventas todavía.
+        <div>
+            <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+        </div>
     </section>
 </template>
 

@@ -1,23 +1,26 @@
 <template>
   <NavBar></NavBar>
   <div>
+    <div class="ms-4">
+      <BreadCrumbs :items="items"></BreadCrumbs>
+    </div>
     <section>
       <h1>EDITA TUS DATOS</h1>
-
-
       <!-- botóns per al username -->
       <!-- <div class="d-flex"> -->
-        
-        <!-- <button @click="toggleUserNameModifierInput">{{ editMode.username ? 'CANCELAR' : 'EDITAR' }}</button>
+
+      <!-- <button @click="toggleUserNameModifierInput">{{ editMode.username ? 'CANCELAR' : 'EDITAR' }}</button>
       </div>
       <div v-if="modifyUserNameFieldActive" class="d-flex">
         <input  type="name" name="name" id="name" placeholder="Nombre">
         <button @click="sendUserName">ENVIAR</button>
       </div> -->
-      
+
       <div class="d-flex">
+
         <input v-model.trim="username" type="name" name="name" id="name" placeholder="Nombre" disabled>
-        <img :src="editMode.username ? cancelImage : editImage" type="submit" alt="Edit" @click="toggleUserNameModifierInput" />
+        <img :src="editMode.username ? cancelImage : editImage" type="submit" alt="Edit"
+          @click="toggleUserNameModifierInput" />
       </div>
       <div v-if="modifyUserNameFieldActive" class="d-flex">
         <input type="name" name="name" id="name" placeholder="Nombre">
@@ -54,7 +57,7 @@ import { useAuthStore } from "@/stores/auth";
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import editImage from '@/components/Icons/pen.svg';
 import cancelImage from '@/components/Icons/cancel.svg';
-
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 
 const modifyUserNameFieldActive = ref(false);
@@ -82,15 +85,18 @@ interface TokenType {
   token: string
 }
 
+const items = ref([
+  { label: 'Home', route: '/' },
+  { label: 'Perfil ', route: '/profileManagement' },
+  { label: 'Reservas y Compras' }
+]);
 
 
-const toggleEmailModifierInput =() =>
-{
+const toggleEmailModifierInput = () => {
   modifyUserEmailFieldActive.value = !modifyUserEmailFieldActive.value;
   editMode.value.email = !editMode.value.email;
 }
-const toggleUserNameModifierInput =() =>
-{
+const toggleUserNameModifierInput = () => {
   modifyUserNameFieldActive.value = !modifyUserNameFieldActive.value;
   editMode.value.username = !editMode.value.username;
 }
@@ -102,7 +108,7 @@ const validateRegister = () => {
 
 }
 
-onMounted(()=> {
+onMounted(() => {
   fetchUserData();
 })
 
@@ -110,9 +116,9 @@ const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 async function fetchUserData() {
   try {
-    const response : Response = await fetch(`${apiEndpoint}/users/getData`, {
+    const response: Response = await fetch(`${apiEndpoint}/users/getData`, {
       method: 'GET',
-      headers : {
+      headers: {
         "Accept": "application/json",
         "Authorization": `Bearer ${authStore.token}`
       }
@@ -120,7 +126,7 @@ async function fetchUserData() {
 
     if (!response.ok) return;
 
-    const userData : {email: string, name: string} = await response.json();
+    const userData: { email: string, name: string } = await response.json();
 
     username.value = userData.name;
     userEmail.value = userData.email;
@@ -136,7 +142,7 @@ const userData: Ref<RegisterType> = ref({
 })
 
 async function sendUserEmail() {
-  try{
+  try {
     const response: Response = await fetch(`${apiEndpoint}/users/sendData`, {
       method: 'POST',
       headers: {
@@ -155,11 +161,11 @@ async function sendUserEmail() {
   catch (error) {
     console.error(error);
   }
-  
+
 }
 
 async function sendUserName() {
-  try{
+  try {
     const response: Response = await fetch(`${apiEndpoint}/users/sendData`, {
       method: 'POST',
       headers: {
@@ -178,7 +184,7 @@ async function sendUserName() {
   catch (error) {
     console.error(error);
   }
-  
+
 }
 
 
@@ -259,18 +265,18 @@ h1 {
 
 section {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap:10px;
+  gap: 10px;
 }
 
 input {
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 100%; 
-  margin-right: 10px; 
+  width: 100%;
+  margin-right: 10px;
 }
 
 
@@ -283,14 +289,12 @@ input {
   cursor: pointer;
 }  */
 
-img{
+img {
   padding: 0.5rem 1rem;
   width: 65px;
   height: 65px;
   cursor: pointer;
 }
-
-
 </style>
   
 

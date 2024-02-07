@@ -87,7 +87,7 @@ function formatCreationDate(date: string) {
 
     </template> -->
     <article
-        class="w-100 post-row d-flex flex-wrap position-relative flex-md-nowrap gap-2 align-items-center justify-content-start py-2 px-3">
+        class="w-100 post-row mt-3 d-flex flex-wrap position-relative flex-md-nowrap gap-2 align-items-center justify-content-start py-2 px-3">
         <div class="img-box">
             <img :src="props.post.post_photos[0]" alt="post-img">
         </div>

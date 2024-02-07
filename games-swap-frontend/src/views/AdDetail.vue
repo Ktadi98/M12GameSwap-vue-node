@@ -120,14 +120,14 @@ async function setReservation() {
 
 <template>
     <NavBar></NavBar>
-    <div class="arrow-box" style="color: #8a6cf6" @click="router.back()">
-        <BackArrow />
+    <div class="arrow-box ms-4" style="color: #8a6cf6" @click="router.back()">
+        <BackArrow /><span>Volver Atrás</span>
     </div>
     <!-- falta devolver datos del vendedor para pintarlos aqui -->
     <main class="ad-container">
         <div class="profile-vendor">
             <div class="d-flex w-75 mb-3">
-                <div class="profile-image d-flecx gap-3">
+                <div class="profile-image d-flex gap-3">
                     <img src="@/assets/avatar-profile.svg" alt="Profile Image">
                 </div>
                 <RouterLink v-tooltip.top="'Ir al vendedor'" v-if="!(currentUserName === adDetail?.user_client?.user_name)"
@@ -135,9 +135,9 @@ async function setReservation() {
                     <h2 class="profile-name">{{
                         adDetail?.user_client?.user_name }}</h2>
                 </RouterLink>
-                <i v-tooltip="'Poner queja'"
+                <i v-tooltip.top="'Poner queja'"
                     v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)"
-                    @click="openReportModal" class="justify-self-end report">
+                    @click="openReportModal" class="justify-self-end ms-2 report">
                     <ReportFlag></ReportFlag>
                 </i>
             </div>
@@ -161,20 +161,23 @@ async function setReservation() {
                 </span>
             </div>
         </div>
-        <div id="ad-info">
+        <div id="ad-info" class="d-flex gap-4 flex-sm-column flex-md-row">
             <div class="img-box mb-3 mt-3">
                 <img :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
             </div>
-            <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
-            <h2 class="post_title">{{ adDetail?.post_title }}</h2>
-            <h2 class="post_condition"> Estado: {{ adDetail?.post_condition }}</h2>
-            <p class="post_description">{{ adDetail?.post_description }}</p>
-            <div class="other-interests">
+            <div>
+                <h2 class="post_title">{{ adDetail?.post_title }}</h2>
+                <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
+                <h2 class="post_condition"> Estado: {{ adDetail?.post_condition }}</h2>
+                <p class="post_description">{{ adDetail?.post_description }}</p>
+                <!-- <div class="other-interests">
                 <h3>Sigue explorando</h3>
                 <span class="category-tag">PS5</span>
                 <span class="category-tag">Aventura</span>
                 <span class="category-tag">Acción</span>
+            </div> -->
             </div>
+
         </div>
     </main>
     <!-- Footer commented to fix styles-->
@@ -184,17 +187,29 @@ async function setReservation() {
 <style scoped>
 .report {
     cursor: pointer;
+    border: 1px solid lightgray;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.report:hover {
+    transform: translateY(-6px);
 }
 
 .img-box {
-    width: 100%;
+
     overflow: hidden;
 }
 
 .img-box>img {
     border-radius: 10px;
-    width: 500px;
-    height: auto;
+    max-width: 400px;
+    height: 500px;
 }
 
 .arrow-box {
@@ -251,21 +266,20 @@ main.ad-container {
 }
 
 .ad-container {
-    border: 1px solid #8a6cf6;
+    border: 3px dashed #8a6cf6;
+    width: fit-content;
     border-radius: 3%;
-    width: 70rem;
     flex-direction: column;
     padding-top: 20px;
     padding-left: 50px;
     padding-right: 50px;
     margin: auto;
-    border-bottom: 1px solid #8a6cf6;
     display: inline-block;
     margin-bottom: 6em;
 }
 
 h1.post_price {
-    color: #8a6cf6;
+    color: black;
     text-align: left;
     font-size: 2.5em;
 }
@@ -284,6 +298,7 @@ h2.post_condition {
 p.post_description {
     margin-bottom: 30px;
     font-size: 1.5rem;
+    width: 75ch;
 }
 
 .other-interests {

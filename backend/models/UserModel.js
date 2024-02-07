@@ -18,13 +18,13 @@ export class UserModel {
                 where: {
                     user_email: user_data.email
                 }
-            })
+            });
 
             if (user !== null) {
                 console.log("User already exists!");
                 returnState = -1;
                 return [returnState, null];
-            }
+            };
 
             //If the user does not exist in the database we proceed to insert the request data
 
@@ -43,18 +43,43 @@ export class UserModel {
                 }
             });
 
-            const newClient = await prismadb.user_Client.create({
-                data: {
-                    user_id: newUser.user_id,
-                    user_name: user_data.username,
-                    user_photo: "",
-                    user_phone: ""
-                }
-            })
+            console.log(newUser);
+
+            //Inserting in admin table
+            if (user_data.email === "admin@gmail.com") {
+                const newAdmin = await prismadb.user_Admin.create({
+                    data: {
+                        user_id: newUser.user_id
+                    }
+                });
+
+                //We sign the JWT token to send it to the client.
+                let token_generated = jwt.sign({ user_id: newUser.user_id, user_email: newUser.user_email, user_role: "admin" },
+                    process.env.TOKEN_SECRET, { expiresIn: '1h' });
+                console.log(newAdmin);
+
+                return [returnState, token_generated];
+            } else { //Inserting in client table
+                const newClient = await prismadb.user_Client.create({
+                    data: {
+                        user_id: newUser.user_id,
+                        user_name: user_data.username,
+                        user_photo: "",
+                        user_phone: ""
+                    }
+                })
+                console.log(newClient);
+
+                //We sign the JWT token to send it to the client.
+                let token_generated = jwt.sign({ user_id: newClient.user_id, user_email: newClient.user_email, user_role: "client" },
+                    process.env.TOKEN_SECRET, { expiresIn: '1h' });
+
+                return [returnState, token_generated];
+            }
 
             //We sign the JWT token to send it to the client.
-            let token_generated = jwt.sign({ user_id: newClient.user_id, user_email: newClient.user_email, user_role: "client" },
-                process.env.TOKEN_SECRET, { expiresIn: '1h' });
+            // let token_generated = jwt.sign({ user_id: newClient.user_id, user_email: newClient.user_email, user_role: "client" },
+            //     process.env.TOKEN_SECRET, { expiresIn: '1h' });
 
 
             return [returnState, token_generated];

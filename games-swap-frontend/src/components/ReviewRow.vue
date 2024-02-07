@@ -8,7 +8,6 @@ import router from '@/router';
 const props = defineProps<{
     review: Review,
     userId: number,
-    fetchReviews: () => any
 }>()
 
 //When changing link in review, fetch vendor profile

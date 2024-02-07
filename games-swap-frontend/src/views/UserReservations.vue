@@ -4,14 +4,18 @@ import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import type { Reservation } from '@/interfaces/Reservation';
 import PostRow from '@/components/PostRow.vue';
+import ProgressSpinner from 'primevue/progressspinner';
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
 const reservations = ref<Reservation[]>([]);
 
+const loading = ref<boolean>(true);
+
 async function getReservedProducts() {
 
     try {
+        loading.value = true;
         const response: Response = await fetch(`${apiEndpoint}/posts/reservations`, {
             method: "GET",
             headers: {
@@ -27,6 +31,8 @@ async function getReservedProducts() {
 
     } catch (error) {
         console.error(error);
+    } finally {
+        loading.value = false;
     }
 }
 
@@ -56,7 +62,7 @@ const dropReservation = async (reservation: Reservation) => {
 
 </script>
 <template>
-    <section v-if="reservations.length > 0" class="w-75">
+    <section v-if="reservations.length > 0 && !loading" class="w-75">
         <template v-for="reservation in reservations" :key="reservation.reservation_id">
             <PostRow @deleteReservation="dropReservation(reservation)" :post="reservation?.post"
                 :purchaseDate="new Date(reservation?.reservation_created_at)" :purchased="false" :selled="false"
@@ -64,8 +70,14 @@ const dropReservation = async (reservation: Reservation) => {
             </PostRow>
         </template>
     </section>
+    <section v-else-if="loading">
+        <ProgressSpinner></ProgressSpinner>
+    </section>
     <section v-else>
         No has realizado la reserva de ningún producto todavía
+        <div>
+            <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+        </div>
     </section>
 </template>
 

@@ -33,6 +33,8 @@
                 <h2>No hay anuncios disponibles para esta búsqueda. Prueba a buscar otra cosa.</h2>
             </div>
         </section>
+        <VendorsRanking></VendorsRanking>
+        <PostsHistory></PostsHistory>
     </main>
     <Footer></Footer>
 </template>
@@ -51,7 +53,8 @@ import { storeToRefs } from 'pinia';
 import Dropdown from 'primevue/dropdown';
 import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
-
+import VendorsRanking from "../components/VendorsRanking.vue";
+import PostsHistory from "@/components/PostsHistory.vue";
 
 onMounted(() => {
     // fetchGenres();
@@ -222,9 +225,21 @@ watch(route, () => {
     padding: 0;
 }
 
-/* .p-menuitem-link {
-  color: #9f87f5 !important;
-} */
+.p-dropdown:not(.p-disabled):hover {
+  border-color: #9f87f5;
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  color: black;
+  background: #c1b2f7;
+}
+
+.p-dropdown:not(.p-disabled).p-focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #c1b2f7;
+  border-color: #9f87f5;
+}
 </style>
 
     

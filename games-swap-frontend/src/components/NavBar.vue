@@ -3,9 +3,9 @@
     <div class="container">
       <div class="logo-container">
         <template v-if="isProfileManagement">
-          <router-link to="/">
+          <!-- <router-link to="/">
             <BackArrowIcon class="back-arrow" />
-          </router-link>
+          </router-link> -->
         </template>
         <template v-else>
           <img class="logo" src="/imgs/logo-app-2.png" alt="logo" />
@@ -25,12 +25,13 @@
             <div @click="logOut">Cerrar sesión</div>
           </div>
         </div>
-      
+
         <button v-else class="button access" @click="open">Acceder</button>
-        <router-link v-tooltip.bottom="'Accede al carrito'" v-if="authStore.userIsLoggedIn" class="shopping_cart" to="/ShoppingCart" >
+        <router-link v-tooltip.bottom="'Accede al carrito'" v-if="authStore.userIsLoggedIn" class="shopping_cart"
+          to="/ShoppingCart">
           <shoppingCart></shoppingCart>
         </router-link>
-        
+
       </div>
     </div>
   </nav>

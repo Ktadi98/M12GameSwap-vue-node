@@ -6,7 +6,6 @@
     <Divider></Divider>
     <BreadCrumbs :items="items"></BreadCrumbs>
     <Divider></Divider>
-
     <section class="filters-section w-100 d-flex flex-row gap-5 justify-content-start">
       <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
         @submit.prevent='updateGenreFilter(genre.genre_id)'>
@@ -22,22 +21,26 @@
     <Divider></Divider>
     <div class="w-100 criteria-box align-self-left">
       <Dropdown v-model="criteria" :options="filterCriterias" placeholder="Selecciona un filtro" />
-      <!-- <select v-model="criteria">
-        <option value="A-Z">A-Z</option>
-        <option value="Z-A" selected>Z-A</option>
-        <option value="priceDesc">Precio (menor a mayor)</option>
-        <option value="priceAsc">Precio (mayor a menor)</option>
-      </select> -->
     </div>
     <section class="post-box container-fluid">
       <div v-if="products.length > 0" class="row">
         <PostCard v-tooltip="'Ir al detalle'" v-for=" product in filteredProducts" :key="product.post_id"
           :product="product"></PostCard>
       </div>
-      <div v-else>
+      <div v-else-if="isLoading">
+        <div class="card flex justify-content-center">
+          <ProgressSpinner />
+        </div>
+      </div>
+      <div class="text-center" v-else>
         <h2>No hay anuncios disponibles para esta categoria. Échale un vistazo a las demás.</h2>
+        <div>
+          <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+        </div>
       </div>
     </section>
+    <VendorsRanking></VendorsRanking>
+    <PostsHistory></PostsHistory>
   </main>
   <Footer></Footer>
 </template>
@@ -58,25 +61,27 @@ import Dropdown from 'primevue/dropdown';
 import RPGIcon from '@/components/Icons/RPGIcon.vue';
 import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import VendorsRanking from "../components/VendorsRanking.vue";
+import PostsHistory from "@/components/PostsHistory.vue";
+import ProgressSpinner from 'primevue/progressspinner';
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
-
 
 const items = ref([
   { label: 'Home', route: '/' },
   { label: 'Anuncios ' },
 ]);
 
-onMounted(() => {
+// onMounted(() => {
 
-})
+// })
 
 const genreFilter: Ref<number> = ref(-1);
 const genres: Ref<Genre[]> = ref([]);
 const route = useRoute();
 const categoryId = ref(route.params.id);
 const products = ref<Array<Product>>([]);
-const isLoading = ref(true);
+const isLoading = ref<boolean>(true);
 const criteria: Ref<string> = ref("A-Z");
 
 //TODO
@@ -162,16 +167,20 @@ async function getPosts() {
 
     if (!response.ok) {
       console.log(response.status);
+      isLoading.value = false;
       return;
     }
 
     const data: { message: string, posts: Product[] } = await response.json();
 
     products.value = data.posts;
-    isLoading.value = false;
 
   } catch (error) {
     console.error('Error al obtener los productos', error);
+  }
+  finally {
+    isLoading.value = false;
+
   }
 }
 
@@ -194,10 +203,12 @@ async function getPostsLogIn() {
     const data: { message: string, posts: Product[] } = await response.json();
 
     products.value = data.posts;
-    isLoading.value = false;
-
+    // isLoading.value = false;
   } catch (error) {
     console.error('Error al obtener los productos', error);
+  }
+  finally {
+    isLoading.value = false;
   }
 }
 
@@ -230,8 +241,15 @@ watch(route, () => {
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  color: #9f87f5;
-  background: #F0FDFA;
+  color: black;
+  background: #c1b2f7;
+}
+
+.p-dropdown:not(.p-disabled).p-focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #c1b2f7;
+  border-color: #9f87f5;
 }
 </style>
 <style scoped>

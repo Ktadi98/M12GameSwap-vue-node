@@ -77,4 +77,11 @@ main {
   width: 800px;
   max-width: 800px;
 }
+
+
+@media screen and (max-width: 568px) {
+  .carousel {
+    display: none;
+  }
+}
 </style>
