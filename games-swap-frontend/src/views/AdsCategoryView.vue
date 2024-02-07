@@ -6,7 +6,6 @@
     <Divider></Divider>
     <BreadCrumbs :items="items"></BreadCrumbs>
     <Divider></Divider>
-
     <section class="filters-section w-100 d-flex flex-row gap-5 justify-content-start">
       <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
         @submit.prevent='updateGenreFilter(genre.genre_id)'>
@@ -22,12 +21,6 @@
     <Divider></Divider>
     <div class="w-100 criteria-box align-self-left">
       <Dropdown v-model="criteria" :options="filterCriterias" placeholder="Selecciona un filtro" />
-      <!-- <select v-model="criteria">
-        <option value="A-Z">A-Z</option>
-        <option value="Z-A" selected>Z-A</option>
-        <option value="priceDesc">Precio (menor a mayor)</option>
-        <option value="priceAsc">Precio (mayor a menor)</option>
-      </select> -->
     </div>
     <section class="post-box container-fluid">
       <div v-if="products.length > 0" class="row">
@@ -39,7 +32,7 @@
           <ProgressSpinner />
         </div>
       </div>
-      <div v-else>
+      <div class="text-center" v-else>
         <h2>No hay anuncios disponibles para esta categoria. Échale un vistazo a las demás.</h2>
         <div>
           <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
@@ -79,9 +72,9 @@ const items = ref([
   { label: 'Anuncios ' },
 ]);
 
-onMounted(() => {
+// onMounted(() => {
 
-})
+// })
 
 const genreFilter: Ref<number> = ref(-1);
 const genres: Ref<Genre[]> = ref([]);

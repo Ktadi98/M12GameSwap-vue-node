@@ -11,7 +11,7 @@ const { history } = storeToRefs(usePostsHistoryStore());
 <template>
     <template v-if="history.length">
         <h2 class="mt-4 mb-3 display-6 font-weight-bold py-3 px-4">Productos visitados</h2>
-        <section class="post-box container-fluid">
+        <section class="post-box container-fluid px-4">
             <div class="row">
                 <PostCard v-tooltip="'Ir al detalle'" v-for=" product in history" :key="product.post_id" :product="product">
                 </PostCard>
