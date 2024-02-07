@@ -3,11 +3,11 @@ import NavBar from "@/components/NavBar.vue";
 import BackArrow from "@/components/Icons/BackArrow.vue";
 import HeartLike from "@/components/Icons/HeartLike.vue";
 import Footer from "@/components/Footer.vue";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref, type ComputedRef, type Ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 
 
-const articles = ref<any>([])
+const articles = ref<any[]>([])
 const authStore = useAuthStore()
 
 const fetchFavorites = async () => {
@@ -40,6 +40,29 @@ const removeFavorite = async (id: number) => {
   await fetchFavorites()
 }
 
+const activeSort = ref<string | null>(null)
+const sortedArticles = computed<any>(() => {
+  const sortParam = activeSort.value?.split("-")[0]
+  const sortOrder = activeSort.value?.split("-")[1]
+
+  const result = (activeSort && sortParam && sortOrder) ? [...articles.value.sort((a, b) => {
+    if (sortOrder == "asc") {
+      if (a[sortParam] > b[sortParam]) return 1
+      if (a[sortParam] < b[sortParam]) return -1
+      return 0
+    }
+    if (a[sortParam] < b[sortParam]) return 1
+    if (a[sortParam] > b[sortParam]) return -1
+    return 0
+  })] : articles.value
+
+  return result
+})
+
+const handleFilter = (value: string) => {
+  activeSort.value = value
+}
+
 </script>
 <template>
   <NavBar></NavBar>
@@ -48,17 +71,17 @@ const removeFavorite = async (id: number) => {
   </div>
   <h1>Mis productos favoritos</h1>
   <div class="sort-container">
-    <select name="sort" id="sort">
+    <select name="sort" id="sort" @change="handleFilter(($event as any).target.value)">
       <option disabled selected>Ordenar por...</option>
-      <option value="Descendiente">A ..Z</option>
-      <option value="Ascendiente">Z...A</option>
-      <option value="precio-desc">Precio mayor a menor</option>
-      <option value="precio-asc">Precio menor a mayor</option>
+      <option value="post_title-asc">A ..Z</option>
+      <option value="post_title-desc">Z...A</option>
+      <option value="post_price-desc">Precio mayor a menor</option>
+      <option value="post_price-asc">Precio menor a mayor</option>
     </select>
   </div>
   <main>
     <div class="articles-grid">
-      <article v-for="article of articles" :key="article.post_id">
+      <article v-for="article of sortedArticles" :key="article.post_id">
         <img class="article-image" :src="`data:image/png;base64, ${article.post_photos[0]}`" alt="portada" />
         <div class="article-body">
           <span class="produc-price">{{ article.post_price }}€</span>
