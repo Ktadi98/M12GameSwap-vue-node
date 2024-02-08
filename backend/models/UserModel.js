@@ -144,9 +144,10 @@ export class UserModel {
 
     static async getData(userId) {
         try {
-            const user = await prismadb.user_Client.findUnique({ where: { user_id: userId } })
+            const userClient = await prismadb.user_Client.findUnique({ where: { user_id: userId } })
+            const user = await prismadb.user.findUnique({ where: { user_id: userId } })
             //console.log(user);
-            return user.user_name;
+            return {...userClient, user_email: user.user_email};
         } catch (err) {
             console.log(err);
         }
@@ -193,14 +194,14 @@ export class UserModel {
                     where: { user_id: userId },
                     data: { user_name: body.username }
                 })
-                return user;
+                return 1;
             }
             else if (body.email) {
-                const user = await prismadb.user_Client.update({
+                const user = await prismadb.user.update({
                     where: { user_id: userId },
                     data: { user_email: body.email }
                 })
-                return user;
+                return 1;
             }
 
             //console.log(user);

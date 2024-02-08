@@ -90,9 +90,9 @@ export class UserController {
     const userEmail = await req.user_email;
     const userId = req.user_id;
 
-    const userName = await this.userModel.getData(userId);
+    const user = await this.userModel.getData(userId);
 
-    return res.json({ email: userEmail, name: userName });
+    return res.json({ email: user.user_email, name: user.user_name });
 
   };
 
@@ -120,9 +120,14 @@ export class UserController {
     const userEmail = await req.user_email;
     const userId = req.user_id;
 
-    const userName = await this.userModel.sendData(req.body, seq.user_id);
+    const returnStatus = await this.userModel.sendData(req.body, userId);
 
-    return res.json({ email: userEmail, name: userName });
+    if (returnStatus === 1) {
+      return res.json({message:"user updated successfully" });
+
+    }
+
+    return res.status(500).json({error: "error updating user"})
 
   };
 
