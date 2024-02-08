@@ -18,6 +18,7 @@ export const createUserRouter = (userModel) => {
   userRouter.get("/favorites", authenticateToken, userController.getFavorites)
   userRouter.put("/favorites", authenticateToken, userController.toggleFavorite)
   userRouter.get("/ranking", userController.getRanking);
+  userRouter.post("/sendData", authenticateToken, userController.sendData)
 
   // userRouter.get("/test", authenticateToken, (req, res, next) => {
   //   console.log(req.user_email);

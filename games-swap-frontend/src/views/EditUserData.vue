@@ -23,7 +23,7 @@
           @click="toggleUserNameModifierInput" />
       </div>
       <div v-if="modifyUserNameFieldActive" class="d-flex">
-        <input type="name" name="name" id="name" placeholder="Nombre">
+        <input v-model.trim="userData.username" type="name" name="name" id="name" placeholder="Nombre">
         <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserName" />
       </div>
 
@@ -42,7 +42,7 @@
         <img :src="editMode.email ? cancelImage : editImage" type="submit" alt="Edit" @click="toggleEmailModifierInput" />
       </div>
       <div v-if="modifyUserEmailFieldActive" class="d-flex">
-        <input type="name" name="name" id="name" placeholder="Nombre">
+        <input v-model.trim="userData.email" type="name" name="name" id="name" placeholder="Nombre">
         <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserEmail" />
       </div>
     </section>
@@ -156,6 +156,8 @@ async function sendUserEmail() {
     });
 
     if (!response.ok) return;
+    fetchUserData();
+    toggleEmailModifierInput();
 
   }
   catch (error) {
@@ -179,6 +181,8 @@ async function sendUserName() {
     });
 
     if (!response.ok) return;
+    fetchUserData();
+    toggleUserNameModifierInput();
 
   }
   catch (error) {
@@ -237,15 +241,7 @@ const editMode = ref<EditMode>({
 
 });
 
-const toggleEditMode = () => {
-  // editMode.value[field] = !editMode.value[field];
-  // if (!editMode.value[field]) {
-  //   // console.log(`Guardando cambios en ${field}: ${userData.value[field]}`);
-  //   sendData();
-  // }
 
-
-};
 </script>
   
 <style scoped>
