@@ -34,7 +34,8 @@ const fetchUsers = async () => {
     return;
   }
   const usersResult: User[] = await res.json();
-  users.value = usersResult;
+  // To drop admin from the user list!
+  users.value = usersResult.filter(user => user.user_email !== "admin@gmail.com");
 
 }
 
@@ -148,6 +149,18 @@ const logOut = () => {
           <button class="table-options select-delete" @click="getReports(slotProps.data)">
             Mostrar Denuncias
           </button>
+        </template>
+      </Column>
+      <Column class="report" key="state" header="Estado">
+        <template #body="slotProps">
+          <div class="table-options select-delete" @click="getReports(slotProps.data)">
+            <span v-if="slotProps.data.user_active">
+              Dado de alta
+            </span>
+            <span v-else>
+              Dado de baja
+            </span>
+          </div>
         </template>
       </Column>
     </DataTable>

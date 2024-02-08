@@ -109,6 +109,13 @@ export class UserModel {
                 return [returnState, null];
             }
 
+            //If the user is not active we return an error.
+            if (!user.user_active) {
+                console.log("User is not activated in the system!");
+                returnState = -1;
+                return [returnState, null];
+            }
+
 
             //Check if the received password is equal to the one stored in the database for this user
             const passwordValidation = await bcrypt.compare(user_data.password, user.user_password);
@@ -260,7 +267,7 @@ export class UserModel {
             })
             return favoritesPosts.map(p => ({
                 ...p, post_photos: [...p.post_photos.map((i) => {
-                    const image = fs.readFileSync(i)
+                    const image = fs.readFileSync(i.replace("http://localhost:8080/", ""))
                     return image.toString('base64')
                 })]
             }));
@@ -280,7 +287,6 @@ export class UserModel {
             const curFavorite = userFavoriteData.find((p => p.post_id === postId))
             let fav = {}
             if (curFavorite) {
-                console.log("LO ENCONTREEEEEE")
                 fav = await prismadb.user_Favorites.delete({
                     where: {
                         user_favorites_id: curFavorite.user_favorites_id

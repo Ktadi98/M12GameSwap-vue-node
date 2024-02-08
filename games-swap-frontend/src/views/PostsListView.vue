@@ -9,6 +9,7 @@ import PostRow from '@/components/PostRow.vue';
 import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import ProgressSpinner from 'primevue/progressspinner';
+import router from '@/router';
 
 
 const items = ref([
@@ -62,7 +63,12 @@ async function fetchUserPosts(token: string) {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            //throw new Error(`HTTP error! Status: ${response.status}`);
+            //Force to log out if token is modified or expired.
+            if (response.status === 401 || response.status === 403) {
+                authStore.deleteToken();
+                router.push("/");
+            }
         }
         const data: { posts: Product[] } = await response.json();
 

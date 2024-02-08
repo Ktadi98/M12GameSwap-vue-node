@@ -14,6 +14,10 @@
         <div v-if="props.product.post_reserved" class="purple icon-box px-2  reserve-box">
           <BookMarkFilledAlt></BookMarkFilledAlt><span>Reservado</span>
         </div>
+        <button v-if="userIsLoggedIn" @click="removeFavorite(props.product.post_id)"
+          class="purple icon-box px-1 my-3 mx-3 heart-box">
+          <HeartLike></HeartLike>
+        </button>
       </div>
     </div>
   </RouterLink>
@@ -24,19 +28,51 @@ import { ref, defineProps } from 'vue';
 import type { Product } from '@/interfaces/Product';
 import Chip from 'primevue/chip';
 import BookMarkFilledAlt from './Icons/BookMarkFilledAlt.vue';
+import { useAuthStore } from '@/stores/auth';
+import HeartLike from "@/components/Icons/HeartLike.vue";
+
 
 const props = defineProps<{
   product: Product
 }>()
+
+const { userIsLoggedIn, token } = useAuthStore();
 
 let isFavorited = ref(false);
 
 const toggleFavorite = () => {
   isFavorited.value = !isFavorited.value;
 };
+
+const removeFavorite = async (id: number) => {
+  const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+  await fetch(`${apiEndpoint}/users/favorites`, {
+    method: 'put',
+    headers: {
+      "Accept": "application/json",
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ post_id: id })
+  })
+  //await fetchFavorites()
+}
 </script>
 
 <style scoped>
+.heart-box {
+  background: none;
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+  width: min-content;
+  z-index: 999;
+}
+
+.heart-box>* {
+  font-size: x-large;
+}
+
 .reserve-box {
   position: absolute;
   top: -30px;
