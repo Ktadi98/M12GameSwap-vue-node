@@ -1,50 +1,81 @@
+<!-- <script setup lang="ts">
+  import { ref, onMounted } from 'vue';
+  import { usePostsHistoryStore } from '@/stores/postsHistory';
+  import { useUserReservationsStore } from '@/views/UserReservations.vue';
+
+  const { history } = usePostsHistoryStore();
+  const { reservations } = useUserReservationsStore();
+
+  const productDetails = ref({
+    productName: '',
+    productType: '',
+    productPrice: '',
+    productImage: '',
+  });
+
+  onMounted(async () => {
+    await reservations.getReservedProducts();
+    if (reservations.reservations.length > 0) {
+      const reservation = reservations.reservations[0]; // You may need to adjust this logic
+      const product = history.history.find(p => p.post_id === reservation.post.post_id);
+      if (product) {
+        productDetails.value.productName = product.productName;
+        productDetails.value.productType = product.productType;
+        productDetails.value.productPrice = product.productPrice;
+        productDetails.value.productImage = product.productImage;
+      }
+    }
+  });
+</script> -->
+
+
+
 <template>
-  <head>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-    <div class="tiquet-de-compra">
-        <div class="overlap-group-wrapper">
-            <div class="overlap-group">
-                <div class="text-wrapper title">Mi Carro</div>
-                <div class="div">DETALLE DE LA COMPRA</div>
-                <img class="rectangle" src="" />
-                <p class="nombre-resident-evil">
-                    <span class="span">Nombre: </span> <span class="text-wrapper-2 producto-nombre">Resident evil 7</span>
-                </p>
-                <p class="tipo-videojuego">
-                    <span class="text-wrapper-3">Tipo:</span> <span class="text-wrapper-4 producto-tipo">PS4, Videojuego</span>
-                </p>
-                <p class="precio"><span class="text-wrapper-3">Precio: </span> <span class="text-wrapper-4 producto-precio">10€</span></p>
-                <div class="text-wrapper-5">Dirección de envío</div>
-                <div class="overlap direccion-envio">
-                    <div class="layer-wrapper"><img class="layer" src="../../public/imgs/home.svg" /></div>
-                    <div class="overlap-2">
-                        <div class="text-wrapper-6 direccion-calle">Carrer Major, 44</div>
-                        <div class="text-wrapper-7 direccion-codigo">08211, Castellar del vallès</div>
-                    </div>
-                    <div class="text-wrapper-8">&gt;</div>
+  <div class="purchase-ticket">
+    <div class="details-wrapper">
+      <div class="details-container">
+        <h2 class="title">Mi Carro</h2>
+        <p class="detail-description">DETALLE DE LA COMPRA</p>
+        <img class="product-image" :src="productDetails.productImage" alt="Product Image" />
+        
+        <p class="product-info">
+          <span class="label">Nombre:</span> {{ productDetails.productName }}
+        </p>
+        <p class="product-info">
+          <span class="label">Tipo:</span> {{ productDetails.productType }}
+        </p>
+        <p class="product-info">
+          <span class="label">Precio:</span> {{ productDetails.productPrice }}€
+        </p>
+            <div class="shipping-details">
+              <h3>Dirección de envío</h3>
+              <div class="address">
+                <img class="address-icon" src="../../public/imgs/home.svg" alt="Home Icon" />
+                <div class="address-info">
+                  <p class="street">{{ reservation.shippingDetails?.street }}</p>
+                  <p class="zip-city">{{ reservation.shippingDetails?.zipCode }}, {{ reservation.shippingDetails?.city }}</p>
                 </div>
-                <div class="overlap-3">
-                    <div class="text-wrapper-9 metodo-pago">VISA</div>
-                    <div class="frame-wrapper"><img class="frame" src="../../public/imgs/visa.png" /></div>
-                    <div class="text-wrapper-10 tarjeta-numero">*******03</div>
-                    <div class="text-wrapper-11">&gt;</div>
-                </div>
-                <div class="text-wrapper-12">Método de pago</div>
-                <div class="text-wrapper-13 subtotal">13€</div>
-                <div class="text-wrapper-14 total">10€</div>
-                <div class="text-wrapper-15 gastos-envio">3€</div>
-                <div class="text-wrapper-16">Información de la compra</div>
-                <div class="text-wrapper-17">Subtotal</div>
-                <div class="text-wrapper-18">Total</div>
-                <div class="text-wrapper-19">Gastos de envío</div>
-                <div class="div-wrapper"><div class="text-wrapper-20 boton-comprar">COMPRAR</div></div>
+              </div>
             </div>
-        </div>
+            <div class="payment-details">
+              <h3>Método de pago</h3>
+              <div class="payment-info">
+                <p class="method">{{ reservation.paymentDetails?.paymentMethod }}</p>
+                <img class="card-image" :src="reservation.paymentDetails?.cardImage" alt="Card Image" />
+                <p class="card-number">{{ reservation.paymentDetails?.cardNumber }}</p>
+              </div>
+            </div>
+          </template>
+        </template>
+        <template v-else>
+          No has realizado la reserva de ningún producto todavía
+        </template>
+      </div>
     </div>
-  </body>
+  </div>
 </template>
+
+
 
 
 <style scoped>
