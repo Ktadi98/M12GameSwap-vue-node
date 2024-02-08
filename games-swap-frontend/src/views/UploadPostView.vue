@@ -247,7 +247,6 @@ const items = ref([
             </button>
         </div>
     </main>
-    <AppBar></AppBar>
 </template>
 <style scoped>
 .responsive-text {

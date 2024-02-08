@@ -28,7 +28,7 @@ export const usePostsHistoryStore = defineStore('postsHistory', () => {
             return;
         }
 
-        //If is duplicated we do nothing.
+        //If its duplicated we do nothing.
     };
 
     const reset = () => {

@@ -88,7 +88,6 @@ const removeFavorite = async (id: number) => {
   width: 100%;
   height: auto;
   border-radius: 10px;
-  border: 3px solid #9f87f5;
 }
 
 .product-card {

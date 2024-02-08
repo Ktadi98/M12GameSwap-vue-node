@@ -2,7 +2,6 @@
 import BackArrow from '@/components/Icons/BackArrow.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Footer from '../components/Footer.vue';
 import StarRating from '../components/Icons/StarRating.vue';
 import NavBar from '@/components/NavBar.vue';
 import type { Product } from '@/interfaces/Product';
@@ -162,7 +161,7 @@ async function setReservation() {
             </div>
         </div>
         <div id="ad-info" class="d-flex gap-4 flex-sm-column flex-md-row">
-            <div class="img-box mb-3 mt-3">
+            <div class="img-box my-3">
                 <img :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
             </div>
             <div>
@@ -202,13 +201,12 @@ async function setReservation() {
 }
 
 .img-box {
-
     overflow: hidden;
 }
 
 .img-box>img {
     border-radius: 10px;
-    max-width: 400px;
+    width: 100%;
     height: 500px;
 }
 
@@ -357,5 +355,16 @@ h3 {
 .book-mark {
     border-left: 2px solid #8a6cf6;
 
+}
+
+@media screen and (max-width: 768px) {
+
+    .img-box {
+        width: 40%;
+    }
+
+    .ad-container {
+        border: none;
+    }
 }
 </style>

@@ -6,6 +6,7 @@ import Chart from 'primevue/chart';
 import ProgressSpinner from 'primevue/progressspinner';
 import type { Purchase } from '@/interfaces/Purchase';
 import PostRow from '@/components/PostRow.vue';
+import router from '@/router';
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
@@ -14,6 +15,8 @@ const sells = ref<Purchase[]>([]);
 const chartData = ref();
 const chartOptions = ref();
 const loading = ref<boolean>(true);
+const { deleteToken } = useAuthStore();
+
 
 async function getPurchasedProducts() {
 
@@ -27,7 +30,12 @@ async function getPurchasedProducts() {
             }
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            //throw new Error(`HTTP error! Status: ${response.status}`);
+            //Force to log out if token is modified or expired.
+            if (response.status === 401 || response.status === 403) {
+                deleteToken();
+                router.push("/");
+            }
         }
         const sellsData: { sellsData: Purchase[] } = await response.json();
         sells.value = sellsData.sellsData;
