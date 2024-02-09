@@ -11,10 +11,10 @@
         @submit.prevent='updateGenreFilter(genre.genre_id)'>
         <div class="genre-div">
           <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
-          <!-- <component :is="genreToIcon[genre.genre_name]"></component> -->
+          <component class="genreIcon" :is="genreToIcon[genre.genre_name]"></component>
         </div>
       </form>
-      <form class="genre-box" @submit.prevent='genreFilter = -1'>
+      <form class="genre-div" @submit.prevent='genreFilter = -1'>
         <input type="submit" value="Todos">
       </form>
     </section>
@@ -64,6 +64,12 @@ import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import VendorsRanking from "../components/VendorsRanking.vue";
 import PostsHistory from "@/components/PostsHistory.vue";
 import ProgressSpinner from 'primevue/progressspinner';
+import LuchaIcon from '@/components/Icons/LuchaIcon.vue';
+import IndieIcon from '@/components/Icons/IndieIcon.vue';
+import PuzzleIcon from '@/components/Icons/PuzzleIcon.vue';
+import PlataformasVue from '@/components/Icons/Plataformas.vue';
+import AccionIcon from '@/components/Icons/AccionIcon.vue';
+import AventuraIcon from '@/components/Icons/AventuraIcon.vue';
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
@@ -86,7 +92,13 @@ const criteria: Ref<string> = ref("A-Z");
 
 //TODO
 const genreToIcon: any = {
-  "RPG": RPGIcon
+  "RPG": RPGIcon,
+  "Indie": IndieIcon,
+  "Lucha": LuchaIcon,
+  "Plataformas": PlataformasVue,
+  "Puzzle": PuzzleIcon,
+  "Acción": AccionIcon,
+  "Aventura": AventuraIcon
 }
 
 const filterCriterias = ref<string[]>([
@@ -253,16 +265,33 @@ watch(route, () => {
 }
 </style>
 <style scoped>
-input[type="submit"]:hover {
+.genre-div {
   background-color: white;
   color: #9f87f5;
   transition: all 0.2s ease-in-out;
+  border: 2px solid #9f87f5;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  height: min-content;
+  padding: 0px 15px;
+
 }
 
-input[type="submit"]:focus,
-input[type="submit"]:hover {
+.genre-div:focus,
+.genre-div:hover {
   background-color: #9f87f5;
   color: white;
+}
+
+.genreIcon {
+  width: fit-content;
+}
+
+input[type="submit"] {
+  border: none;
+  background: none;
+  color: inherit;
 }
 
 .post-box {
