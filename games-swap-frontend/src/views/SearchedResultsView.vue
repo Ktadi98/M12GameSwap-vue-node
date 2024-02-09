@@ -9,6 +9,7 @@
             <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
                 @submit.prevent='updateGenreFilter(genre.genre_id)'>
                 <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
+                <component class="genreIcon" :is="genreToIcon[genre.genre_name]"></component>
             </form>
             <form class="genre-box" @submit.prevent='genreFilter = -1'>
                 <input type="submit" value="Todos">
@@ -55,6 +56,13 @@ import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import VendorsRanking from "../components/VendorsRanking.vue";
 import PostsHistory from "@/components/PostsHistory.vue";
+import RPGIcon from '@/components/Icons/RPGIcon.vue';
+import LuchaIcon from '@/components/Icons/LuchaIcon.vue';
+import IndieIcon from '@/components/Icons/IndieIcon.vue';
+import PuzzleIcon from '@/components/Icons/PuzzleIcon.vue';
+import PlataformasVue from '@/components/Icons/Plataformas.vue';
+import AccionIcon from '@/components/Icons/AccionIcon.vue';
+import AventuraIcon from '@/components/Icons/AventuraIcon.vue';
 
 onMounted(() => {
     // fetchGenres();
@@ -69,6 +77,16 @@ const route = useRoute();
 const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
 const criteria: Ref<string> = ref("A-Z");
+
+const genreToIcon: any = {
+    "RPG": RPGIcon,
+    "Indie": IndieIcon,
+    "Lucha": LuchaIcon,
+    "Plataformas": PlataformasVue,
+    "Puzzle": PuzzleIcon,
+    "Acción": AccionIcon,
+    "Aventura": AventuraIcon
+}
 
 const items = ref([
     { label: 'Home', route: '/' },
@@ -226,34 +244,52 @@ watch(route, () => {
 }
 
 .p-dropdown:not(.p-disabled):hover {
-  border-color: #9f87f5;
+    border-color: #9f87f5;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  color: black;
-  background: #c1b2f7;
+    color: black;
+    background: #c1b2f7;
 }
 
 .p-dropdown:not(.p-disabled).p-focus {
-  outline: 0 none;
-  outline-offset: 0;
-  box-shadow: 0 0 0 0.2rem #c1b2f7;
-  border-color: #9f87f5;
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 0.2rem #c1b2f7;
+    border-color: #9f87f5;
 }
 </style>
 
     
 <style scoped>
-input[type="submit"]:hover {
+.genre-box {
     background-color: white;
     color: #9f87f5;
     transition: all 0.2s ease-in-out;
+    border: 2px solid #9f87f5;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: min-content;
+    padding: 0px 15px;
+
 }
 
-input[type="submit"]:focus,
-input[type="submit"]:hover {
+.genre-box:focus,
+.genre-box:hover {
     background-color: #9f87f5;
     color: white;
+}
+
+.genreIcon {
+    width: fit-content;
+}
+
+input[type="submit"] {
+    border: none;
+    background: none;
+    color: inherit;
 }
 </style>
   

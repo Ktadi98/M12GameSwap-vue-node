@@ -90,7 +90,7 @@ const products = ref<Array<Product>>([]);
 const isLoading = ref<boolean>(true);
 const criteria: Ref<string> = ref("A-Z");
 
-//TODO
+
 const genreToIcon: any = {
   "RPG": RPGIcon,
   "Indie": IndieIcon,
