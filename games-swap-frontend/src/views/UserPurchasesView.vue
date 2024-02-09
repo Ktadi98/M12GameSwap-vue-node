@@ -5,9 +5,11 @@ import { onMounted, ref } from 'vue';
 import type { Purchase } from '@/interfaces/Purchase';
 import PostRow from '@/components/PostRow.vue';
 import ProgressSpinner from 'primevue/progressspinner';
+import router from '@/router';
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
+const { deleteToken } = useAuthStore();
 
 
 const purchases = ref<Purchase[]>([]);
@@ -26,7 +28,12 @@ async function getPurchasedProducts() {
             }
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            //throw new Error(`HTTP error! Status: ${response.status}`);
+            //Force to log out if token is modified or expired.
+            if (response.status === 401 || response.status === 403) {
+                deleteToken();
+                router.push("/");
+            }
         }
         const purchasesData: { purchasesData: Purchase[] } = await response.json();
         purchases.value = purchasesData.purchasesData;

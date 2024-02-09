@@ -11,6 +11,7 @@ import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
+const { deleteToken } = useAuthStore();
 const userStats = ref<Stats | null | any>(null as any);
 
 const items = ref([
@@ -28,7 +29,12 @@ const getUserStats = async () => {
             }
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            // throw new Error(`HTTP error! Status: ${response.status}`);
+            //Force to log out if token is modified or expired.
+            if (response.status === 401 || response.status === 403) {
+                deleteToken();
+                router.push("/");
+            }
         }
         const data: Stats = await response.json();
 

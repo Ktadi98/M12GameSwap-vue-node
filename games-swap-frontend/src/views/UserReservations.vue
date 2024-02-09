@@ -5,9 +5,11 @@ import { onMounted, ref } from 'vue';
 import type { Reservation } from '@/interfaces/Reservation';
 import PostRow from '@/components/PostRow.vue';
 import ProgressSpinner from 'primevue/progressspinner';
+import router from '@/router';
+
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
-
+const { deleteToken } = useAuthStore();
 const reservations = ref<Reservation[]>([]);
 
 const loading = ref<boolean>(true);
@@ -24,7 +26,12 @@ async function getReservedProducts() {
             }
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            //throw new Error(`HTTP error! Status: ${response.status}`);
+            //Force to log out if token is modified or expired.
+            if (response.status === 401 || response.status === 403) {
+                deleteToken();
+                router.push("/");
+            }
         }
         const reservationsData: { reservationsData: Reservation[] } = await response.json();
         reservations.value = reservationsData.reservationsData;

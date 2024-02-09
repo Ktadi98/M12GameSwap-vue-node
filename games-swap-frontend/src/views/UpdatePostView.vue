@@ -178,7 +178,7 @@ const items = ref([
     <section class="px-5">
         <BreadCrumbs :items="items"></BreadCrumbs>
     </section>
-    <header class="text-left text-md-center px-2 py-1 responsive-text ">Modifica tu producto</header>
+    <header class="text-left text-md-center px-2 py-1 mt-1 responsive-text ">Modifica tu producto</header>
     <main
         class="d-flex flex-column flex-grow-1 justify-content-left align-items-center justify-content-md-center px-4 py-3 w-100">
         <form novalidate @submit.prevent="sendPost" id="post-form" class="d-flex flex-column px-4 py-3 gap-4"
@@ -238,7 +238,7 @@ const items = ref([
         <ErrorMessages :messages="errorMessages"></ErrorMessages>
         <div class="d-flex w-50 flex-column flex-md-row align-items-center">
             <div class="upload-btn">
-                <button form="post-form" type="submit">Actualizar producto
+                <button form="post-form" class="mb-2" type="submit">Actualizar producto
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload" width="24"
                         height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -255,7 +255,6 @@ const items = ref([
         </div>
 
     </main>
-    <AppBar></AppBar>
 </template>
 <style scoped>
 .responsive-text {

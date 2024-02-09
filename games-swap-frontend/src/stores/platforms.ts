@@ -1,8 +1,7 @@
 import { defineStore } from "pinia";
-import { ref, type Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 import type { Platform } from "@/interfaces/Platform";
 import { useStorage } from '@vueuse/core'
-
 
 export const usePlatformsStore = defineStore('platforms', () => {
 
@@ -23,5 +22,16 @@ export const usePlatformsStore = defineStore('platforms', () => {
         grouped.value.sort((a, b) => a.platform_name.localeCompare(b.platform_name));
     };
 
-    return { platforms, grouped, fetchPlatforms }
+    // const getPlatformName = (platformId: number): string | undefined => {
+    //     return platforms.value.find((platform: Platform) => platform.platform_id = platformId)?.platform_name;
+    // }
+
+    const getPlatformName = (platformId: number) => {
+        // Define la función computada que depende del parámetro
+        return computed(() => {
+            return platforms.value.find((platform: Platform) => platform.platform_id = platformId)?.platform_name;
+        });
+    };
+
+    return { platforms, grouped, fetchPlatforms, getPlatformName }
 })

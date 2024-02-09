@@ -115,7 +115,6 @@ onMounted(() => {
         </section>
 
     </main>
-    <AppBar></AppBar>
 </template>
 <style scoped>
 a {

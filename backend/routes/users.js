@@ -11,6 +11,7 @@ export const createUserRouter = (userModel) => {
   userRouter.post("/register", userController.register);
   userRouter.post("/login", userController.login);
   userRouter.delete("/delete", userController.delete);
+  userRouter.post("/activate", userController.activate);
   userRouter.get("/type/:type", userController.getByType);
   userRouter.get("/getData", authenticateToken, userController.getData);
   userRouter.get("/getStats/:userId", userController.getUserStats);

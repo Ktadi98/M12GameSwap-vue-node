@@ -132,12 +132,15 @@ article {
   display: flex;
   flex-direction: column;
   width: auto;
-  border: 1px solid black;
+  border: 1px solid rgb(227, 227, 227);
+  border-radius: 15px;
+  overflow: hidden;
 }
 
 article img.article-image {
-  height: 15rem;
+  height: 18rem;
   width: auto;
+  object-fit: cover;
 }
 
 article div.article-body {

@@ -165,6 +165,31 @@ export class UserModel {
         }
     }
 
+    static async activate(user_data) {
+        try {
+
+            const activatedUser = await prismadb.user.update({
+                where: {
+                    user_id: user_data.userId
+                },
+                data: {
+                    user_active: true
+                }
+            })
+
+
+            if (activatedUser === null) {
+                console.log("entra aqui!")
+                throw new Error("Non existent user.");
+            }
+
+            return 1;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     static async findByType(type) {
         try {
             const result = await prismadb.user.findMany({ where: { user_type: type } })

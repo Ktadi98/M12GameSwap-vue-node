@@ -78,10 +78,6 @@ const items = ref([
   { label: 'Anuncios ' },
 ]);
 
-// onMounted(() => {
-
-// })
-
 const genreFilter: Ref<number> = ref(-1);
 const genres: Ref<Genre[]> = ref([]);
 const route = useRoute();
@@ -235,15 +231,19 @@ else {
 }
 
 watch(route, () => {
+
   categoryId.value = route.params.id;
+
   genreFilter.value = -1;
+
   if (!userIsLoggedIn.value) {
+    //Getting all the posts of the system (which are not buyed and actived).
     getPosts();
   }
   else {
+    //Getting all the posts that don't belong to the current user.
     getPostsLogIn();
   }
-  // getPosts();
 }, { immediate: true, deep: true })
 
 </script>
@@ -298,6 +298,14 @@ input[type="submit"] {
   padding: 5vw;
 }
 
+h1 {
+  text-align: left;
+  background-color: #8a6cf6;
+  width: 100%;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+}
 
 /* .criteria-box * {
   border-color: #9f87f5 !important;
