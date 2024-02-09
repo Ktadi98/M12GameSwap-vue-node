@@ -84,6 +84,15 @@ export class UserController {
 
   };
 
+  activate = async (req, res) => {
+    const status = await this.userModel.activate(req.body);
+    if (status === 1) {
+      return res.status(200).json("User activated successfully!");
+    }
+
+    return res.status(500).json({ error: "User could not be activated!" })
+  }
+
 
   getData = async (req, res) => {
 

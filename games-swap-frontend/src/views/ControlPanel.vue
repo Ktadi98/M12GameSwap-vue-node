@@ -6,6 +6,8 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import ModifyUser from '@/components/Icons/ModifyUser.vue';
 import DeleteUser from '@/components/Icons/DeleteUser.vue';
+import ActivateUser from '@/components/Icons/ActivateUser.vue';
+
 import { ref, onMounted } from "vue";
 import type { User } from "@/interfaces/User";
 import type { Reservation } from "@/interfaces/Reservation";
@@ -48,9 +50,23 @@ const modifyUser = (data: any) => {
 }
 
 const deleteUser = async (data: any) => {
-  if (confirm(`¿Quieres borrar el usuario ${data.user_email}`)) {
+  if (confirm(`¿Quieres desactivar el usuario ${data.user_name}`)) {
     await fetch(`${apiEndpoint}/users/delete`, {
       method: "DELETE", headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }, body: JSON.stringify({ userId: data.user_id })
+    })
+    await fetchUsers();
+  }
+
+}
+
+//TODO
+const activateUser = async (data: any) => {
+  if (confirm(`¿Quieres activar el usuario ${data.user_name}`)) {
+    await fetch(`${apiEndpoint}/users/activate`, {
+      method: "POST", headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
       }, body: JSON.stringify({ userId: data.user_id })
@@ -139,8 +155,12 @@ const logOut = () => {
       </Column>
       <Column key="delete" header="Eliminar">
         <template #body="slotProps">
-          <button class="table-options select-delete" @click="deleteUser(slotProps.data)">
+          <button v-if="slotProps.data.user_active" class="table-options select-delete"
+            @click="deleteUser(slotProps.data)">
             <DeleteUser />
+          </button>
+          <button v-else class="table-options select-activate" @click="activateUser(slotProps.data)">
+            <ActivateUser />
           </button>
         </template>
       </Column>
@@ -187,7 +207,7 @@ const logOut = () => {
         </Column>
       </DataTable>
     </template>
-    <div v-else>
+    <div v-else-if="userSelected === null">
       Este usuario no ha enviado ninguna denuncia.
     </div>
   </main>
@@ -278,6 +298,10 @@ main h2 {
 
 .select-delete:hover {
   color: #FF1493;
+}
+
+.select-activate:hover {
+  color: rgb(53, 162, 14);
 }
 
 main .heading {
