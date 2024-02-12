@@ -32,12 +32,13 @@
           <ProgressSpinner />
         </div>
       </div>
-      <div class="text-center" v-else>
+      <div class="text-center" v-else-if="!isLoading && !error && filteredProducts?.length === 0">
         <h2>No hay anuncios disponibles para esta categoria o género. Échale un vistazo a las demás.</h2>
         <div>
           <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
         </div>
       </div>
+      <ErrorMessages :messages="errorMessages"></ErrorMessages>
     </section>
     <VendorsRanking></VendorsRanking>
     <PostsHistory></PostsHistory>
@@ -70,6 +71,7 @@ import PuzzleIcon from '@/components/Icons/PuzzleIcon.vue';
 import PlataformasVue from '@/components/Icons/Plataformas.vue';
 import AccionIcon from '@/components/Icons/AccionIcon.vue';
 import AventuraIcon from '@/components/Icons/AventuraIcon.vue';
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
@@ -84,7 +86,9 @@ const route = useRoute();
 const categoryId = ref(route.params.id);
 const products = ref<Array<Product>>([]);
 const isLoading = ref<boolean>(true);
+const error = ref<boolean>(false);
 const criteria: Ref<string> = ref("A-Z");
+const errorMessages: Ref<string[]> = ref([]);
 
 
 const genreToIcon: any = {
@@ -170,11 +174,12 @@ const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | und
 
 async function getPosts() {
   try {
+    error.value = false;
+    errorMessages.value = [];
 
     const response = await fetch(`${apiEndpoint}/posts/category/${categoryId.value}`);
 
     if (!response.ok) {
-      console.log(response.status);
       isLoading.value = false;
       return;
     }
@@ -183,18 +188,20 @@ async function getPosts() {
 
     products.value = data.posts;
 
-  } catch (error) {
-    console.error('Error al obtener los productos', error);
+  } catch (err) {
+    console.error('Error al obtener los productos', err);
+    error.value = true;
+    errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.")
   }
   finally {
     isLoading.value = false;
-
   }
 }
 
 async function getPostsLogIn() {
   try {
-
+    error.value = false;
+    errorMessages.value = [];
     const response = await fetch(`${apiEndpoint}/posts/category/auth/${categoryId.value}`, {
       method: "GET",
       headers: {
@@ -204,7 +211,7 @@ async function getPostsLogIn() {
     });
 
     if (!response.ok) {
-      console.log(response.status);
+      isLoading.value = false;
       return;
     }
 
@@ -212,8 +219,10 @@ async function getPostsLogIn() {
 
     products.value = data.posts;
     // isLoading.value = false;
-  } catch (error) {
-    console.error('Error al obtener los productos', error);
+  } catch (err) {
+    console.error('Error al obtener los productos', err);
+    error.value = true;
+    errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.")
   }
   finally {
     isLoading.value = false;
@@ -295,7 +304,7 @@ input[type="submit"] {
 }
 
 .post-box {
-  padding: 5vw;
+  padding: 2vw;
 }
 
 h1 {

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
-import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
@@ -46,8 +45,12 @@ const validatePost = () => {
         errorMessages.value.push("La categoría del producto debe ser de las plataformas disponibles");
         error.value = true;
     }
-    if (formState.value.price <= 0) {
-        errorMessages.value.push("El precio mínimo del producto debe ser de 1€");
+    if (isNaN(formState.value.price) || formState.value.price.length === 0) {
+        errorMessages.value.push("El precio indicado no es válido.");
+        error.value = true;
+    }
+    if (formState.value.price <= 0 || formState.value.price >= 500) {
+        errorMessages.value.push("El precio mínimo del producto debe ser de 1€, no puede superar los 500€");
         error.value = true;
     }
     if (!genres.includes(formState.value.genre)) {
@@ -184,9 +187,11 @@ const items = ref([
         <form novalidate @submit.prevent="sendPost" id="post-form" class="d-flex flex-column px-4 py-3 gap-4"
             enctype="multipart/form-data">
             <label for="title">Título</label>
-            <input v-model="formState.title" type="text" name="title" id="title">
+            <input v-model="formState.title" type="text" name="title" id="title" maxlength="50">
+            {{ formState.title.length }} / 50
             <label for="description">Descripción</label>
-            <input v-model="formState.description" type="text" name="description" id="description">
+            <input v-model="formState.description" type="text" name="description" id="description" maxlength="80">
+            {{ formState.description.length }} / 80
             <label for="category">Categoría</label>
             <select v-model="formState.category" name="category" id="category">
                 <optgroup>

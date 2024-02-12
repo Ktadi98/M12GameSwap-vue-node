@@ -94,7 +94,7 @@ const sendReport = async () => {
 //To limit the characters written in the textarea.
 watch(reportExplanation, () => {
     if (reportExplanation.value.length > 250) {
-        reportExplanation.value = reportExplanation.value.substring(0, 251);
+        reportExplanation.value = reportExplanation.value.substring(0, 250);
     }
 })
 
@@ -108,6 +108,7 @@ watch(reportExplanation, () => {
             <h3>Describe tu queja (opcional)</h3>
             <div>
                 <textarea v-model="reportExplanation" cols="40" rows="10"></textarea>
+                {{ reportExplanation.length }} / 250
             </div>
             <div class="d-flex flex-column gap-3">
                 <button type="submit" class="exit-button">Enviar reporte</button>

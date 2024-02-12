@@ -110,6 +110,7 @@ async function setReservation() {
         if (!response.ok) return;
 
         await getPost();
+        triggerReservationToast();
 
 
     } catch (error) {
@@ -118,6 +119,8 @@ async function setReservation() {
 }
 const { triggerToast } = useCustomToast("¡Producto añadido a tu lista de favoritos!");
 const { triggerToast: triggerErrorToast } = useCustomToast("¡Este producto ya existe en tu lista de favoritos!");
+const { triggerToast: triggerReservationToast } = useCustomToast("¡Reservado! Consúltalo en tu perfil en la lista de reservas");
+
 
 
 const addFavorite = async (id: number) => {

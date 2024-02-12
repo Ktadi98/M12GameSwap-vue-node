@@ -53,12 +53,12 @@ const { triggerToast } = useCustomToast("¡Gracias por tu reseña!");
 // }
 
 function validateReview() {
-    if (reviewData.value.title.length === 0 || reviewData.value.title.length > 50) {
-        errorMessages.value.push("El asunto debe tener como máximo 50 carácteres.");
+    if (reviewData.value.title.length < 5 || reviewData.value.title.length > 50) {
+        errorMessages.value.push("El asunto debe tener como mínimo 5 carácteres y como máximo 50 carácteres.");
         error.value = true;
     }
-    if (reviewData.value.description.length === 0 || reviewData.value.description.length > 350) {
-        errorMessages.value.push("La descripción debe tener como máximo 350 carácteres.");
+    if (reviewData.value.description.length < 5 || reviewData.value.description.length > 350) {
+        errorMessages.value.push("La descripción debe tener como mínimo 5 carácteres y como máximo 350 carácteres.");
         error.value = true;
     }
 }
@@ -117,6 +117,7 @@ async function sendReview() {
                 <br>
                 <input v-model.trim="reviewData.title" maxlength="50" type="text" name="title" id="title"
                     placeholder="Nombre reseña...">
+                {{ reviewData.title.length }} / 50
             </label>
             <label for="description">
                 Descripción
@@ -124,6 +125,7 @@ async function sendReview() {
                 <textarea rows="10" v-model.trim="reviewData.description" maxlength="350" name="description"
                     id="description" placeholder="Escribe tu reseña...">
             </textarea>
+                {{ reviewData.description.length }} / 350
             </label>
             <label class="d-flex flex-column gap-2 mb-4" for="punctuation">
                 Valoración de la experiencia de compra
