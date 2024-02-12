@@ -205,7 +205,7 @@ export class UserModel {
             const userClient = await prismadb.user_Client.findUnique({ where: { user_id: userId } })
             const user = await prismadb.user.findUnique({ where: { user_id: userId } })
             //console.log(user);
-            return {...userClient, user_email: user.user_email};
+            return { ...userClient, user_email: user.user_email };
         } catch (err) {
             console.log(err);
         }
@@ -297,6 +297,33 @@ export class UserModel {
                     return image.toString('base64')
                 })]
             }));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async addFavorite(userId, postId) {
+        try {
+            const userFavoriteData = await prismadb.user_Favorites.findMany({
+                where: {
+                    user_id: userId
+                }
+            })
+
+            const curFavorite = userFavoriteData.find((p => p.post_id === postId))
+            let fav = {}
+            if (curFavorite) {
+                return -1;
+            } else {
+                fav = await prismadb.user_Favorites.create({
+                    data: {
+                        user_id: userId,
+                        post_id: postId
+                    }
+                })
+            }
+
+            return 1;
         } catch (err) {
             console.log(err);
         }

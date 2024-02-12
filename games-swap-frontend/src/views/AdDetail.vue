@@ -13,6 +13,8 @@ import BookMarkFilled from '@/components/Icons/BookMarkFilled.vue';
 import ReportFlag from '@/components/Icons/ReportFlag.vue';
 import ReportModal from '@/components/ReportModal.vue';
 import { useModal } from 'vue-final-modal';
+import useCustomToast from '@/composables/useCustomToast';
+import HeartLike from "@/components/Icons/HeartLike.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -114,6 +116,29 @@ async function setReservation() {
         console.error(error);
     }
 }
+const { triggerToast } = useCustomToast("¡Producto añadido a tu lista de favoritos!");
+const { triggerToast: triggerErrorToast } = useCustomToast("¡Este producto ya existe en tu lista de favoritos!");
+
+
+const addFavorite = async (id: number) => {
+    const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+    const response: Response = await fetch(`${apiEndpoint}/users/favorites/add`, {
+        method: 'put',
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token.value}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ post_id: id })
+    });
+
+    if (!response.ok) {
+        triggerErrorToast();
+        return;
+    }
+
+    triggerToast();
+}
 
 </script>
 
@@ -169,6 +194,10 @@ async function setReservation() {
                 <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
                 <h2 class="post_condition"> Estado: {{ adDetail?.post_condition }}</h2>
                 <p class="post_description">{{ adDetail?.post_description }}</p>
+                <button v-if="userIsLoggedIn" v-tooltip.right="'Añadir a favoritos'"
+                    @click="addFavorite(Number(adDetail?.post_id))" class="purple icon-box px-1 heart-box">
+                    <HeartLike></HeartLike>
+                </button>
                 <!-- <div class="other-interests">
                 <h3>Sigue explorando</h3>
                 <span class="category-tag">PS5</span>
@@ -184,6 +213,26 @@ async function setReservation() {
 </template>
 
 <style scoped>
+.icon-box {
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 10px;
+    border: 2px solid rgb(229, 229, 229);
+    transition: all 0.2s ease-out;
+    cursor: pointer;
+}
+
+.heart-box {
+    background: none;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    width: min-content;
+}
+
+.heart-box>* {
+    font-size: x-large;
+}
+
 .report {
     cursor: pointer;
     border: 1px solid lightgray;
@@ -206,7 +255,7 @@ async function setReservation() {
 
 .img-box>img {
     border-radius: 10px;
-    width: 100%;
+    /* width: 100%; */
     height: 500px;
 }
 
@@ -296,7 +345,6 @@ h2.post_condition {
 p.post_description {
     margin-bottom: 30px;
     font-size: 1.5rem;
-    width: 75ch;
 }
 
 .other-interests {
@@ -357,6 +405,19 @@ h3 {
 
 }
 
+.purple {
+    color: #795aea;
+}
+
+.icon-box {
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 10px;
+    border: 2px solid rgb(229, 229, 229);
+    transition: all 0.2s ease-out;
+    cursor: pointer;
+}
+
+
 @media screen and (max-width: 768px) {
 
     .img-box {
@@ -365,6 +426,13 @@ h3 {
 
     .ad-container {
         border: none;
+    }
+}
+
+@media screen and (max-width: 500px) {
+
+    p.post_description {
+        font-size: 1rem;
     }
 }
 </style>

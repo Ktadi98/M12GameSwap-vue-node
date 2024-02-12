@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
-import BackArrow from "@/components/Icons/BackArrow.vue";
 import HeartLike from "@/components/Icons/HeartLike.vue";
 import Footer from "@/components/Footer.vue";
 import { computed, onMounted, ref, type ComputedRef, type Ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import useCustomToast from "@/composables/useCustomToast";
 
 
 const articles = ref<any[]>([])
@@ -26,6 +27,8 @@ onMounted(async () => {
   await fetchFavorites()
 })
 
+const { triggerToast } = useCustomToast("¡Producto eliminado de tu lista de favoritos!");
+
 const removeFavorite = async (id: number) => {
   const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
   await fetch(`${apiEndpoint}/users/favorites`, {
@@ -38,6 +41,7 @@ const removeFavorite = async (id: number) => {
     body: JSON.stringify({ post_id: id })
   })
   await fetchFavorites()
+  triggerToast();
 }
 
 const activeSort = ref<string | null>(null)
@@ -63,14 +67,20 @@ const handleFilter = (value: string) => {
   activeSort.value = value
 }
 
+const items = ref([
+  { label: 'Home', route: '/' },
+  { label: 'Perfil ', route: '/profileManagement' },
+  { label: 'Favoritos' }
+]);
+
 </script>
 <template>
   <NavBar></NavBar>
-  <div class="arrow-box" style="color: #8a6cf6">
-    <BackArrow />
+  <div class="ms-4">
+    <BreadCrumbs :items="items"></BreadCrumbs>
   </div>
   <h1>Mis productos favoritos</h1>
-  <div class="sort-container">
+  <div class="sort-container me-4">
     <select name="sort" id="sort" @change="handleFilter(($event as any).target.value)">
       <option disabled selected>Ordenar por...</option>
       <option value="post_title-asc">A ..Z</option>
@@ -80,12 +90,12 @@ const handleFilter = (value: string) => {
     </select>
   </div>
   <main>
-    <div class="articles-grid">
+    <div v-if="sortedArticles.length > 0" class="articles-grid">
       <article v-for="article of sortedArticles" :key="article.post_id">
         <img class="article-image" :src="`data:image/png;base64, ${article.post_photos[0]}`" alt="portada" />
         <div class="article-body">
           <span class="produc-price">{{ article.post_price }}€</span>
-          <button class="like-heart" @click="removeFavorite(article.post_id)">
+          <button v-tooltip.top="'Eliminar de favoritos'" class="like-heart" @click="removeFavorite(article.post_id)">
             <HeartLike></HeartLike>
           </button>
         </div>
@@ -93,6 +103,9 @@ const handleFilter = (value: string) => {
           <h6>{{ article.post_title }}</h6>
         </div>
       </article>
+    </div>
+    <div v-else>
+      No hay productos en tu lista
     </div>
   </main>
   <Footer></Footer>

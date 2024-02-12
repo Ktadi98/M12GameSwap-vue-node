@@ -140,8 +140,8 @@ const logOut = () => {
         <li><button class="logOut-btn p-2" @click="logOut()">Cerrar Sesión</button></li>
       </ul>
     </header>
-    <div class="heading py-3">
-      <h1>Bienvenido al panel de control</h1>
+    <div class="heading display-6 px-3 py-3">
+      <p>Bienvenido al panel de control</p>
     </div>
     <h2>Listado de usuarios</h2>
     <DataTable :value="users" table-class="display">
@@ -207,7 +207,7 @@ const logOut = () => {
         </Column>
       </DataTable>
     </template>
-    <div v-else-if="userSelected === null">
+    <div v-else-if="userSelected && complaints.length === 0">
       Este usuario no ha enviado ninguna denuncia.
     </div>
   </main>
@@ -311,5 +311,6 @@ main .heading {
   background-color: #8a6cf6;
   color: white !important;
   border-radius: 10px;
+  font-weight: bold;
 }
 </style>

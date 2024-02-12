@@ -23,7 +23,7 @@
       <Dropdown v-model="criteria" :options="filterCriterias" placeholder="Selecciona un filtro" />
     </div>
     <section class="post-box container-fluid">
-      <div v-if="products.length > 0" class="row">
+      <div v-if="filteredProducts?.length" class="row">
         <PostCard v-tooltip="'Ir al detalle'" v-for=" product in filteredProducts" :key="product.post_id"
           :product="product"></PostCard>
       </div>
@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="text-center" v-else>
-        <h2>No hay anuncios disponibles para esta categoria. Échale un vistazo a las demás.</h2>
+        <h2>No hay anuncios disponibles para esta categoria o género. Échale un vistazo a las demás.</h2>
         <div>
           <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
         </div>

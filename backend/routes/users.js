@@ -16,8 +16,9 @@ export const createUserRouter = (userModel) => {
   userRouter.get("/getData", authenticateToken, userController.getData);
   userRouter.get("/getStats/:userId", userController.getUserStats);
   userRouter.get("/getStatsAuth", authenticateToken, userController.getUserStatsAuth);
-  userRouter.get("/favorites", authenticateToken, userController.getFavorites)
-  userRouter.put("/favorites", authenticateToken, userController.toggleFavorite)
+  userRouter.get("/favorites", authenticateToken, userController.getFavorites);
+  userRouter.put("/favorites", authenticateToken, userController.toggleFavorite);
+  userRouter.put("/favorites/add", authenticateToken, userController.addFavorite);
   userRouter.get("/ranking", userController.getRanking);
   userRouter.post("/sendData", authenticateToken, userController.sendData)
 

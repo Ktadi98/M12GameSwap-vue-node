@@ -26,7 +26,7 @@
             </select> -->
         </div>
         <section class="post-box container-fluid">
-            <div v-if="products.length > 0" class="row">
+            <div v-if="filteredProducts?.length" class="row">
                 <PostCard v-tooltip="'Ir al detalle'" v-for="product in filteredProducts" :key="product.post_id"
                     :product="product"></PostCard>
             </div>

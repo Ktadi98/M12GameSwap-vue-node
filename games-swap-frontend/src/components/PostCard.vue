@@ -14,10 +14,6 @@
         <div v-if="props.product.post_reserved" class="purple icon-box px-2  reserve-box">
           <BookMarkFilledAlt></BookMarkFilledAlt><span>Reservado</span>
         </div>
-        <button v-if="userIsLoggedIn" @click="removeFavorite(props.product.post_id)"
-          class="purple icon-box px-1 my-3 mx-3 heart-box">
-          <HeartLike></HeartLike>
-        </button>
       </div>
     </div>
   </RouterLink>
@@ -29,8 +25,6 @@ import type { Product } from '@/interfaces/Product';
 import Chip from 'primevue/chip';
 import BookMarkFilledAlt from './Icons/BookMarkFilledAlt.vue';
 import { useAuthStore } from '@/stores/auth';
-import HeartLike from "@/components/Icons/HeartLike.vue";
-
 
 const props = defineProps<{
   product: Product
@@ -44,19 +38,6 @@ const toggleFavorite = () => {
   isFavorited.value = !isFavorited.value;
 };
 
-const removeFavorite = async (id: number) => {
-  const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
-  await fetch(`${apiEndpoint}/users/favorites`, {
-    method: 'put',
-    headers: {
-      "Accept": "application/json",
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ post_id: id })
-  })
-  //await fetchFavorites()
-}
 </script>
 
 <style scoped>
@@ -182,14 +163,13 @@ favorite-icon.favorited {
   cursor: pointer;
 }
 
-
 @media screen and (max-width: 700px) {
   .img-box {
     height: 600px;
   }
 }
 
-@media screen and (max-width: 568px) {
+@media screen and (max-width: 668px) {
   /* .img-box {
     height: 600px;
   } */

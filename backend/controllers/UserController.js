@@ -109,7 +109,7 @@ export class UserController {
     const userId = Number(req.params.userId);
 
     const userStats = await this.userModel.getUserStats(userId);
-    console.log(userStats);
+    //console.log(userStats);
 
     return res.json({ ...userStats });
   };
@@ -118,7 +118,7 @@ export class UserController {
     const userId = req.user_id;
 
     const userStats = await this.userModel.getUserStats(userId);
-    console.log(userStats);
+    //console.log(userStats);
 
     return res.json({ ...userStats });
   };
@@ -132,11 +132,25 @@ export class UserController {
     const returnStatus = await this.userModel.sendData(req.body, userId);
 
     if (returnStatus === 1) {
-      return res.json({message:"user updated successfully" });
+      return res.json({ message: "user updated successfully" });
 
     }
 
-    return res.status(500).json({error: "error updating user"})
+    return res.status(500).json({ error: "error updating user" })
+
+  };
+
+  addFavorite = async (req, res) => {
+    const userId = req.user_id;
+    const postId = req.body.post_id;
+
+    const returnState = await this.userModel.addFavorite(userId, postId);
+
+    if (returnState === 1) {
+      return res.json({ "message": "Product added to favorites successfully!" });
+
+    }
+    return res.status(500).json({ error: "Product already in favorites list" })
 
   };
 
