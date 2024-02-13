@@ -213,6 +213,13 @@ async function sendUserPhoto() {
       return;
     }
 
+    //If size is 350KB aprox, we block the image upload
+    if (userData.value.photo.size > 350000) {
+      error.value = true;
+      errorMessages.value.push("La imagen que has intentado colgar es demasiado grande. Prueba con una que ocupe menos de 350KB.");
+      return;
+    }
+
     photoData.append("userPhoto", userData.value.photo);
 
     const response: Response = await fetch(`${apiEndpoint}/users/sendPhoto`,
@@ -226,7 +233,13 @@ async function sendUserPhoto() {
       }
     );
 
-    if (!response.ok) return;
+    if (!response.ok) {
+      if (response.status === 500) {
+        error.value = true;
+        errorMessages.value.push("Error de validación: la foto de perfil no se ha colgado.");
+        return;
+      }
+    };
     fetchUserData();
     await authStore.fetchUserData();
     triggerUserPhotoModal();
@@ -283,7 +296,15 @@ const editMode = ref<EditMode>({
 });
 
 const handleImageUpload = (event: any) => {
+  error.value = false;
+  errorMessages.value = [];
   userData.value.photo = event.target.files[0];
+  //If size is 350KB aprox, we block the image upload
+  if (event.target.files[0].size > 350000) {
+    error.value = true;
+    errorMessages.value.push("La imagen que has intentado colgar es demasiado grande. Prueba con una que ocupe menos de 350KB.");
+    return;
+  }
   if (!userData.value.photo) return;
   getPhotosPosted();
 }
@@ -324,7 +345,7 @@ const handleImageUpload = (event: any) => {
       <div class="d-flex">
         <input type="file" accept="image/png, image/jpeg, image/jpg" name="userPhoto" id="userPhoto"
           @change="handleImageUpload" placeholder="Sube tu nueva foto de pefil">
-        <img :src="userPhoto" alt="Current User Photo" />
+        <!-- <img :src="userPhoto" alt="Current User Photo" /> -->
       </div>
       <template v-for="image in userData.images">
         <p>{{ image.name }}</p>

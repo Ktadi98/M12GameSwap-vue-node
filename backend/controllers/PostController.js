@@ -19,7 +19,6 @@ export class PostController {
     //Method to store a new post in the DB.
     create = async (req, res) => {
 
-        //console.log(req.file);
         //Transfrom price to number
         req.body.price = Math.floor(Number(req.body.price));
 
@@ -154,7 +153,16 @@ export class PostController {
     };
 
     updatePost = async (req, res) => {
+
+        //Transfrom price to number
+        req.body.price = Math.floor(Number(req.body.price));
+
         const postIdToPatch = Number(req.params.id);
+        const postValidated = validateUploadedPost(req.body);
+
+        if (!postValidated.success) {
+            return res.status(422).json({ error: JSON.parse(postValidated.error.message) })
+        }
         const [exitState, updatedPost] = await this.postModel.updatePost(req.body, postIdToPatch, req.user_id, req.file);
         if (exitState === 1) {
             return res.json({ post: updatedPost });

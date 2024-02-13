@@ -116,7 +116,7 @@ const sendData = async () => {
 <template>
   <VueFinalModal class="confirm-modal" content-class="confirm-modal-content" overlay-transition="vfm-fade"
     content-transition="vfm-fade">
-    <form @submit.prevent="sendData()">
+    <form @submit.prevent="sendData()" novalidate>
       <h1>INICIO SESIÓN</h1>
       <input v-model.trim="formData.email" type="email" name="email" id="email" placeholder="Correo">
       <input v-model.trim="formData.password" type="password" name="password" id="password" placeholder="Contraseña">

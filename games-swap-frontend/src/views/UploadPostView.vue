@@ -27,11 +27,11 @@ const error: Ref<boolean> = ref(false);
 const errorMessages: Ref<string[]> = ref([]);
 
 const validatePost = () => {
-    if (formState.value.title.length === 0 || formState.value.title.length > 50) {
+    if (formState.value.title.length < 3 || formState.value.title.length > 50) {
         errorMessages.value.push("El título del anuncio debe tener entre 3 y 50 carácteres.");
         error.value = true;
     }
-    if (formState.value.description.length === 0 || formState.value.description.length > 80) {
+    if (formState.value.description.length < 5 || formState.value.description.length > 80) {
         errorMessages.value.push("La descripción del anuncio debe tener entre 5 y 80 carácteres.");
         error.value = true;
     }
@@ -43,7 +43,7 @@ const validatePost = () => {
         errorMessages.value.push("El precio indicado no es válido.");
         error.value = true;
     }
-    if (formState.value.price <= 0 || formState.value.price >= 500) {
+    if (formState.value.price < 1 || formState.value.price >= 500) {
         errorMessages.value.push("El precio mínimo del producto debe ser de 1€, no puede superar los 500€");
         error.value = true;
     }
@@ -54,6 +54,10 @@ const validatePost = () => {
     if (formState.value.images.length === 0) {
         errorMessages.value.push("Debes subir una foto de tu producto");
         error.value = true;
+    }
+    if (formState.value.images.size > 350000) {
+        error.value = true;
+        errorMessages.value.push("La imagen que has intentado colgar es demasiado grande. Prueba con una que ocupe menos de 350KB.");
     }
     if (!states.includes(formState.value.state)) {
         errorMessages.value.push("El estado del producto debe ser el de los estados disponibles");
@@ -77,7 +81,15 @@ const formState: Ref<any> = ref({
 const uploadedImages: Ref<any> = ref([]);
 
 function selectFile(event: any) {
+    error.value = false;
+    errorMessages.value = [];
     formState.value.images = event.target.files[0];
+    //If size is 350KB aprox, we block the image upload
+    if (event.target.files[0].size > 350000) {
+        error.value = true;
+        errorMessages.value.push("La imagen que has intentado colgar es demasiado grande. Prueba con una que ocupe menos de 350KB.");
+        return;
+    }
     getPhotosPosted();
 }
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;

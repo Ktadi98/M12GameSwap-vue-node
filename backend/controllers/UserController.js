@@ -141,6 +141,22 @@ export class UserController {
     const userEmail = await req.user_email;
     const userId = req.user_id;
 
+    if (userEmail) {
+      if (
+        userEmail.length === 0 ||
+        !userEmail.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) ||
+        userEmail > 150
+      ) {
+        return res.status(422).json({ error: "Invalid email" });
+      }
+    }
+
+    if (req.body.username) {
+      if (req.body.username.length < 3 || req.body.username > 20) {
+        return res.status(422).json({ error: "Invalid username" });
+      }
+    }
+
     const returnStatus = await this.userModel.sendData(req.body, userId);
 
     if (returnStatus === 1) {

@@ -108,7 +108,7 @@ async function sendReview() {
 <template>
     <main class="container-fluid d-flex justify-content-center align-items-center mt-5">
         <form class="d-flex flex-column justify-content-center align-items-center gap-4 px-4 py-2"
-            @submit.prevent="sendReview()">
+            @submit.prevent="sendReview()" novalidate>
             <header>
                 <h1>ESCRIBE TU RESEÑA SOBRE "{{ postName }}"</h1>
             </header>
