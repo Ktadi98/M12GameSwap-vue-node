@@ -6,18 +6,8 @@
     </div>
     <section>
       <h1>EDITA TUS DATOS</h1>
-      <!-- botóns per al username -->
-      <!-- <div class="d-flex"> -->
-
-      <!-- <button @click="toggleUserNameModifierInput">{{ editMode.username ? 'CANCELAR' : 'EDITAR' }}</button>
-      </div>
-      <div v-if="modifyUserNameFieldActive" class="d-flex">
-        <input  type="name" name="name" id="name" placeholder="Nombre">
-        <button @click="sendUserName">ENVIAR</button>
-      </div> -->
-
+      <!-- user name -->
       <div class="d-flex">
-
         <input v-model.trim="username" type="name" name="name" id="name" placeholder="Nombre" disabled>
         <img :src="editMode.username ? cancelImage : editImage" type="submit" alt="Edit"
           @click="toggleUserNameModifierInput" />
@@ -25,18 +15,8 @@
       <div v-if="modifyUserNameFieldActive" class="d-flex">
         <input v-model.trim="userData.username" type="name" name="name" id="name" placeholder="Nombre">
         <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserName" />
-      </div>
-
-      <!-- botó per al email -->
-      <!-- <div class="d-flex">
-        <input v-model.trim="userEmail" type="email" name="email" id="email" placeholder="Correo" disabled>
-        <button @click="toggleEmailModifierInput"  type="submit">{{ editMode.email ? 'CANCELAR' : 'EDITAR' }}</button>
-      </div>
-      <div v-if="modifyUserEmailFieldActive" class="d-flex">
-        <input  type="name" name="name" id="name" placeholder="Nombre">
-        <button type="submit" @click="sendUserEmail">ENVIAR</button>
-      </div> -->
-
+      </div> 
+      <!-- user email -->
       <div class="d-flex">
         <input v-model.trim="userEmail" type="email" name="email" id="email" placeholder="Correo" disabled>
         <img :src="editMode.email ? cancelImage : editImage" type="submit" alt="Edit" @click="toggleEmailModifierInput" />
@@ -45,6 +25,12 @@
         <input v-model.trim="userData.email" type="name" name="name" id="name" placeholder="Nombre">
         <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserEmail" />
       </div>
+      <!-- user image -->
+      <div class="d-flex">
+        <img :src="'./src/assets/avatar-profile.svg'" alt="Current User Photo" />
+        <input type="file" accept="image/png, image/jpeg, image/jpg" @change="handleImageUpload">
+      </div>
+
     </section>
   </div>
 </template>
@@ -60,8 +46,16 @@ import cancelImage from '@/components/Icons/cancel.svg';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 
+
+
 const modifyUserNameFieldActive = ref(false);
 const modifyUserEmailFieldActive = ref(false);
+const currentUserPhoto = ref(""); 
+const newPhoto = ref<string | null>(null);
+
+
+
+
 
 const emit = defineEmits<{
   (e: 'confirm'): void
@@ -75,10 +69,12 @@ const errorMessages: Ref<string[]> = ref([]);
 interface RegisterType {
   username: string,
   email: string,
+  photo: string[]
 }
 
 const username = ref("");
 const userEmail = ref("");
+const userPhoto = ref<string[]>([]);
 
 interface TokenType {
   message: string,
@@ -126,19 +122,23 @@ async function fetchUserData() {
 
     if (!response.ok) return;
 
-    const userData: { email: string, name: string } = await response.json();
+    const userData: { email: string, name: string, photo: string[] } = await response.json();
 
     username.value = userData.name;
     userEmail.value = userData.email;
+    userPhoto.value.push(userData.photo[0] as string);
+
+
 
   } catch (error) {
     console.error(error);
   }
 }
 
-const userData: Ref<RegisterType> = ref({
+const userData: Ref<any> = ref({
   username: "",
-  email: ""
+  email: "",
+  photo: []
 })
 
 async function sendUserEmail() {
@@ -191,7 +191,34 @@ async function sendUserName() {
 
 }
 
+async function sendUserPhoto() {
+  try {
+    const photoData = new FormData();
 
+    photoData.append("userPhoto", userData.value.photo);
+
+
+    const response: Response = await fetch(`${apiEndpoint}/users/sendPhoto`, 
+    {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${authStore.token}`
+      },
+      body:photoData
+    }
+    );
+
+    if (!response.ok) return;
+    fetchUserData();
+
+  }
+  catch (error) {
+    console.error(error);
+  }
+
+}
 
 const sendData = async () => {
 
@@ -201,45 +228,56 @@ const sendData = async () => {
 
   if (error.value) return;
 
-  // try {
-  //   const response = await fetch(`${apiEndpoint}/users/register`, {
-  //     method: 'POST',
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "Accept": "application/json"
-  //     },
-  //     body: JSON.stringify({
-  //       username: formData.value.username,
-  //       email: formData.value.email,
-  //     })
-  //   });
-
-  //   if (!response.ok) {
-  //     errorMessages.value.push("Registro inválido , el usuario ya existe.");
-  //     error.value = true;
-  //     return;
-  //   }
-
-  //   const data: TokenType = await response.json();
-
-  //   console.log(data);
-
-  //   authStore.setToken(data.token);
-  //   emit('confirm');
-  // } catch (err) {
-  //   errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
-  //}
 }
 interface EditMode {
   username: boolean;
   email: boolean;
+  photo: boolean;
 }
 
 const editMode = ref<EditMode>({
   username: false,
   email: false,
+  photo: false,
 
 });
+
+const handleImageUpload = async (event: Event) => {
+  const photoInput = event.target as HTMLInputElement | null;
+
+  if (!photoInput) return;
+
+  const file = photoInput.files?.[0];
+
+  if (!file) return;
+
+  try {
+    const formData = new FormData();
+    formData.append('photo', file);
+
+    const response: Response = await fetch(`${apiEndpoint}/users/uploadPhoto`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${authStore.token}`
+      },
+      // body: JSON.stringify({
+      //   userPhoto: userData.value.userPhoto
+    });
+
+    if (!response.ok) {
+
+      return;
+    }
+
+    fetchUserData();
+
+    newPhoto.value = URL.createObjectURL(file); 
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 
 </script>
@@ -274,16 +312,6 @@ input {
   width: 100%;
   margin-right: 10px;
 }
-
-
-/* button {
-  padding: 0.5rem 1rem;
-  width:max-content;
-  height: max-content;
-  background-color: #9f87f5;
-  color: #fff;
-  cursor: pointer;
-}  */
 
 img {
   padding: 0.5rem 1rem;
