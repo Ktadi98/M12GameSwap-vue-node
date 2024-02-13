@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import fs from 'fs'
+import fs from 'fs';
+import fsa from 'fs/promises';
+import sharp from 'sharp';
+import "dotenv/config";
 
 const prismadb = new PrismaClient(); //Move to external module
 
@@ -165,6 +168,29 @@ export class UserModel {
         }
     }
 
+    static async deactivate(userId) {
+        try {
+            const deletedUser = await prismadb.user.update({
+                where: {
+                    user_id: userId
+                },
+                data: {
+                    user_active: false
+                }
+            })
+
+
+            if (deletedUser === null) {
+                throw new Error("Non existent user.");
+            }
+
+            return 1;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     static async activate(user_data) {
         try {
 
@@ -267,6 +293,37 @@ export class UserModel {
 
         } catch (err) {
             console.log(err);
+        }
+    }
+
+    static async sendPhoto(userId, post_file) {
+        try {
+            //Mount image in public directory
+            await sharp(post_file.path).toFile(`./public/static/images/${post_file.originalname}`);
+            await fsa.unlink(post_file.path);
+
+            const updatedClient = await prismadb.user_Client.update({
+                where: {
+                    user_id: userId
+                },
+                data: {
+                    user_photo: `${process.env.PHOTOS_URL}/${post_file.originalname}`
+                }
+            });
+
+            return 1;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async getUserImage(postImage) {
+        try {
+            await sharp(postImage.path).toFile(`./public/static/images/${postImage.originalname}`);
+            await fsa.unlink(postImage.path);
+            return 1;
+        } catch (error) {
+            console.log(error);
         }
     }
 

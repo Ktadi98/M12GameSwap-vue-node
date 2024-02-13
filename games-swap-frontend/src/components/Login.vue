@@ -97,6 +97,7 @@ const sendData = async () => {
       router.push("/controlPanel");
     }
     else {
+      await authStore.fetchUserData();
       router.push("/");
     }
 

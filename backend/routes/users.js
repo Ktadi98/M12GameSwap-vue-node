@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { UserController } from "../controllers/UserController.js";
 import { authenticateToken } from "../middlewares/token.js";
+import { upload } from "../middlewares/multer.js";
 
 export const createUserRouter = (userModel) => {
   const userRouter = Router();
@@ -11,6 +12,7 @@ export const createUserRouter = (userModel) => {
   userRouter.post("/register", userController.register);
   userRouter.post("/login", userController.login);
   userRouter.delete("/delete", userController.delete);
+  userRouter.delete("/deactivate", authenticateToken, userController.deactivate);
   userRouter.post("/activate", userController.activate);
   userRouter.get("/type/:type", userController.getByType);
   userRouter.get("/getData", authenticateToken, userController.getData);
@@ -20,7 +22,9 @@ export const createUserRouter = (userModel) => {
   userRouter.put("/favorites", authenticateToken, userController.toggleFavorite);
   userRouter.put("/favorites/add", authenticateToken, userController.addFavorite);
   userRouter.get("/ranking", userController.getRanking);
-  userRouter.post("/sendData", authenticateToken, userController.sendData)
+  userRouter.post("/sendData", authenticateToken, userController.sendData);
+  userRouter.post("/sendPhoto", authenticateToken, upload.single('userPhoto'), userController.sendPhoto);
+  userRouter.post("/userPhoto", authenticateToken, upload.single('userPhoto'), userController.getUserImage);
 
   // userRouter.get("/test", authenticateToken, (req, res, next) => {
   //   console.log(req.user_email);

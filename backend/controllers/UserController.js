@@ -1,4 +1,5 @@
 import { validateLogin, validateUser } from '../schemas/users.js'
+import "dotenv/config";
 
 export class UserController {
   constructor(userModel) {
@@ -84,6 +85,16 @@ export class UserController {
 
   };
 
+  deactivate = async (req, res) => {
+    const logInStatus = await this.userModel.deactivate(req.user_id);
+
+    if (logInStatus === 1) {
+      return res.status(200).json("User deactivated successfully!");
+    }
+
+    return res.status(500).json({ error: "User could not be deactivated!" })
+  }
+
   activate = async (req, res) => {
     const status = await this.userModel.activate(req.body);
     if (status === 1) {
@@ -101,7 +112,7 @@ export class UserController {
 
     const user = await this.userModel.getData(userId);
 
-    return res.json({ email: user.user_email, name: user.user_name });
+    return res.json({ email: user.user_email, name: user.user_name, photo: user.user_photo });
 
   };
 
@@ -138,6 +149,30 @@ export class UserController {
 
     return res.status(500).json({ error: "error updating user" })
 
+  };
+
+  sendPhoto = async (req, res) => {
+
+    console.log(req.file);
+    const returnState = await this.userModel.sendPhoto(req.user_id, req.file);
+
+    if (returnState === 1) {
+      console.log("Profile Image updated successfully!");
+      return res.json({ message: "Image updated succesfully" });
+    }
+
+    return res.status(500).json({ error: "Image could not be updated!" })
+  };
+
+  getUserImage = async (req, res) => {
+
+    const status = await this.userModel.getUserImage(req.file);
+
+    if (status === 1) {
+      console.log("Éxito!!")
+      return res.json({ file: `${process.env.PHOTOS_URL}/${req.file.originalname}` });
+    }
+    return res.status(500).json({ error: "Images could not be retrieved" });
   };
 
   addFavorite = async (req, res) => {

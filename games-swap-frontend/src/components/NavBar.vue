@@ -18,7 +18,7 @@
           <PostUploadIcon></PostUploadIcon>
         </router-link>
         <div v-if="authStore.userIsLoggedIn" class="profile-dropdown" @click="toggleDropdown">
-          <img src="@/assets/avatar-profile.svg" alt="Profile Image"
+          <img :src="(authStore.userPhoto as string)" alt="Profile Image"
             :class="{ 'profile-border': showDropdown, 'profile-image': true }" />
           <div v-if="showDropdown" class="dropdown-menu d-flex flex-column">
             <router-link to="/profileManagement">Ver perfil</router-link>
