@@ -127,7 +127,7 @@ const items = ref([
     <div v-else-if="!loading && !error && sortedArticles.length === 0">
       No hay productos en tu lista
       <div>
-        <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+        <img src="@/assets/not_data_outline.gif" alt="not found GIF">
       </div>
     </div>
     <ErrorMessages :messages="errorMessages"></ErrorMessages>

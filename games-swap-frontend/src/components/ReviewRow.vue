@@ -32,7 +32,7 @@ const props = defineProps<{
             <p class="mt-4">{{ review.review_description }}</p>
             <p><b> Por {{ review.user_buyer.user_name }}</b></p>
             <div>
-                <img :src="review.user_buyer.user_photo" alt="user_buyer_photo">
+                <img class="img" :src="review.user_buyer.user_photo" alt="user_buyer_photo">
             </div>
         </div>
     </article>
@@ -45,6 +45,11 @@ const props = defineProps<{
 </style>
 
 <style scoped>
+.img {
+    width: 50px;
+    height: 50px;
+}
+
 .underline {
     text-decoration: underline;
     color: #795aea;

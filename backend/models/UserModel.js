@@ -67,7 +67,7 @@ export class UserModel {
                     data: {
                         user_id: newUser.user_id,
                         user_name: user_data.username,
-                        user_photo: "",
+                        user_photo: "/imgs/avatar-profile.svg",
                         user_phone: ""
                     }
                 })

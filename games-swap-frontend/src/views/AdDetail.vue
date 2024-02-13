@@ -166,7 +166,7 @@ const addFavorite = async (id: number) => {
         <div class="profile-vendor">
             <div class="d-flex w-75 mb-3">
                 <div class="profile-image d-flex gap-3">
-                    <img src="@/assets/avatar-profile.svg" alt="Profile Image">
+                    <img :src="adDetail?.user_client?.user_photo" alt="Profile Image">
                 </div>
                 <RouterLink v-tooltip.top="'Ir al vendedor'" v-if="!(currentUserName === adDetail?.user_client?.user_name)"
                     :to="{ name: 'vendor', params: { id: adDetail?.user_client?.user_id } }">

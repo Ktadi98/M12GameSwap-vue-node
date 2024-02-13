@@ -97,6 +97,7 @@ const sendData = async () => {
 
     authStore.setToken(data.token);
     emit('confirm');
+    await authStore.fetchUserData();
   } catch (err) {
     errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
   }

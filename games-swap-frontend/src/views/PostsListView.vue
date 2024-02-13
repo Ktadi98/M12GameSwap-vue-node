@@ -112,7 +112,7 @@ onMounted(() => {
         <section v-else-if="posts.length === 0 && !error">
             <h2>Todavía no has colgado ningún anuncio.</h2>
             <div>
-                <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+                <img src="@/assets/not_data_outline.gif" alt="not found GIF">
             </div>
         </section>
         <section v-else-if="posts !== undefined && !loading" class="posts-box w-100">

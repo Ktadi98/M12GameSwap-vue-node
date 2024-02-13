@@ -7,6 +7,7 @@ import ErrorMessages from '@/components/ErrorMessages.vue';
 import editImage from '@/components/Icons/pen.svg';
 import cancelImage from '@/components/Icons/cancel.svg';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import useCustomToast from '@/composables/useCustomToast';
 
 
 const modifyUserNameFieldActive = ref(false);
@@ -37,6 +38,9 @@ const userData: Ref<any> = ref({
   photo: []
 })
 
+const { triggerToast: triggerUserNameModal } = useCustomToast("Tu nombre de usuario se ha actualizado correctamente.");
+const { triggerToast: triggerEmailModal } = useCustomToast("Tu correo se ha actualizado correctamente.");
+const { triggerToast: triggerUserPhotoModal } = useCustomToast("Tu foto de usuario se ha actualizado correctamente.");
 const uploadedImages: Ref<any> = ref([]);
 
 const items = ref([
@@ -142,14 +146,13 @@ async function sendUserEmail() {
     };
     fetchUserData();
     toggleEmailModifierInput();
-
+    triggerEmailModal();
   }
   catch (err) {
     console.error(err);
     error.value = true;
     errorMessages.value.push("Error de validación: el email ya existe en el sistema o el servidor ha caído)");
   }
-
 }
 
 async function sendUserName() {
@@ -183,6 +186,8 @@ async function sendUserName() {
     };
     fetchUserData();
     toggleUserNameModifierInput();
+    triggerUserNameModal();
+
 
   }
   catch (err) {
@@ -200,8 +205,9 @@ async function sendUserPhoto() {
     error.value = false;
     errorMessages.value = [];
     const photoData = new FormData();
-    console.log(userData.value.photo);
-    if (!userData.value.photo.length) {
+    //console.log(userData.value.photo[0].name.file);
+    if (!userData.value.photo.length === undefined) {
+      //console.log(userData.value.photo.length);
       error.value = true;
       errorMessages.value.push("¡Todavía no has colgado ninguna foto de perfil!");
       return;
@@ -222,6 +228,8 @@ async function sendUserPhoto() {
 
     if (!response.ok) return;
     fetchUserData();
+    await authStore.fetchUserData();
+    triggerUserPhotoModal();
 
   }
   catch (error) {
@@ -260,7 +268,6 @@ async function getPhotosPosted() {
     errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
   }
 }
-
 
 interface EditMode {
   username: boolean;

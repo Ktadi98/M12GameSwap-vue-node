@@ -112,6 +112,7 @@ export class UserController {
 
     const user = await this.userModel.getData(userId);
 
+
     return res.json({ email: user.user_email, name: user.user_name, photo: user.user_photo });
 
   };

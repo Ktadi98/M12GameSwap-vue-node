@@ -158,7 +158,7 @@ const categoriesToSalesMap = (categories: any, sales: any) => {
     <section v-else>
         No han habido ventas todavía.
         <div>
-            <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+            <img src="@/assets/not_data_outline.gif" alt="not found GIF">
         </div>
     </section>
     <ErrorMessages :messages="errorMessages"></ErrorMessages>

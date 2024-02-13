@@ -35,7 +35,7 @@
       <div class="text-center" v-else-if="!isLoading && !error && filteredProducts?.length === 0">
         <h2>No hay anuncios disponibles para esta categoria o género. Échale un vistazo a las demás.</h2>
         <div>
-          <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+          <img src="@/assets/not_data_outline.gif" alt="not found GIF">
         </div>
       </div>
       <ErrorMessages :messages="errorMessages"></ErrorMessages>

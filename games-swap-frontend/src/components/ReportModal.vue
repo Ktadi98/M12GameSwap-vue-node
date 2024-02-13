@@ -104,7 +104,7 @@ watch(reportExplanation, () => {
     <VueFinalModal class="confirm-modal" content-class="confirm-modal-content border-0" overlay-transition="vfm-fade"
         content-transition="vfm-fade">
         <form class="d-flex flex-column gap-3 absolute inset-0" @submit.prevent="sendReport()">
-            <Dropdown v-model="reportMotive" :options="reportMotives" placeholder="Selecciona un el motivo de tu queja" />
+            <Dropdown v-model="reportMotive" :options="reportMotives" placeholder="Selecciona el motivo de tu queja" />
             <h3>Describe tu queja (opcional)</h3>
             <div>
                 <textarea v-model="reportExplanation" cols="40" rows="10"></textarea>
