@@ -27,6 +27,8 @@ app.directive('tooltip', Tooltip);
 const storedToken = localStorage.getItem('token');
 if (storedToken) {
     useAuthStore(pinia).setToken(storedToken);
+    const authStore = useAuthStore();
+    authStore.fetchUserData();
 }
 
 app.use(pinia);

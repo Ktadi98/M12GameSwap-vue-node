@@ -143,11 +143,11 @@ export class UserController {
     const returnStatus = await this.userModel.sendData(req.body, userId);
 
     if (returnStatus === 1) {
-      return res.json({ message: "user updated successfully" });
+      return res.json({ message: "User updated successfully" });
 
     }
 
-    return res.status(500).json({ error: "error updating user" })
+    return res.status(500).json({ error: "Error updating user" })
 
   };
 

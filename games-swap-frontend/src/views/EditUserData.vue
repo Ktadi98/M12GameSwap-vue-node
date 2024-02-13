@@ -62,9 +62,9 @@ const validateUserName = () => {
     errorMessages.value.push("El nuevo nombre intoducido es el que tienes actualmente !Debería ser diferente!");
   }
 
-  if (userData.value.username.length < 2 || userData.value.username.length > 20) {
+  if (userData.value.username.length < 3 || userData.value.username.length > 20) {
     error.value = true;
-    errorMessages.value.push("El nombre de usuario debe tener como mínimo 2 carácteres y como máximo 20");
+    errorMessages.value.push("El nombre de usuario debe tener como mínimo 3 carácteres y como máximo 20");
   }
 
 }
@@ -133,14 +133,20 @@ async function sendUserEmail() {
       })
     });
 
-    if (!response.ok) return;
+    if (!response.ok) {
+      if (response.status === 500) {
+        error.value = true;
+        errorMessages.value.push("Error de validación: el usuario ya existe en el sistema o el servidor ha caído.");
+        return;
+      }
+    };
     fetchUserData();
     toggleEmailModifierInput();
 
   }
   catch (err) {
     console.error(err);
-    error.value = false;
+    error.value = true;
     errorMessages.value.push("Error de validación: el email ya existe en el sistema o el servidor ha caído)");
   }
 
@@ -168,14 +174,21 @@ async function sendUserName() {
       })
     });
 
-    if (!response.ok) return;
+    if (!response.ok) {
+      if (response.status === 500) {
+        error.value = true;
+        errorMessages.value.push("Error de validación: el usuario ya existe en el sistema o el servidor ha caído.");
+        return;
+      }
+    };
     fetchUserData();
     toggleUserNameModifierInput();
 
   }
   catch (err) {
     console.error(err);
-    error.value = false;
+    console.log("hola");
+    error.value = true;
     errorMessages.value.push("Error de validación: el usuario ya existe en el sistema o el servidor ha caído)");
   }
 
@@ -183,7 +196,16 @@ async function sendUserName() {
 
 async function sendUserPhoto() {
   try {
+
+    error.value = false;
+    errorMessages.value = [];
     const photoData = new FormData();
+    console.log(userData.value.photo);
+    if (!userData.value.photo.length) {
+      error.value = true;
+      errorMessages.value.push("¡Todavía no has colgado ninguna foto de perfil!");
+      return;
+    }
 
     photoData.append("userPhoto", userData.value.photo);
 
@@ -276,7 +298,7 @@ const handleImageUpload = (event: any) => {
           @click="toggleUserNameModifierInput" />
       </div>
       <div v-if="modifyUserNameFieldActive" class="d-flex">
-        <input v-model.trim="userData.username" max="20" type="name" name="name" id="name" placeholder="Nombre">
+        <input v-model.trim="userData.username" maxlength="20" type="name" name="name" id="name" placeholder="Nombre">
         <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserName" />
 
       </div>
@@ -287,10 +309,10 @@ const handleImageUpload = (event: any) => {
         <img :src="editMode.email ? cancelImage : editImage" type="submit" alt="Edit" @click="toggleEmailModifierInput" />
       </div>
       <div v-if="modifyUserEmailFieldActive" class="d-flex">
-        <input v-model.trim="userData.email" type="name" name="name" id="name" placeholder="Correo">
+        <input v-model.trim="userData.email" type="name" maxlength="150" name="name" id="name" placeholder="Correo">
         <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserEmail" />
       </div>
-      <p v-if="modifyUserEmailFieldActive" class="counter ms-5">{{ userData.username.length }} / 150</p>
+      <p v-if="modifyUserEmailFieldActive" class="counter ms-5">{{ userData.email.length }} / 150</p>
       <!-- user image -->
       <div class="d-flex">
         <input type="file" accept="image/png, image/jpeg, image/jpg" name="userPhoto" id="userPhoto"

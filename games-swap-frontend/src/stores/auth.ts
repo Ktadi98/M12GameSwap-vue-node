@@ -28,7 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
         token.value = '';
         username.value = null;
         userEmail.value = null;
-        userPhoto.value = null;
+        userPhoto.value = '/imgs/avatar-profile.svg';
         localStorage.removeItem('token');
     }
     const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
@@ -49,7 +49,7 @@ export const useAuthStore = defineStore('auth', () => {
 
             username.value = userData.name;
             userEmail.value = userData.email;
-            userPhoto.value = userData.photo;
+            userPhoto.value = userData.photo === "" ? "/imgs/avatar-profile.svg" : userData.photo;
         } catch (error) {
             console.error(error);
         }

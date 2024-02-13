@@ -274,6 +274,17 @@ export class UserModel {
         try {
 
             if (body.username) {
+
+                //Checking if username is already in the database
+
+                const userRepeated = await prismadb.user.findFirst({
+                    where: {
+                        user_name: body.username
+                    }
+                })
+
+                if (userRepeated !== null) return -1;
+
                 const user = await prismadb.user_Client.update({
                     where: { user_id: userId },
                     data: { user_name: body.username }
@@ -281,6 +292,16 @@ export class UserModel {
                 return 1;
             }
             else if (body.email) {
+
+                //Checking if email is already in the database
+                const userRepeated = await prismadb.user.findFirst({
+                    where: {
+                        user_email: body.email
+                    }
+                })
+
+                if (userRepeated !== null) return -1;
+
                 const user = await prismadb.user.update({
                     where: { user_id: userId },
                     data: { user_email: body.email }

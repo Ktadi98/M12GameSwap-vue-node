@@ -110,11 +110,15 @@ const sendData = async () => {
     <form @submit.prevent="sendData()">
       <h1>DATE DE ALTA</h1>
 
-      <input v-model.trim="formData.username" type="name" name="name" id="name" placeholder="Nombre">
+      <input v-model.trim="formData.username" type="name" name="name" id="name" placeholder="Nombre" maxlength="20">
+      <p>{{ formData.username.length }} / 20</p>
       <input v-model.trim="formData.email" type="email" name="email" id="email" placeholder="Correo">
-      <input v-model.trim="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
+      <input v-model.trim="formData.password" type="password" name="password" id="password" placeholder="Contraseña"
+        maxlength="20">
+      <p>{{ formData.password.length }} / 20</p>
       <input v-model.trim="formData.password2" type="password" name="password2" id="password2"
-        placeholder="Repite contraseña">
+        placeholder="Repite contraseña" maxlength="20">
+      <p>{{ formData.password2.length }} / 20</p>
 
       <div class="terms">
         <input v-model="formData.checkbox" type="checkbox" name="conditions" id="conditions-text">
@@ -172,7 +176,7 @@ form input {
   border: 3px solid #9F87F5;
   background: #F6F6F6;
   padding: 0.75rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 form input #placeholder {

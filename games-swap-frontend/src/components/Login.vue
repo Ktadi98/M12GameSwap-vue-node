@@ -5,8 +5,11 @@ import { useAuthStore } from "@/stores/auth";
 import ErrorMessages from './ErrorMessages.vue';
 import router from '@/router';
 import { usePostsHistoryStore } from '@/stores/postsHistory';
+import useCustomToast from '@/composables/useCustomToast';
+import { storeToRefs } from 'pinia';
 
 const { reset } = usePostsHistoryStore();
+
 
 const emit = defineEmits<{
   (e: 'confirm'): void,
@@ -14,6 +17,8 @@ const emit = defineEmits<{
 }>()
 
 const authStore = useAuthStore();
+const { username } = storeToRefs(useAuthStore());
+const { triggerToast } = useCustomToast(`Bienvenido ${username.value}`);
 const error: Ref<boolean> = ref(false);
 const errorMessages: Ref<string[]> = ref([]);
 
@@ -98,6 +103,7 @@ const sendData = async () => {
     }
     else {
       await authStore.fetchUserData();
+      //await triggerToast();
       router.push("/");
     }
 
