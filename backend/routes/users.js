@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { UserController } from "../controllers/UserController.js";
 import { authenticateToken } from "../middlewares/token.js";
+import { upload } from "../middlewares/multer.js";
 
 export const createUserRouter = (userModel) => {
   const userRouter = Router();
@@ -19,6 +20,7 @@ export const createUserRouter = (userModel) => {
   userRouter.put("/favorites", authenticateToken, userController.toggleFavorite)
   userRouter.get("/ranking", userController.getRanking);
   userRouter.post("/sendData", authenticateToken, userController.sendData)
+  userRouter.post("/sendPhoto", authenticateToken, upload.single('userPhoto'), userController.uploadPhoto);
 
   // userRouter.get("/test", authenticateToken, (req, res, next) => {
   //   console.log(req.user_email);

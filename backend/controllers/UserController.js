@@ -157,4 +157,8 @@ export class UserController {
     return res.json({ topVendors: topVendors });
   };
 
+  ///CREAR EL uploadPhoto
+
+
+
 }
