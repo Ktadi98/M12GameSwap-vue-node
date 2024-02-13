@@ -179,12 +179,12 @@ function formatCreationDate(date: string) {
                 </div>
             </div>
             <div class="icon-box reserve d-flex py-1 px-2">
+                <router-link :to="{name:'cart', query: {title:props.post.post_title, photo: props.post.post_photos[0], price:props.post.post_price} }" >
                 <div class="d-flex ">
-                    <p> Tramitar compra</p>
-                    <RouterLink to="/">
-                        <ShoppingCart></ShoppingCart>
-                    </RouterLink>
+                    Tramitar compra
+                        <ShoppingCart></ShoppingCart>    
                 </div>
+                </router-link>
             </div>
         </section>
     </article>
@@ -196,6 +196,9 @@ function formatCreationDate(date: string) {
 }
 </style>
 <style scoped>
+a {
+    color:inherit;
+}
 .purple {
     color: #795aea;
 }

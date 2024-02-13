@@ -69,6 +69,7 @@ const dropReservation = async (reservation: Reservation) => {
                 :reserved="true">
             </PostRow>
         </template>
+        
     </section>
     <section v-else-if="loading">
         <ProgressSpinner></ProgressSpinner>
@@ -80,5 +81,7 @@ const dropReservation = async (reservation: Reservation) => {
         </div>
     </section>
 </template>
+
+
 
 <style scoped></style>
