@@ -7,14 +7,19 @@ import Column from "primevue/column";
 import ModifyUser from '@/components/Icons/ModifyUser.vue';
 import DeleteUser from '@/components/Icons/DeleteUser.vue';
 import ActivateUser from '@/components/Icons/ActivateUser.vue';
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
-import { ref, onMounted } from "vue";
+
+import { ref, onMounted, type Ref } from "vue";
 import type { User } from "@/interfaces/User";
 import type { Reservation } from "@/interfaces/Reservation";
 import { storeToRefs } from "pinia";
 import type { Complaint } from "@/interfaces/Complaint";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+const loading = ref<boolean>(true);
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
@@ -31,13 +36,28 @@ const complaints = ref<Complaint[]>([]);
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 const fetchUsers = async () => {
-  const res = await fetch(`${apiEndpoint}/users/type/client`);
-  if (!res.ok) {
-    return;
+
+  loading.value = true;
+  error.value = false;
+  errorMessages.value = [];
+
+  try {
+    const res = await fetch(`${apiEndpoint}/users/type/client`);
+    if (!res.ok) {
+      return;
+    }
+    const usersResult: User[] = await res.json();
+    // To drop admin from the user list!
+    users.value = usersResult.filter(user => user.user_email !== "admin@gmail.com");
+  } catch (err) {
+    console.error(err);
+    error.value = true;
+    errorMessages.value.push("No se han podido cargar los clientes de la plataforma. Inténtalo más tarde");
   }
-  const usersResult: User[] = await res.json();
-  // To drop admin from the user list!
-  users.value = usersResult.filter(user => user.user_email !== "admin@gmail.com");
+  finally {
+    loading.value = false;
+  }
+
 
 }
 
@@ -143,8 +163,8 @@ const logOut = () => {
     <div class="heading display-6 px-3 py-3">
       <p>Bienvenido al panel de control</p>
     </div>
-    <h2>Listado de usuarios</h2>
-    <DataTable :value="users" table-class="display">
+    <h2 v-if="!error">Listado de usuarios</h2>
+    <DataTable v-if="users" :value="users" table-class="display">
       <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
       <Column key="modify" header="Modificar">
         <template #body="slotProps">
@@ -184,6 +204,7 @@ const logOut = () => {
         </template>
       </Column>
     </DataTable>
+    <ErrorMessages :messages="errorMessages"></ErrorMessages>
     <template v-if="userSelected && complaints.length">
       <h2>Listado de denuncias de {{ userSelected }}</h2>
       <DataTable :value="complaints" table-class="display">

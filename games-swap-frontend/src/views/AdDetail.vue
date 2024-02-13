@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BackArrow from '@/components/Icons/BackArrow.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import StarRating from '../components/Icons/StarRating.vue';
 import NavBar from '@/components/NavBar.vue';
@@ -15,10 +15,13 @@ import ReportModal from '@/components/ReportModal.vue';
 import { useModal } from 'vue-final-modal';
 import useCustomToast from '@/composables/useCustomToast';
 import HeartLike from "@/components/Icons/HeartLike.vue";
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
 const route = useRoute();
 const router = useRouter();
-
+const error = ref<boolean>(false);
+const loading = ref<boolean>(true);
+const errorMessages: Ref<string[]> = ref([]);
 
 const { updateHistory } = usePostsHistoryStore();
 
@@ -50,6 +53,9 @@ const { open: openReportModal, close: closeReportModal } = useModal({
 
 
 async function getPost() {
+    error.value = false;
+    errorMessages.value = [];
+    loading.value = true;
     try {
         const response: Response = await fetch(`${apiEndpoint}/posts/${post_id}`);
         if (!response.ok) {
@@ -58,8 +64,13 @@ async function getPost() {
         const data: { post: Product } = await response.json();
         adDetail.value = data.post;
     }
-    catch (error) {
-        console.error(error);
+    catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value.push("No se ha podido cargar el anuncio. Vuélvelo a intentar más tarde.")
+    }
+    finally {
+        loading.value = false;
     }
 }
 
@@ -151,7 +162,7 @@ const addFavorite = async (id: number) => {
         <BackArrow /><span>Volver Atrás</span>
     </div>
     <!-- falta devolver datos del vendedor para pintarlos aqui -->
-    <main class="ad-container">
+    <main v-if="adDetail" class="ad-container">
         <div class="profile-vendor">
             <div class="d-flex w-75 mb-3">
                 <div class="profile-image d-flex gap-3">
@@ -211,8 +222,9 @@ const addFavorite = async (id: number) => {
 
         </div>
     </main>
-    <!-- Footer commented to fix styles-->
-    <!-- <Footer></Footer> -->
+    <section class="d-flex justify-content-center mx-4 w-100">
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
+    </section>
 </template>
 
 <style scoped>

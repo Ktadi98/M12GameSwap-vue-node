@@ -6,21 +6,41 @@ import { computed, onMounted, ref, type ComputedRef, type Ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import useCustomToast from "@/composables/useCustomToast";
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
 
-const articles = ref<any[]>([])
-const authStore = useAuthStore()
+const articles = ref<any[]>([]);
+const authStore = useAuthStore();
+const loading = ref<boolean>(true);
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 const fetchFavorites = async () => {
-  const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
-  const resp = await fetch(`${apiEndpoint}/users/favorites`, {
-    headers: {
-      "Accept": "application/json",
-      "Authorization": `Bearer ${authStore.token}`
-    }
-  })
-  const data = await resp.json()
-  articles.value = data
+
+  error.value = false;
+  errorMessages.value = [];
+  loading.value = true;
+
+  try {
+    const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+    const resp = await fetch(`${apiEndpoint}/users/favorites`, {
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${authStore.token}`
+      }
+    })
+    const data = await resp.json()
+    articles.value = data
+  } catch (err) {
+    console.error(err);
+    error.value = true;
+    errorMessages.value.push("No se ha podido cargar tu lista de anuncios favoritos. Por favor, inténtalo más tarde.");
+  }
+  finally {
+    loading.value = false;
+  }
+
+
 }
 
 onMounted(async () => {
@@ -104,9 +124,13 @@ const items = ref([
         </div>
       </article>
     </div>
-    <div v-else>
+    <div v-else-if="!loading && !error && sortedArticles.length === 0">
       No hay productos en tu lista
+      <div>
+        <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+      </div>
     </div>
+    <ErrorMessages :messages="errorMessages"></ErrorMessages>
   </main>
   <Footer></Footer>
 </template>

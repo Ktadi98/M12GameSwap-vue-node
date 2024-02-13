@@ -4,10 +4,12 @@ import VendorSummary from '@/components/VendorSummary.vue';
 import type { Stats } from '@/interfaces/Stats';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import router from '@/router';
 import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import ErrorMessages from '@/components/ErrorMessages.vue';
+
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
@@ -20,7 +22,12 @@ const items = ref([
     { label: 'Reservas y Compras' }
 ]);
 
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
+
 const getUserStats = async () => {
+    error.value = false;
+    errorMessages.value = [];
     try {
         const response: Response = await fetch(`${apiEndpoint}/users/getStatsAuth`, {
             method: "GET",
@@ -39,8 +46,10 @@ const getUserStats = async () => {
         const data: Stats = await response.json();
 
         userStats.value = data;
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value.push("Ha habido un error al devolver los datos del usuario. Por favor, inténtalo más tarde.");
     }
 }
 
@@ -59,6 +68,7 @@ onMounted(
     <Divider></Divider>
     <main class="d-flex flex-column justify-content-center align-items-center mt-3 px-2 w-100">
         <VendorSummary :userStats="userStats"></VendorSummary>
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
         <section class="tabs-box d-flex justify-content-around gap-3 w-75 mb-4">
             <RouterLink :to="{ name: 'reservations' }">Reservas</RouterLink>
             <RouterLink :to="{ name: 'purchases' }">Compras</RouterLink>

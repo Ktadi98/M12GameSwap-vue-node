@@ -88,7 +88,7 @@ interface TokenType {
 const items = ref([
   { label: 'Home', route: '/' },
   { label: 'Perfil ', route: '/profileManagement' },
-  { label: 'Reservas y Compras' }
+  { label: 'Editar Perfil' }
 ]);
 
 

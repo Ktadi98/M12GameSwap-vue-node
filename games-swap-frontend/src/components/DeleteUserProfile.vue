@@ -12,7 +12,7 @@ const emit = defineEmits<{
     content-transition="vfm-fade">
     <h1>¿Estás seguro que quieres elimninar tu cuenta?</h1>
     <p>Recuerda que esta acción no se puede deshacer</p>
-    <button class="btn-delete" @click="emit('confirm')">ELIMINAR</button>
+    <button class="btn-delete mb-3" @click="emit('confirm')">ELIMINAR</button>
     <button class="btn-cancel" @click="emit('cancel')">CANCELAR</button>
   </VueFinalModal>
 </template>
@@ -54,6 +54,7 @@ h1 {
   color: white;
   margin: auto;
   width: 70%;
+  border: none !important;
 }
 
 .btn-cancel {

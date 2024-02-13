@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import type { Purchase } from '@/interfaces/Purchase';
 import PostRow from '@/components/PostRow.vue';
 import ProgressSpinner from 'primevue/progressspinner';
 import router from '@/router';
+import ErrorMessages from '@/components/ErrorMessages.vue';
+
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
@@ -15,9 +17,12 @@ const { deleteToken } = useAuthStore();
 const purchases = ref<Purchase[]>([]);
 const loading = ref<boolean>(true);
 
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 async function getPurchasedProducts() {
-
+    error.value = false;
+    errorMessages.value = [];
     try {
         loading.value = true;
         const response: Response = await fetch(`${apiEndpoint}/posts/purchases`, {
@@ -38,8 +43,10 @@ async function getPurchasedProducts() {
         const purchasesData: { purchasesData: Purchase[] } = await response.json();
         purchases.value = purchasesData.purchasesData;
 
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value.push("Nos hemos podido recuperar tus compras. Por favor, inténtalo más tarde.")
     } finally {
         loading.value = false;
     }
@@ -62,12 +69,13 @@ onMounted(() => {
     <section v-else-if="loading">
         <ProgressSpinner></ProgressSpinner>
     </section>
-    <section v-else>
+    <section v-else-if="!error && !loading && purchases.length === 0">
         No has comprado nada todavía.
         <div>
             <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
         </div>
     </section>
+    <ErrorMessages :messages="errorMessages"></ErrorMessages>
 </template>
 
 <style scoped></style>

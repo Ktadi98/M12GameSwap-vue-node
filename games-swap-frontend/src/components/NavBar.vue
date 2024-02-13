@@ -21,12 +21,11 @@
           <img src="@/assets/avatar-profile.svg" alt="Profile Image"
             :class="{ 'profile-border': showDropdown, 'profile-image': true }" />
           <div v-if="showDropdown" class="dropdown-menu d-flex flex-column">
-            <router-link to="/profileManagement">Editar perfil</router-link>
+            <router-link to="/profileManagement">Ver perfil</router-link>
             <router-link to="/postsList">Mis anuncios</router-link>
             <div @click="logOut">Cerrar sesión</div>
           </div>
         </div>
-
         <button v-else class="button access" @click="open">Acceder</button>
         <router-link v-tooltip.bottom="'Accede al carrito'" v-if="authStore.userIsLoggedIn" class="shopping_cart"
           to="/ShoppingCart">
