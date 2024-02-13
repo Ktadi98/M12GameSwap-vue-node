@@ -27,12 +27,10 @@
       </div>
       <!-- user image -->
       <div class="d-flex">
+        <img :src="'./src/assets/avatar-profile.svg'" alt="Current User Photo" />
         <input type="file" accept="image/png, image/jpeg, image/jpg" @change="handleImageUpload">
-        <img src="@/components/Icons/check.svg" type="submit" alt="Send" @click="sendUserPhoto" />
-        <img :src="userPhoto" type="submit" alt="Send" @click="sendUserPhoto" />
-  
-
       </div>
+
     </section>
   </div>
 </template>
@@ -49,8 +47,13 @@ import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 
 
+
 const modifyUserNameFieldActive = ref(false);
 const modifyUserEmailFieldActive = ref(false);
+const currentUserPhoto = ref(""); 
+const newPhoto = ref<string | null>(null);
+
+
 
 
 
@@ -132,7 +135,7 @@ async function fetchUserData() {
   }
 }
 
-const userData: Ref<RegisterType> = ref({
+const userData: Ref<any> = ref({
   username: "",
   email: "",
   photo: []
@@ -190,17 +193,22 @@ async function sendUserName() {
 
 async function sendUserPhoto() {
   try {
-    const response: Response = await fetch(`${apiEndpoint}/users/sendData`, {
+    const photoData = new FormData();
+
+    photoData.append("userPhoto", userData.value.photo);
+
+
+    const response: Response = await fetch(`${apiEndpoint}/users/sendPhoto`, 
+    {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "Authorization": `Bearer ${authStore.token}`
       },
-      body: JSON.stringify({
-        email: userData.value.photo
-      })
-    });
+      body:photoData
+    }
+    );
 
     if (!response.ok) return;
     fetchUserData();
@@ -235,7 +243,11 @@ const editMode = ref<EditMode>({
 });
 
 const handleImageUpload = async (event: Event) => {
-  const file = (event.target as HTMLInputElement).files[0];
+  const photoInput = event.target as HTMLInputElement | null;
+
+  if (!photoInput) return;
+
+  const file = photoInput.files?.[0];
 
   if (!file) return;
 
@@ -246,22 +258,28 @@ const handleImageUpload = async (event: Event) => {
     const response: Response = await fetch(`${apiEndpoint}/users/uploadPhoto`, {
       method: 'POST',
       headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
         "Authorization": `Bearer ${authStore.token}`
       },
-      body: formData
+      // body: JSON.stringify({
+      //   userPhoto: userData.value.userPhoto
     });
 
     if (!response.ok) {
-      // Handle error if needed
+
       return;
     }
 
-    // Image uploaded successfully, you may want to fetch user data again to update UI
-    // fetchUserData();
+    fetchUserData();
+
+    newPhoto.value = URL.createObjectURL(file); 
   } catch (error) {
     console.error(error);
   }
 }
+
+
 </script>
   
 <style scoped>
@@ -294,16 +312,6 @@ input {
   width: 100%;
   margin-right: 10px;
 }
-
-
-/* button {
-  padding: 0.5rem 1rem;
-  width:max-content;
-  height: max-content;
-  background-color: #9f87f5;
-  color: #fff;
-  cursor: pointer;
-}  */
 
 img {
   padding: 0.5rem 1rem;
