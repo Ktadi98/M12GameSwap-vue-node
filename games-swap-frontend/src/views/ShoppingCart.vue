@@ -37,8 +37,8 @@
     <hr class="divider" />
     <div class="cart-total">
       <p><strong>Subtotal:</strong> {{ $route.query.price }}€</p>
-      <p><strong>Gastos de Envío:</strong></p>
-      <p><strong>Total:</strong></p>
+      <p><strong>Gastos de Envío:</strong> 3€ </p>
+      <p><strong>Total:</strong>{{ totalPrice }}€</p>
     </div>
     <hr class="divider" />
     <button class="checkout-button">Continuar con el Pago</button>
@@ -79,6 +79,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 
 const showEditPopup = ref(false);
 const editType = ref('');
@@ -117,10 +118,14 @@ const saveEditedPaymentMethod = () => {
   closeEditPopup();
 };
 
+const route = useRoute();
 
-const maskPaymentMethod = () => {
-  // Si se necesita en el futuro, puedes agregar la lógica de máscara aquí
-};
+const productPrice = parseInt(route.query.price as string);
+
+const totalPrice = computed(() => {
+  return productPrice + shippingCost;
+});
+
 
 const validateCreditCard = () => {
   if (!/^\d+$/.test(paymentPopupInput.value)) {
@@ -130,9 +135,6 @@ const validateCreditCard = () => {
   }
 };
 
-watchEffect(() => {
-  maskPaymentMethod();
-});
 </script>
 
 
