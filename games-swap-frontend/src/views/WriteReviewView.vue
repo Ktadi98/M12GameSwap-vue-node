@@ -5,7 +5,6 @@ import Rating from 'primevue/rating';
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
-// import { useToast, POSITION } from "vue-toastification";
 import type { Review } from '@/interfaces/Review';
 import { useRoute, useRouter } from 'vue-router';
 import useCustomToast from "@/composables/useCustomToast";
@@ -27,30 +26,10 @@ const reviewData = ref<PostReview>({
     puntuaction: 3
 });
 
-// const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 
 const { triggerToast } = useCustomToast("¡Gracias por tu reseña!");
-
-
-// function triggerToast() {
-
-//     toast.success("¡Gracias por tu reseña!", {
-//         position: POSITION.BOTTOM_RIGHT,
-//         timeout: 5000,
-//         closeOnClick: true,
-//         pauseOnHover: true,
-//         draggable: false,
-//         draggablePercent: 0.6,
-//         showCloseButtonOnHover: true,
-//         hideProgressBar: false,
-//         closeButton: false,
-//         icon: "fas fa-rocket",
-//         rtl: false
-//     });
-
-// }
 
 function validateReview() {
     if (reviewData.value.title.length < 5 || reviewData.value.title.length > 50) {

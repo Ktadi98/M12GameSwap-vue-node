@@ -174,6 +174,7 @@ const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | und
 
 async function getPosts() {
   try {
+    isLoading.value = true;
     error.value = false;
     errorMessages.value = [];
 

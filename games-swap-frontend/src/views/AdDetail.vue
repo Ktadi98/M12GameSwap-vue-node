@@ -199,7 +199,7 @@ const addFavorite = async (id: number) => {
                 </span>
             </div>
         </div>
-        <div id="ad-info" class="d-flex gap-4 flex-sm-column flex-md-row">
+        <div id="ad-info" class="d-flex gap-4 flex-column flex-md-row">
             <div class="img-box my-3">
                 <img :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
             </div>
@@ -208,8 +208,9 @@ const addFavorite = async (id: number) => {
                 <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
                 <h2 class="post_condition"> Estado: {{ adDetail?.post_condition }}</h2>
                 <p class="post_description">{{ adDetail?.post_description }}</p>
-                <button v-if="userIsLoggedIn" v-tooltip.right="'Añadir a favoritos'"
-                    @click="addFavorite(Number(adDetail?.post_id))" class="purple icon-box px-1 heart-box">
+                <button v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)"
+                    v-tooltip.right="'Añadir a favoritos'" @click="addFavorite(Number(adDetail?.post_id))"
+                    class="purple icon-box px-1 heart-box">
                     <HeartLike></HeartLike>
                 </button>
                 <!-- <div class="other-interests">
@@ -270,7 +271,7 @@ const addFavorite = async (id: number) => {
 
 .img-box>img {
     border-radius: 10px;
-    /* width: 100%; */
+    width: 100%;
     height: 500px;
 }
 
@@ -285,7 +286,6 @@ header {
     margin: 0;
     align-items: center;
     border-bottom: 1px solid #8a6cf6;
-
 }
 
 .logo img {
@@ -444,10 +444,14 @@ h3 {
     }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 668px) {
 
     p.post_description {
         font-size: 1rem;
+    }
+
+    .img-box {
+        width: 80vw;
     }
 }
 </style>

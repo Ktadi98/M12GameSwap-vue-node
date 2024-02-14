@@ -7,6 +7,7 @@ import { useAuthStore } from "@/stores/auth";
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import useCustomToast from "@/composables/useCustomToast";
 import ErrorMessages from '@/components/ErrorMessages.vue';
+import router from '@/router';
 
 
 const articles = ref<any[]>([]);
@@ -29,6 +30,15 @@ const fetchFavorites = async () => {
         "Authorization": `Bearer ${authStore.token}`
       }
     })
+
+    if (!resp.ok) {
+      //throw new Error(`HTTP error! Status: ${response.status}`);
+      //Force to log out if token is modified or expired.
+      if (resp.status === 401 || resp.status === 403) {
+        authStore.deleteToken();
+        router.push("/");
+      }
+    }
     const data = await resp.json()
     articles.value = data
   } catch (err) {

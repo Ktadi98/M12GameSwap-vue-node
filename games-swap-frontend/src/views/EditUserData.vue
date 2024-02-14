@@ -8,6 +8,7 @@ import editImage from '@/components/Icons/pen.svg';
 import cancelImage from '@/components/Icons/cancel.svg';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import useCustomToast from '@/composables/useCustomToast';
+import router from '@/router';
 
 
 const modifyUserNameFieldActive = ref(false);
@@ -104,7 +105,16 @@ async function fetchUserData() {
       }
     });
 
-    if (!response.ok) return;
+
+    if (!response.ok) {
+      //throw new Error(`HTTP error! Status: ${response.status}`);
+      //Force to log out if token is modified or expired.
+      if (response.status === 401 || response.status === 403) {
+        authStore.deleteToken();
+        router.push("/");
+      }
+    }
+
 
     const userData: { email: string, name: string, photo: string } = await response.json();
 

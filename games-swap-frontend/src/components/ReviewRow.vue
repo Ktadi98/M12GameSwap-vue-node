@@ -22,7 +22,7 @@ const props = defineProps<{
 </script>
 <template>
     <article
-        class="w-100 post-row d-flex flex-wrap position-relative flex-md-nowrap gap-4 align-items-center justify-content-start py-2 px-3">
+        class="w-100 post-row mt-1 d-flex flex-wrap position-relative flex-md-nowrap gap-4 align-items-center justify-content-start py-2 px-3">
         <div class="img-box">
             <img :src="review.post.post_photos[0]" alt="post-img">
         </div>
@@ -48,6 +48,7 @@ const props = defineProps<{
 .img {
     width: 50px;
     height: 50px;
+    border-radius: 50%;
 }
 
 .underline {
