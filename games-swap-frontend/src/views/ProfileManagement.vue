@@ -1,22 +1,23 @@
 <template>
-    <div>
+    <div class="d-flex flex-column align-items-center">
         <NavBar>
         </NavBar>
-        <section class="px-5">
+        <section class="px-5 align-self-start">
             <BreadCrumbs :items="items"></BreadCrumbs>
-
         </section>
-        <main>
+        <h1 class="display-4">Opciones de perfil</h1>
+        <main class="dashed-box mt-3">
             <div>
                 <div class="button-container">
-                    <button class="rounded-button">Cambiar Contraseña</button>
+                    <!-- <button class="rounded-button">Cambiar Contraseña</button> -->
                     <router-link to="/userProfile"> <button class="rounded-button">Ver reservas y
                             compras</button></router-link>
                     <router-link to="/editUserData"> <button class="rounded-button">Cambiar Datos del
                             Perfil</button></router-link>
-                    <button class="rounded-button" @click="openMailbox">Buzón de sugerencias</button>
-                    <button class="rounded-button" @click="openDeleteUser">Eliminar Cuenta</button>
+                    <!-- <button class="rounded-button" @click="openMailbox">Buzón de sugerencias</button> -->
                     <router-link to="/favoritesList"> <button class="rounded-button">Mis Favoritos</button></router-link>
+                    <button class="rounded-button" @click="openDeleteUser">Desactivar Cuenta</button>
+
                 </div>
             </div>
         </main>
@@ -90,8 +91,14 @@ const { open: openDeleteUser, close: closeDeleteUser } = useModal({
 </script>
 
 <style scoped>
-/* Estilos para los botones redondeados */
+main {
+    border: 5px dashed #8a6cf6;
+    width: fit-content;
+    padding: 20px;
+}
+
 .rounded-button {
+    width: 300px;
     display: block;
     margin: 20px auto;
     padding: 8px 8px;

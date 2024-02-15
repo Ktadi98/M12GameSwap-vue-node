@@ -11,10 +11,10 @@
         @submit.prevent='updateGenreFilter(genre.genre_id)'>
         <div class="genre-div">
           <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
-          <!-- <component :is="genreToIcon[genre.genre_name]"></component> -->
+          <component class="genreIcon" :is="genreToIcon[genre.genre_name]"></component>
         </div>
       </form>
-      <form class="genre-box" @submit.prevent='genreFilter = -1'>
+      <form class="genre-div" @submit.prevent='genreFilter = -1'>
         <input type="submit" value="Todos">
       </form>
     </section>
@@ -23,7 +23,7 @@
       <Dropdown v-model="criteria" :options="filterCriterias" placeholder="Selecciona un filtro" />
     </div>
     <section class="post-box container-fluid">
-      <div v-if="products.length > 0" class="row">
+      <div v-if="filteredProducts?.length" class="row">
         <PostCard v-tooltip="'Ir al detalle'" v-for=" product in filteredProducts" :key="product.post_id"
           :product="product"></PostCard>
       </div>
@@ -32,12 +32,13 @@
           <ProgressSpinner />
         </div>
       </div>
-      <div class="text-center" v-else>
-        <h2>No hay anuncios disponibles para esta categoria. Échale un vistazo a las demás.</h2>
+      <div class="text-center" v-else-if="!isLoading && !error && filteredProducts?.length === 0">
+        <h2>No hay anuncios disponibles para esta categoria o género. Échale un vistazo a las demás.</h2>
         <div>
-          <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+          <img src="@/assets/not_data_outline.gif" alt="not found GIF">
         </div>
       </div>
+      <ErrorMessages :messages="errorMessages"></ErrorMessages>
     </section>
     <VendorsRanking></VendorsRanking>
     <PostsHistory></PostsHistory>
@@ -64,6 +65,13 @@ import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import VendorsRanking from "../components/VendorsRanking.vue";
 import PostsHistory from "@/components/PostsHistory.vue";
 import ProgressSpinner from 'primevue/progressspinner';
+import LuchaIcon from '@/components/Icons/LuchaIcon.vue';
+import IndieIcon from '@/components/Icons/IndieIcon.vue';
+import PuzzleIcon from '@/components/Icons/PuzzleIcon.vue';
+import PlataformasVue from '@/components/Icons/Plataformas.vue';
+import AccionIcon from '@/components/Icons/AccionIcon.vue';
+import AventuraIcon from '@/components/Icons/AventuraIcon.vue';
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
@@ -72,21 +80,25 @@ const items = ref([
   { label: 'Anuncios ' },
 ]);
 
-// onMounted(() => {
-
-// })
-
 const genreFilter: Ref<number> = ref(-1);
 const genres: Ref<Genre[]> = ref([]);
 const route = useRoute();
 const categoryId = ref(route.params.id);
 const products = ref<Array<Product>>([]);
 const isLoading = ref<boolean>(true);
+const error = ref<boolean>(false);
 const criteria: Ref<string> = ref("A-Z");
+const errorMessages: Ref<string[]> = ref([]);
 
-//TODO
+
 const genreToIcon: any = {
-  "RPG": RPGIcon
+  "RPG": RPGIcon,
+  "Indie": IndieIcon,
+  "Lucha": LuchaIcon,
+  "Plataformas": PlataformasVue,
+  "Puzzle": PuzzleIcon,
+  "Acción": AccionIcon,
+  "Aventura": AventuraIcon
 }
 
 const filterCriterias = ref<string[]>([
@@ -162,11 +174,13 @@ const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | und
 
 async function getPosts() {
   try {
+    isLoading.value = true;
+    error.value = false;
+    errorMessages.value = [];
 
     const response = await fetch(`${apiEndpoint}/posts/category/${categoryId.value}`);
 
     if (!response.ok) {
-      console.log(response.status);
       isLoading.value = false;
       return;
     }
@@ -175,18 +189,20 @@ async function getPosts() {
 
     products.value = data.posts;
 
-  } catch (error) {
-    console.error('Error al obtener los productos', error);
+  } catch (err) {
+    console.error('Error al obtener los productos', err);
+    error.value = true;
+    errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.")
   }
   finally {
     isLoading.value = false;
-
   }
 }
 
 async function getPostsLogIn() {
   try {
-
+    error.value = false;
+    errorMessages.value = [];
     const response = await fetch(`${apiEndpoint}/posts/category/auth/${categoryId.value}`, {
       method: "GET",
       headers: {
@@ -196,7 +212,7 @@ async function getPostsLogIn() {
     });
 
     if (!response.ok) {
-      console.log(response.status);
+      isLoading.value = false;
       return;
     }
 
@@ -204,8 +220,10 @@ async function getPostsLogIn() {
 
     products.value = data.posts;
     // isLoading.value = false;
-  } catch (error) {
-    console.error('Error al obtener los productos', error);
+  } catch (err) {
+    console.error('Error al obtener los productos', err);
+    error.value = true;
+    errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.")
   }
   finally {
     isLoading.value = false;
@@ -223,15 +241,19 @@ else {
 }
 
 watch(route, () => {
+
   categoryId.value = route.params.id;
+
   genreFilter.value = -1;
+
   if (!userIsLoggedIn.value) {
+    //Getting all the posts of the system (which are not buyed and actived).
     getPosts();
   }
   else {
+    //Getting all the posts that don't belong to the current user.
     getPostsLogIn();
   }
-  // getPosts();
 }, { immediate: true, deep: true })
 
 </script>
@@ -253,22 +275,47 @@ watch(route, () => {
 }
 </style>
 <style scoped>
-input[type="submit"]:hover {
+.genre-div {
   background-color: white;
   color: #9f87f5;
   transition: all 0.2s ease-in-out;
+  border: 2px solid #9f87f5;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  height: min-content;
+  padding: 0px 15px;
+
 }
 
-input[type="submit"]:focus,
-input[type="submit"]:hover {
+.genre-div:focus,
+.genre-div:hover {
   background-color: #9f87f5;
   color: white;
 }
 
-.post-box {
-  padding: 5vw;
+.genreIcon {
+  width: fit-content;
 }
 
+input[type="submit"] {
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+.post-box {
+  padding: 2vw;
+}
+
+h1 {
+  text-align: left;
+  background-color: #8a6cf6;
+  width: 100%;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+}
 
 /* .criteria-box * {
   border-color: #9f87f5 !important;

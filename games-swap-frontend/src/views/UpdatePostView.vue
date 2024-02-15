@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
-import AppBar from '@/components/AppBar.vue';
 import { type Ref, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
@@ -34,11 +33,11 @@ const error: Ref<boolean> = ref(false);
 const errorMessages: Ref<string[]> = ref([]);
 
 const validatePost = () => {
-    if (formState.value.title.length === 0 || formState.value.title.length > 50) {
+    if (formState.value.title.length < 3 || formState.value.title.length > 50) {
         errorMessages.value.push("El título del anuncio debe tener entre 3 y 50 carácteres.");
         error.value = true;
     }
-    if (formState.value.description.length === 0 || formState.value.description.length > 80) {
+    if (formState.value.description.length < 5 || formState.value.description.length > 80) {
         errorMessages.value.push("La descripción del anuncio debe tener entre 5 y 80 carácteres.");
         error.value = true;
     }
@@ -46,8 +45,12 @@ const validatePost = () => {
         errorMessages.value.push("La categoría del producto debe ser de las plataformas disponibles");
         error.value = true;
     }
-    if (formState.value.price <= 0) {
-        errorMessages.value.push("El precio mínimo del producto debe ser de 1€");
+    if (isNaN(formState.value.price) || formState.value.price.length === 0) {
+        errorMessages.value.push("El precio indicado no es válido.");
+        error.value = true;
+    }
+    if (formState.value.price < 1 || formState.value.price >= 500) {
+        errorMessages.value.push("El precio mínimo del producto debe ser de 1€, no puede superar los 500€");
         error.value = true;
     }
     if (!genres.includes(formState.value.genre)) {
@@ -58,10 +61,15 @@ const validatePost = () => {
         errorMessages.value.push("Debes subir una foto de tu producto");
         error.value = true;
     }
+    if (formState.value.images.size > 350000) {
+        error.value = true;
+        errorMessages.value.push("La imagen que has intentado colgar es demasiado grande. Prueba con una que ocupe menos de 350KB.");
+    }
     if (!states.includes(formState.value.state)) {
         errorMessages.value.push("El estado del producto debe ser el de los estados disponibles");
         error.value = true;
     }
+
 }
 
 const formState: Ref<any> = ref({
@@ -77,7 +85,15 @@ const formState: Ref<any> = ref({
 const uploadedImages: Ref<any> = ref([]);
 
 function selectFile(event: any) {
+    error.value = false;
+    errorMessages.value = [];
     formState.value.images = event.target.files[0];
+    //If size is 350KB aprox, we block the image upload
+    if (event.target.files[0].size > 350000) {
+        error.value = true;
+        errorMessages.value.push("La imagen que has intentado colgar es demasiado grande. Prueba con una que ocupe menos de 350KB.");
+        return;
+    }
     getPhotosPosted();
 }
 
@@ -178,15 +194,17 @@ const items = ref([
     <section class="px-5">
         <BreadCrumbs :items="items"></BreadCrumbs>
     </section>
-    <header class="text-left text-md-center px-2 py-1 responsive-text ">Modifica tu producto</header>
+    <header class="text-left text-md-center px-2 py-1 mt-1 responsive-text ">Modifica tu producto</header>
     <main
         class="d-flex flex-column flex-grow-1 justify-content-left align-items-center justify-content-md-center px-4 py-3 w-100">
         <form novalidate @submit.prevent="sendPost" id="post-form" class="d-flex flex-column px-4 py-3 gap-4"
             enctype="multipart/form-data">
             <label for="title">Título</label>
-            <input v-model="formState.title" type="text" name="title" id="title">
+            <input v-model="formState.title" type="text" name="title" id="title" maxlength="50">
+            {{ formState.title.length }} / 50
             <label for="description">Descripción</label>
-            <input v-model="formState.description" type="text" name="description" id="description">
+            <input v-model="formState.description" type="text" name="description" id="description" maxlength="80">
+            {{ formState.description.length }} / 80
             <label for="category">Categoría</label>
             <select v-model="formState.category" name="category" id="category">
                 <optgroup>
@@ -238,7 +256,7 @@ const items = ref([
         <ErrorMessages :messages="errorMessages"></ErrorMessages>
         <div class="d-flex w-50 flex-column flex-md-row align-items-center">
             <div class="upload-btn">
-                <button form="post-form" type="submit">Actualizar producto
+                <button form="post-form" class="mb-2" type="submit">Actualizar producto
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload" width="24"
                         height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -255,7 +273,6 @@ const items = ref([
         </div>
 
     </main>
-    <AppBar></AppBar>
 </template>
 <style scoped>
 .responsive-text {

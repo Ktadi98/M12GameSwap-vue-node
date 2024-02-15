@@ -94,7 +94,7 @@ const sendReport = async () => {
 //To limit the characters written in the textarea.
 watch(reportExplanation, () => {
     if (reportExplanation.value.length > 250) {
-        reportExplanation.value = reportExplanation.value.substring(0, 251);
+        reportExplanation.value = reportExplanation.value.substring(0, 250);
     }
 })
 
@@ -104,10 +104,11 @@ watch(reportExplanation, () => {
     <VueFinalModal class="confirm-modal" content-class="confirm-modal-content border-0" overlay-transition="vfm-fade"
         content-transition="vfm-fade">
         <form class="d-flex flex-column gap-3 absolute inset-0" @submit.prevent="sendReport()">
-            <Dropdown v-model="reportMotive" :options="reportMotives" placeholder="Selecciona un el motivo de tu queja" />
+            <Dropdown v-model="reportMotive" :options="reportMotives" placeholder="Selecciona el motivo de tu queja" />
             <h3>Describe tu queja (opcional)</h3>
             <div>
                 <textarea v-model="reportExplanation" cols="40" rows="10"></textarea>
+                {{ reportExplanation.length }} / 250
             </div>
             <div class="d-flex flex-column gap-3">
                 <button type="submit" class="exit-button">Enviar reporte</button>

@@ -5,7 +5,6 @@ import Rating from 'primevue/rating';
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
-// import { useToast, POSITION } from "vue-toastification";
 import type { Review } from '@/interfaces/Review';
 import { useRoute, useRouter } from 'vue-router';
 import useCustomToast from "@/composables/useCustomToast";
@@ -27,38 +26,18 @@ const reviewData = ref<PostReview>({
     puntuaction: 3
 });
 
-// const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 
 const { triggerToast } = useCustomToast("¡Gracias por tu reseña!");
 
-
-// function triggerToast() {
-
-//     toast.success("¡Gracias por tu reseña!", {
-//         position: POSITION.BOTTOM_RIGHT,
-//         timeout: 5000,
-//         closeOnClick: true,
-//         pauseOnHover: true,
-//         draggable: false,
-//         draggablePercent: 0.6,
-//         showCloseButtonOnHover: true,
-//         hideProgressBar: false,
-//         closeButton: false,
-//         icon: "fas fa-rocket",
-//         rtl: false
-//     });
-
-// }
-
 function validateReview() {
-    if (reviewData.value.title.length === 0 || reviewData.value.title.length > 50) {
-        errorMessages.value.push("El asunto debe tener como máximo 50 carácteres.");
+    if (reviewData.value.title.length < 5 || reviewData.value.title.length > 50) {
+        errorMessages.value.push("El asunto debe tener como mínimo 5 carácteres y como máximo 50 carácteres.");
         error.value = true;
     }
-    if (reviewData.value.description.length === 0 || reviewData.value.description.length > 350) {
-        errorMessages.value.push("La descripción debe tener como máximo 350 carácteres.");
+    if (reviewData.value.description.length < 5 || reviewData.value.description.length > 350) {
+        errorMessages.value.push("La descripción debe tener como mínimo 5 carácteres y como máximo 350 carácteres.");
         error.value = true;
     }
 }
@@ -108,7 +87,7 @@ async function sendReview() {
 <template>
     <main class="container-fluid d-flex justify-content-center align-items-center mt-5">
         <form class="d-flex flex-column justify-content-center align-items-center gap-4 px-4 py-2"
-            @submit.prevent="sendReview()">
+            @submit.prevent="sendReview()" novalidate>
             <header>
                 <h1>ESCRIBE TU RESEÑA SOBRE "{{ postName }}"</h1>
             </header>
@@ -117,6 +96,7 @@ async function sendReview() {
                 <br>
                 <input v-model.trim="reviewData.title" maxlength="50" type="text" name="title" id="title"
                     placeholder="Nombre reseña...">
+                {{ reviewData.title.length }} / 50
             </label>
             <label for="description">
                 Descripción
@@ -124,6 +104,7 @@ async function sendReview() {
                 <textarea rows="10" v-model.trim="reviewData.description" maxlength="350" name="description"
                     id="description" placeholder="Escribe tu reseña...">
             </textarea>
+                {{ reviewData.description.length }} / 350
             </label>
             <label class="d-flex flex-column gap-2 mb-4" for="punctuation">
                 Valoración de la experiencia de compra

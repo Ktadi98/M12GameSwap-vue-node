@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import BackArrow from '@/components/Icons/BackArrow.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Footer from '../components/Footer.vue';
 import StarRating from '../components/Icons/StarRating.vue';
 import NavBar from '@/components/NavBar.vue';
 import type { Product } from '@/interfaces/Product';
@@ -14,10 +13,15 @@ import BookMarkFilled from '@/components/Icons/BookMarkFilled.vue';
 import ReportFlag from '@/components/Icons/ReportFlag.vue';
 import ReportModal from '@/components/ReportModal.vue';
 import { useModal } from 'vue-final-modal';
+import useCustomToast from '@/composables/useCustomToast';
+import HeartLike from "@/components/Icons/HeartLike.vue";
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
 const route = useRoute();
 const router = useRouter();
-
+const error = ref<boolean>(false);
+const loading = ref<boolean>(true);
+const errorMessages: Ref<string[]> = ref([]);
 
 const { updateHistory } = usePostsHistoryStore();
 
@@ -49,6 +53,9 @@ const { open: openReportModal, close: closeReportModal } = useModal({
 
 
 async function getPost() {
+    error.value = false;
+    errorMessages.value = [];
+    loading.value = true;
     try {
         const response: Response = await fetch(`${apiEndpoint}/posts/${post_id}`);
         if (!response.ok) {
@@ -57,8 +64,13 @@ async function getPost() {
         const data: { post: Product } = await response.json();
         adDetail.value = data.post;
     }
-    catch (error) {
-        console.error(error);
+    catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value.push("No se ha podido cargar el anuncio. Vuélvelo a intentar más tarde.")
+    }
+    finally {
+        loading.value = false;
     }
 }
 
@@ -109,11 +121,37 @@ async function setReservation() {
         if (!response.ok) return;
 
         await getPost();
+        triggerReservationToast();
 
 
     } catch (error) {
         console.error(error);
     }
+}
+const { triggerToast } = useCustomToast("¡Producto añadido a tu lista de favoritos!");
+const { triggerToast: triggerErrorToast } = useCustomToast("¡Este producto ya existe en tu lista de favoritos!");
+const { triggerToast: triggerReservationToast } = useCustomToast("¡Reservado! Consúltalo en tu perfil en la lista de reservas");
+
+
+
+const addFavorite = async (id: number) => {
+    const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+    const response: Response = await fetch(`${apiEndpoint}/users/favorites/add`, {
+        method: 'put',
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token.value}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ post_id: id })
+    });
+
+    if (!response.ok) {
+        triggerErrorToast();
+        return;
+    }
+
+    triggerToast();
 }
 
 </script>
@@ -124,11 +162,11 @@ async function setReservation() {
         <BackArrow /><span>Volver Atrás</span>
     </div>
     <!-- falta devolver datos del vendedor para pintarlos aqui -->
-    <main class="ad-container">
+    <main v-if="adDetail" class="ad-container">
         <div class="profile-vendor">
             <div class="d-flex w-75 mb-3">
                 <div class="profile-image d-flex gap-3">
-                    <img src="@/assets/avatar-profile.svg" alt="Profile Image">
+                    <img :src="adDetail?.user_client?.user_photo" alt="Profile Image">
                 </div>
                 <RouterLink v-tooltip.top="'Ir al vendedor'" v-if="!(currentUserName === adDetail?.user_client?.user_name)"
                     :to="{ name: 'vendor', params: { id: adDetail?.user_client?.user_id } }">
@@ -161,8 +199,8 @@ async function setReservation() {
                 </span>
             </div>
         </div>
-        <div id="ad-info" class="d-flex gap-4 flex-sm-column flex-md-row">
-            <div class="img-box mb-3 mt-3">
+        <div id="ad-info" class="d-flex gap-4 flex-column flex-md-row">
+            <div class="img-box my-3">
                 <img :src="adDetail?.post_photos[0]" :alt="adDetail?.post_title">
             </div>
             <div>
@@ -170,6 +208,11 @@ async function setReservation() {
                 <h1 class="post_price">{{ adDetail?.post_price }} €</h1>
                 <h2 class="post_condition"> Estado: {{ adDetail?.post_condition }}</h2>
                 <p class="post_description">{{ adDetail?.post_description }}</p>
+                <button v-if="userIsLoggedIn && !(currentUserName === adDetail?.user_client?.user_name)"
+                    v-tooltip.right="'Añadir a favoritos'" @click="addFavorite(Number(adDetail?.post_id))"
+                    class="purple icon-box px-1 heart-box">
+                    <HeartLike></HeartLike>
+                </button>
                 <!-- <div class="other-interests">
                 <h3>Sigue explorando</h3>
                 <span class="category-tag">PS5</span>
@@ -180,11 +223,32 @@ async function setReservation() {
 
         </div>
     </main>
-    <!-- Footer commented to fix styles-->
-    <!-- <Footer></Footer> -->
+    <section class="d-flex justify-content-center mx-4 w-100">
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
+    </section>
 </template>
 
 <style scoped>
+.icon-box {
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 10px;
+    border: 2px solid rgb(229, 229, 229);
+    transition: all 0.2s ease-out;
+    cursor: pointer;
+}
+
+.heart-box {
+    background: none;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    width: min-content;
+}
+
+.heart-box>* {
+    font-size: x-large;
+}
+
 .report {
     cursor: pointer;
     border: 1px solid lightgray;
@@ -202,13 +266,12 @@ async function setReservation() {
 }
 
 .img-box {
-
     overflow: hidden;
 }
 
 .img-box>img {
     border-radius: 10px;
-    max-width: 400px;
+    width: 100%;
     height: 500px;
 }
 
@@ -223,7 +286,6 @@ header {
     margin: 0;
     align-items: center;
     border-bottom: 1px solid #8a6cf6;
-
 }
 
 .logo img {
@@ -298,7 +360,6 @@ h2.post_condition {
 p.post_description {
     margin-bottom: 30px;
     font-size: 1.5rem;
-    width: 75ch;
 }
 
 .other-interests {
@@ -357,5 +418,40 @@ h3 {
 .book-mark {
     border-left: 2px solid #8a6cf6;
 
+}
+
+.purple {
+    color: #795aea;
+}
+
+.icon-box {
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 10px;
+    border: 2px solid rgb(229, 229, 229);
+    transition: all 0.2s ease-out;
+    cursor: pointer;
+}
+
+
+@media screen and (max-width: 768px) {
+
+    .img-box {
+        width: 40%;
+    }
+
+    .ad-container {
+        border: none;
+    }
+}
+
+@media screen and (max-width: 668px) {
+
+    p.post_description {
+        font-size: 1rem;
+    }
+
+    .img-box {
+        width: 80vw;
+    }
 }
 </style>

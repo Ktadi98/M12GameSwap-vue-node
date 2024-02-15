@@ -13,6 +13,7 @@ import BookMarkRemove from './Icons/BookMarkRemove.vue';
 import BookMarkFilledAlt from './Icons/BookMarkFilledAlt.vue';
 import ShoppingCart from './Icons/ShoppingCart.vue';
 import type { Reservation } from '@/interfaces/Reservation';
+import useCustomToast from '@/composables/useCustomToast';
 
 const props = defineProps<{
     sell?: Purchase,
@@ -36,12 +37,16 @@ function dropReservation() {
     emit('deleteReservation');
 }
 
+const { triggerToast } = useCustomToast("Anuncio eliminado correctamente.")
+
 const { open: openDeleteModal, close } = useModal({
     component: DeletePostModal,
     attrs: {
         onConfirm() {
             close();
             drop();
+
+            triggerToast();
         },
         onCancel() {
             close();

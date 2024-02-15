@@ -9,6 +9,7 @@
             <form class="genre-box" v-for="(genre, index) in genres " :key="genre.genre_id"
                 @submit.prevent='updateGenreFilter(genre.genre_id)'>
                 <input :class="{ 'input-active': genreFilter === genre.genre_id }" type="submit" :value="genre.genre_name">
+                <component class="genreIcon" :is="genreToIcon[genre.genre_name]"></component>
             </form>
             <form class="genre-box" @submit.prevent='genreFilter = -1'>
                 <input type="submit" value="Todos">
@@ -25,13 +26,22 @@
             </select> -->
         </div>
         <section class="post-box container-fluid">
-            <div v-if="products.length > 0" class="row">
+            <div v-if="filteredProducts?.length" class="row">
                 <PostCard v-tooltip="'Ir al detalle'" v-for="product in filteredProducts" :key="product.post_id"
                     :product="product"></PostCard>
             </div>
-            <div v-else>
-                <h2>No hay anuncios disponibles para esta búsqueda. Prueba a buscar otra cosa.</h2>
+            <div v-else-if="isLoading">
+                <div class="card flex justify-content-center">
+                    <ProgressSpinner />
+                </div>
             </div>
+            <div class="text-center" v-else-if="!isLoading && !error && filteredProducts?.length === 0">
+                <h2>No hay anuncios disponibles para esta categoria o género. Échale un vistazo a las demás.</h2>
+                <div>
+                    <img src="@/assets/not_data_outline.gif" alt="not found GIF">
+                </div>
+            </div>
+            <ErrorMessages :messages="errorMessages"></ErrorMessages>
         </section>
         <VendorsRanking></VendorsRanking>
         <PostsHistory></PostsHistory>
@@ -55,6 +65,15 @@ import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import VendorsRanking from "../components/VendorsRanking.vue";
 import PostsHistory from "@/components/PostsHistory.vue";
+import RPGIcon from '@/components/Icons/RPGIcon.vue';
+import LuchaIcon from '@/components/Icons/LuchaIcon.vue';
+import IndieIcon from '@/components/Icons/IndieIcon.vue';
+import PuzzleIcon from '@/components/Icons/PuzzleIcon.vue';
+import PlataformasVue from '@/components/Icons/Plataformas.vue';
+import AccionIcon from '@/components/Icons/AccionIcon.vue';
+import AventuraIcon from '@/components/Icons/AventuraIcon.vue';
+import ErrorMessages from '@/components/ErrorMessages.vue';
+
 
 onMounted(() => {
     // fetchGenres();
@@ -69,6 +88,17 @@ const route = useRoute();
 const products = ref<Array<Product>>([]);
 const isLoading = ref(true);
 const criteria: Ref<string> = ref("A-Z");
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
+const genreToIcon: any = {
+    "RPG": RPGIcon,
+    "Indie": IndieIcon,
+    "Lucha": LuchaIcon,
+    "Plataformas": PlataformasVue,
+    "Puzzle": PuzzleIcon,
+    "Acción": AccionIcon,
+    "Aventura": AventuraIcon
+}
 
 const items = ref([
     { label: 'Home', route: '/' },
@@ -145,11 +175,48 @@ const fetchGenres = async (): Promise<{ message: string, genres: Genre[] } | und
 
 async function getPosts() {
     try {
+        isLoading.value = true;
+        error.value = false;
+        errorMessages.value = [];
 
         const response = await fetch(`${apiEndpoint}/posts/query/${route.query.search}`);
 
         if (!response.ok) {
             console.log(response.status);
+            isLoading.value = false;
+            return;
+        }
+
+        const data: { posts: Product[] } = await response.json();
+
+        products.value = data.posts;
+        isLoading.value = false;
+
+    } catch (err) {
+        console.error('Error al obtener los productos', err);
+        error.value = true;
+        errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.")
+    } {
+        isLoading.value = false;
+    }
+}
+
+async function getPostsLogIn() {
+    try {
+        isLoading.value = true;
+        error.value = false;
+        errorMessages.value = [];
+        const response = await fetch(`${apiEndpoint}/posts/query/auth/${route.query.search}`, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token.value}`
+            }
+        });
+
+        if (!response.ok) {
+            console.log(response.status);
+            isLoading.value = false;
             return;
         }
 
@@ -161,31 +228,8 @@ async function getPosts() {
     } catch (error) {
         console.error('Error al obtener los productos', error);
     }
-}
-
-async function getPostsLogIn() {
-    try {
-
-        const response = await fetch(`${apiEndpoint}/posts/query/auth/${route.query.search}`, {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Authorization": `Bearer ${token.value}`
-            }
-        });
-
-        if (!response.ok) {
-            console.log(response.status);
-            return;
-        }
-
-        const data: { posts: Product[] } = await response.json();
-
-        products.value = data.posts;
+    {
         isLoading.value = false;
-
-    } catch (error) {
-        console.error('Error al obtener los productos', error);
     }
 }
 
@@ -226,34 +270,52 @@ watch(route, () => {
 }
 
 .p-dropdown:not(.p-disabled):hover {
-  border-color: #9f87f5;
+    border-color: #9f87f5;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  color: black;
-  background: #c1b2f7;
+    color: black;
+    background: #c1b2f7;
 }
 
 .p-dropdown:not(.p-disabled).p-focus {
-  outline: 0 none;
-  outline-offset: 0;
-  box-shadow: 0 0 0 0.2rem #c1b2f7;
-  border-color: #9f87f5;
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 0.2rem #c1b2f7;
+    border-color: #9f87f5;
 }
 </style>
 
     
 <style scoped>
-input[type="submit"]:hover {
+.genre-box {
     background-color: white;
     color: #9f87f5;
     transition: all 0.2s ease-in-out;
+    border: 2px solid #9f87f5;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: min-content;
+    padding: 0px 15px;
+
 }
 
-input[type="submit"]:focus,
-input[type="submit"]:hover {
+.genre-box:focus,
+.genre-box:hover {
     background-color: #9f87f5;
     color: white;
+}
+
+.genreIcon {
+    width: fit-content;
+}
+
+input[type="submit"] {
+    border: none;
+    background: none;
+    color: inherit;
 }
 </style>
   

@@ -1,4 +1,5 @@
 import { validateLogin, validateUser } from '../schemas/users.js'
+import "dotenv/config";
 
 export class UserController {
   constructor(userModel) {
@@ -84,6 +85,25 @@ export class UserController {
 
   };
 
+  deactivate = async (req, res) => {
+    const logInStatus = await this.userModel.deactivate(req.user_id);
+
+    if (logInStatus === 1) {
+      return res.status(200).json("User deactivated successfully!");
+    }
+
+    return res.status(500).json({ error: "User could not be deactivated!" })
+  }
+
+  activate = async (req, res) => {
+    const status = await this.userModel.activate(req.body);
+    if (status === 1) {
+      return res.status(200).json("User activated successfully!");
+    }
+
+    return res.status(500).json({ error: "User could not be activated!" })
+  }
+
 
   getData = async (req, res) => {
 
@@ -92,7 +112,8 @@ export class UserController {
 
     const user = await this.userModel.getData(userId);
 
-    return res.json({ email: user.user_email, name: user.user_name });
+
+    return res.json({ email: user.user_email, name: user.user_name, photo: user.user_photo });
 
   };
 
@@ -100,7 +121,7 @@ export class UserController {
     const userId = Number(req.params.userId);
 
     const userStats = await this.userModel.getUserStats(userId);
-    console.log(userStats);
+    //console.log(userStats);
 
     return res.json({ ...userStats });
   };
@@ -109,7 +130,7 @@ export class UserController {
     const userId = req.user_id;
 
     const userStats = await this.userModel.getUserStats(userId);
-    console.log(userStats);
+    //console.log(userStats);
 
     return res.json({ ...userStats });
   };
@@ -120,14 +141,68 @@ export class UserController {
     const userEmail = await req.user_email;
     const userId = req.user_id;
 
+    if (userEmail) {
+      if (
+        userEmail.length === 0 ||
+        !userEmail.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) ||
+        userEmail > 150
+      ) {
+        return res.status(422).json({ error: "Invalid email" });
+      }
+    }
+
+    if (req.body.username) {
+      if (req.body.username.length < 3 || req.body.username > 20) {
+        return res.status(422).json({ error: "Invalid username" });
+      }
+    }
+
     const returnStatus = await this.userModel.sendData(req.body, userId);
 
     if (returnStatus === 1) {
-      return res.json({message:"user updated successfully" });
+      return res.json({ message: "User updated successfully" });
 
     }
 
-    return res.status(500).json({error: "error updating user"})
+    return res.status(500).json({ error: "Error updating user" })
+
+  };
+
+  sendPhoto = async (req, res) => {
+
+    console.log(req.file);
+    const returnState = await this.userModel.sendPhoto(req.user_id, req.file);
+
+    if (returnState === 1) {
+      console.log("Profile Image updated successfully!");
+      return res.json({ message: "Image updated succesfully" });
+    }
+
+    return res.status(500).json({ error: "Image could not be updated!" })
+  };
+
+  getUserImage = async (req, res) => {
+
+    const status = await this.userModel.getUserImage(req.file);
+
+    if (status === 1) {
+      console.log("Éxito!!")
+      return res.json({ file: `${process.env.PHOTOS_URL}/${req.file.originalname}` });
+    }
+    return res.status(500).json({ error: "Images could not be retrieved" });
+  };
+
+  addFavorite = async (req, res) => {
+    const userId = req.user_id;
+    const postId = req.body.post_id;
+
+    const returnState = await this.userModel.addFavorite(userId, postId);
+
+    if (returnState === 1) {
+      return res.json({ "message": "Product added to favorites successfully!" });
+
+    }
+    return res.status(500).json({ error: "Product already in favorites list" })
 
   };
 

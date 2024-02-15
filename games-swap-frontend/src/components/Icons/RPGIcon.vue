@@ -5,4 +5,14 @@
     </svg>
 </template>
   
-<style scoped></style>
+<style scoped>
+svg {
+    height: 1.6rem;
+    color: #8a6cf6;
+}
+
+svg path:hover {
+    background-color: #9f87f5;
+    fill: white;
+}
+</style>

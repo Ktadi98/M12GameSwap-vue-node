@@ -22,7 +22,7 @@ const props = defineProps<{
 </script>
 <template>
     <article
-        class="w-100 post-row d-flex flex-wrap position-relative flex-md-nowrap gap-4 align-items-center justify-content-start py-2 px-3">
+        class="w-100 post-row mt-1 d-flex flex-wrap position-relative flex-md-nowrap gap-4 align-items-center justify-content-start py-2 px-3">
         <div class="img-box">
             <img :src="review.post.post_photos[0]" alt="post-img">
         </div>
@@ -32,7 +32,7 @@ const props = defineProps<{
             <p class="mt-4">{{ review.review_description }}</p>
             <p><b> Por {{ review.user_buyer.user_name }}</b></p>
             <div>
-                <img :src="review.user_buyer.user_photo" alt="user_buyer_photo">
+                <img class="img" :src="review.user_buyer.user_photo" alt="user_buyer_photo">
             </div>
         </div>
     </article>
@@ -45,6 +45,12 @@ const props = defineProps<{
 </style>
 
 <style scoped>
+.img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
 .underline {
     text-decoration: underline;
     color: #795aea;

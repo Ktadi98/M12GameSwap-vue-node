@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import fs from 'fs'
+import fs from 'fs';
+import fsa from 'fs/promises';
+import sharp from 'sharp';
+import "dotenv/config";
 
 const prismadb = new PrismaClient(); //Move to external module
 
@@ -64,7 +67,7 @@ export class UserModel {
                     data: {
                         user_id: newUser.user_id,
                         user_name: user_data.username,
-                        user_photo: "",
+                        user_photo: "/imgs/avatar-profile.svg",
                         user_phone: ""
                     }
                 })
@@ -165,6 +168,54 @@ export class UserModel {
         }
     }
 
+    static async deactivate(userId) {
+        try {
+            const deletedUser = await prismadb.user.update({
+                where: {
+                    user_id: userId
+                },
+                data: {
+                    user_active: false
+                }
+            })
+
+
+            if (deletedUser === null) {
+                throw new Error("Non existent user.");
+            }
+
+            return 1;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async activate(user_data) {
+        try {
+
+            const activatedUser = await prismadb.user.update({
+                where: {
+                    user_id: user_data.userId
+                },
+                data: {
+                    user_active: true
+                }
+            })
+
+
+            if (activatedUser === null) {
+                console.log("entra aqui!")
+                throw new Error("Non existent user.");
+            }
+
+            return 1;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     static async findByType(type) {
         try {
             const result = await prismadb.user.findMany({ where: { user_type: type } })
@@ -180,7 +231,7 @@ export class UserModel {
             const userClient = await prismadb.user_Client.findUnique({ where: { user_id: userId } })
             const user = await prismadb.user.findUnique({ where: { user_id: userId } })
             //console.log(user);
-            return {...userClient, user_email: user.user_email};
+            return { ...userClient, user_email: user.user_email };
         } catch (err) {
             console.log(err);
         }
@@ -223,6 +274,17 @@ export class UserModel {
         try {
 
             if (body.username) {
+
+                //Checking if username is already in the database
+
+                const userRepeated = await prismadb.user.findFirst({
+                    where: {
+                        user_name: body.username
+                    }
+                })
+
+                if (userRepeated !== null) return -1;
+
                 const user = await prismadb.user_Client.update({
                     where: { user_id: userId },
                     data: { user_name: body.username }
@@ -230,6 +292,16 @@ export class UserModel {
                 return 1;
             }
             else if (body.email) {
+
+                //Checking if email is already in the database
+                const userRepeated = await prismadb.user.findFirst({
+                    where: {
+                        user_email: body.email
+                    }
+                })
+
+                if (userRepeated !== null) return -1;
+
                 const user = await prismadb.user.update({
                     where: { user_id: userId },
                     data: { user_email: body.email }
@@ -242,6 +314,37 @@ export class UserModel {
 
         } catch (err) {
             console.log(err);
+        }
+    }
+
+    static async sendPhoto(userId, post_file) {
+        try {
+            //Mount image in public directory
+            await sharp(post_file.path).toFile(`./public/static/images/${post_file.originalname}`);
+            await fsa.unlink(post_file.path);
+
+            const updatedClient = await prismadb.user_Client.update({
+                where: {
+                    user_id: userId
+                },
+                data: {
+                    user_photo: `${process.env.PHOTOS_URL}/${post_file.originalname}`
+                }
+            });
+
+            return 1;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async getUserImage(postImage) {
+        try {
+            await sharp(postImage.path).toFile(`./public/static/images/${postImage.originalname}`);
+            await fsa.unlink(postImage.path);
+            return 1;
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -272,6 +375,33 @@ export class UserModel {
                     return image.toString('base64')
                 })]
             }));
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    static async addFavorite(userId, postId) {
+        try {
+            const userFavoriteData = await prismadb.user_Favorites.findMany({
+                where: {
+                    user_id: userId
+                }
+            })
+
+            const curFavorite = userFavoriteData.find((p => p.post_id === postId))
+            let fav = {}
+            if (curFavorite) {
+                return -1;
+            } else {
+                fav = await prismadb.user_Favorites.create({
+                    data: {
+                        user_id: userId,
+                        post_id: postId
+                    }
+                })
+            }
+
+            return 1;
         } catch (err) {
             console.log(err);
         }

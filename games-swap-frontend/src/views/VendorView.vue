@@ -5,11 +5,12 @@ import VendorSummary from '@/components/VendorSummary.vue';
 import type { Product } from '@/interfaces/Product';
 import type { Stats } from '@/interfaces/Stats';
 import router from '@/router';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, type Ref } from 'vue';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import VendorsRanking from "../components/VendorsRanking.vue";
 import PostsHistory from "@/components/PostsHistory.vue";
-import { onBeforeRouteUpdate, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
 const props = defineProps<{
     id: number,
@@ -23,7 +24,12 @@ const userStats = ref<Stats | null | any>(null as any);
 
 const numberOfPosts = computed<number>(() => posts.value.length > 0 ? posts.value.length : 0);
 
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
+
 const getUserStats = async () => {
+    error.value = false;
+    errorMessages.value = [];
     try {
         const response: Response = await fetch(`${apiEndpoint}/users/getStats/${props.id}`);
         if (!response.ok) {
@@ -32,12 +38,16 @@ const getUserStats = async () => {
         const data: Stats = await response.json();
 
         userStats.value = data;
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value.push("Ha habido un error al devolver los datos del vendedor. Por favor, inténtalo más tarde.");
     }
 }
 
 const getVendorPosts = async () => {
+    error.value = false;
+    errorMessages.value = [];
     try {
         const response: Response = await fetch(`${apiEndpoint}/posts/vendor/${props.id}`);
         if (!response.ok) {
@@ -46,8 +56,10 @@ const getVendorPosts = async () => {
         const data: { posts: Product[] } = await response.json();
 
         posts.value = data.posts;
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value.push("Ha habido un error al devolver los datos del vendedor. Por favor, inténtalo más tarde.");
     }
 }
 
@@ -85,6 +97,7 @@ const items = ref([
                 <p>Valoraciones</p>
             </RouterLink>
         </section>
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
         <RouterView></RouterView>
         <!-- <VendorsRanking></VendorsRanking> -->
         <PostsHistory></PostsHistory>

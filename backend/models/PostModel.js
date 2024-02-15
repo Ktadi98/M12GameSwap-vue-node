@@ -206,7 +206,8 @@ export class PostModel {
             where: {
                 AND: [
                     { user_id: req_user_id },
-                    { post_status: true }
+                    { post_status: true },
+                    { post_buyed: false }
                 ]
             }
         });
@@ -229,8 +230,6 @@ export class PostModel {
                         post_buyed: false
                     }
                 ]
-
-                //TODO:Añadir tags incluidos, sprint 4
             },
             include:
             {

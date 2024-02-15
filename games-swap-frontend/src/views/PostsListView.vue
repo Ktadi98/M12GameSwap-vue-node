@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import AppBar from '@/components/AppBar.vue';
 import NavBar from '@/components/NavBar.vue';
 import { useAuthStore } from '@/stores/auth';
-import { useUserPosts } from '@/stores/userPosts';
-import { onBeforeMount, onMounted, reactive, ref, watch, type Ref } from 'vue';
+import { onMounted, ref, watch, type Ref } from 'vue';
 import type { Product } from '@/interfaces/Product';
 import PostRow from '@/components/PostRow.vue';
 import Divider from 'primevue/divider';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import ProgressSpinner from 'primevue/progressspinner';
 import router from '@/router';
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
 
 const items = ref([
     { label: 'Home', route: '/' },
     { label: 'Tus anuncios' }
 ]);
+
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 const authStore = useAuthStore();
 
@@ -54,6 +56,8 @@ const dropPost = async (postEmitted: Product) => {
 async function fetchUserPosts(token: string) {
 
     loading.value = true;
+    error.value = false;
+    errorMessages.value = [];
 
     try {
         const response: Response = await fetch(`${apiEndpoint}/posts/user/posts`, {
@@ -74,8 +78,11 @@ async function fetchUserPosts(token: string) {
 
         posts.value = data.posts;
     }
-    catch (error) {
-        console.error(error);
+    catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value = ["Ha habido un error al recuperar tus anuncios publicados. Por favor, vuélvelo a intentar más tarde"];
+
     }
     finally {
         loading.value = false;
@@ -102,10 +109,10 @@ onMounted(() => {
         <section v-if="loading">
             <ProgressSpinner></ProgressSpinner>
         </section>
-        <section v-else-if="posts.length === 0">
+        <section v-else-if="posts.length === 0 && !error">
             <h2>Todavía no has colgado ningún anuncio.</h2>
             <div>
-                <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+                <img src="@/assets/not_data_outline.gif" alt="not found GIF">
             </div>
         </section>
         <section v-else-if="posts !== undefined && !loading" class="posts-box w-100">
@@ -113,9 +120,8 @@ onMounted(() => {
                 <PostRow :post="post" @deletePost="dropPost"></PostRow>
             </template>
         </section>
-
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
     </main>
-    <AppBar></AppBar>
 </template>
 <style scoped>
 a {

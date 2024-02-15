@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
-import AppBar from '@/components/AppBar.vue';
-import { type Ref, ref } from 'vue';
+import { type Ref, ref, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import { useRouter } from 'vue-router';
@@ -20,7 +19,6 @@ import useCustomToast from "@/composables/useCustomToast";
 
 const { triggerToast } = useCustomToast("¡Tu nuevo producto se ha subido!");
 
-
 const platforms = ["PS5", "PS4", "PS3", "Nintendo Switch", "Xbox One", "Xbox Series X/S", "Retro"];
 const genres = ["Acción", "Aventura", "Plataformas", "RPG", "Puzzle", "Indie", "Lucha"];
 const states = ["Nuevo", "Bueno", "Satisfactorio"];
@@ -29,11 +27,11 @@ const error: Ref<boolean> = ref(false);
 const errorMessages: Ref<string[]> = ref([]);
 
 const validatePost = () => {
-    if (formState.value.title.length === 0 || formState.value.title.length > 50) {
+    if (formState.value.title.length < 3 || formState.value.title.length > 50) {
         errorMessages.value.push("El título del anuncio debe tener entre 3 y 50 carácteres.");
         error.value = true;
     }
-    if (formState.value.description.length === 0 || formState.value.description.length > 80) {
+    if (formState.value.description.length < 5 || formState.value.description.length > 80) {
         errorMessages.value.push("La descripción del anuncio debe tener entre 5 y 80 carácteres.");
         error.value = true;
     }
@@ -41,8 +39,12 @@ const validatePost = () => {
         errorMessages.value.push("La categoría del producto debe ser de las plataformas disponibles");
         error.value = true;
     }
-    if (formState.value.price <= 0) {
-        errorMessages.value.push("El precio mínimo del producto debe ser de 1€");
+    if (isNaN(formState.value.price) || formState.value.price.length === 0) {
+        errorMessages.value.push("El precio indicado no es válido.");
+        error.value = true;
+    }
+    if (formState.value.price < 1 || formState.value.price >= 500) {
+        errorMessages.value.push("El precio mínimo del producto debe ser de 1€, no puede superar los 500€");
         error.value = true;
     }
     if (!genres.includes(formState.value.genre)) {
@@ -52,6 +54,10 @@ const validatePost = () => {
     if (formState.value.images.length === 0) {
         errorMessages.value.push("Debes subir una foto de tu producto");
         error.value = true;
+    }
+    if (formState.value.images.size > 350000) {
+        error.value = true;
+        errorMessages.value.push("La imagen que has intentado colgar es demasiado grande. Prueba con una que ocupe menos de 350KB.");
     }
     if (!states.includes(formState.value.state)) {
         errorMessages.value.push("El estado del producto debe ser el de los estados disponibles");
@@ -75,7 +81,15 @@ const formState: Ref<any> = ref({
 const uploadedImages: Ref<any> = ref([]);
 
 function selectFile(event: any) {
+    error.value = false;
+    errorMessages.value = [];
     formState.value.images = event.target.files[0];
+    //If size is 350KB aprox, we block the image upload
+    if (event.target.files[0].size > 350000) {
+        error.value = true;
+        errorMessages.value.push("La imagen que has intentado colgar es demasiado grande. Prueba con una que ocupe menos de 350KB.");
+        return;
+    }
     getPhotosPosted();
 }
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
@@ -170,6 +184,8 @@ const items = ref([
     { label: 'Home', route: '/' },
     { label: 'Subir anuncio' }
 ]);
+
+
 </script>
 <template>
     <NavBar></NavBar>
@@ -182,9 +198,11 @@ const items = ref([
         <form novalidate @submit.prevent="sendPost" id="post-form" class="d-flex flex-column px-4 py-3 gap-4"
             enctype="multipart/form-data">
             <label for="title">Título</label>
-            <input v-model.trim="formState.title" type="text" name="title" id="title">
+            <input v-model.trim="formState.title" type="text" name="title" id="title" maxlength="50">
+            {{ formState.title.length }} / 50
             <label for="description">Descripción</label>
-            <input v-model.trim="formState.description" type="text" name="description" id="description">
+            <input v-model.trim="formState.description" type="text" name="description" id="description" maxlength="80">
+            {{ formState.description.length }} / 80
             <label for="category">Categoría</label>
             <select v-model="formState.category" name="category" id="category">
                 <optgroup>
@@ -247,7 +265,6 @@ const items = ref([
             </button>
         </div>
     </main>
-    <AppBar></AppBar>
 </template>
 <style scoped>
 .responsive-text {

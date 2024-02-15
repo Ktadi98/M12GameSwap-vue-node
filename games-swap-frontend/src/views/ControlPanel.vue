@@ -6,13 +6,20 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import ModifyUser from '@/components/Icons/ModifyUser.vue';
 import DeleteUser from '@/components/Icons/DeleteUser.vue';
-import { ref, onMounted } from "vue";
+import ActivateUser from '@/components/Icons/ActivateUser.vue';
+import ErrorMessages from '@/components/ErrorMessages.vue';
+
+
+import { ref, onMounted, type Ref } from "vue";
 import type { User } from "@/interfaces/User";
 import type { Reservation } from "@/interfaces/Reservation";
 import { storeToRefs } from "pinia";
 import type { Complaint } from "@/interfaces/Complaint";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+const loading = ref<boolean>(true);
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
@@ -29,13 +36,28 @@ const complaints = ref<Complaint[]>([]);
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
 const fetchUsers = async () => {
-  const res = await fetch(`${apiEndpoint}/users/type/client`);
-  if (!res.ok) {
-    return;
+
+  loading.value = true;
+  error.value = false;
+  errorMessages.value = [];
+
+  try {
+    const res = await fetch(`${apiEndpoint}/users/type/client`);
+    if (!res.ok) {
+      return;
+    }
+    const usersResult: User[] = await res.json();
+    // To drop admin from the user list!
+    users.value = usersResult.filter(user => user.user_email !== "admin@gmail.com");
+  } catch (err) {
+    console.error(err);
+    error.value = true;
+    errorMessages.value.push("No se han podido cargar los clientes de la plataforma. Inténtalo más tarde");
   }
-  const usersResult: User[] = await res.json();
-  // To drop admin from the user list!
-  users.value = usersResult.filter(user => user.user_email !== "admin@gmail.com");
+  finally {
+    loading.value = false;
+  }
+
 
 }
 
@@ -48,9 +70,23 @@ const modifyUser = (data: any) => {
 }
 
 const deleteUser = async (data: any) => {
-  if (confirm(`¿Quieres borrar el usuario ${data.user_email}`)) {
+  if (confirm(`¿Quieres desactivar el usuario ${data.user_name}`)) {
     await fetch(`${apiEndpoint}/users/delete`, {
       method: "DELETE", headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }, body: JSON.stringify({ userId: data.user_id })
+    })
+    await fetchUsers();
+  }
+
+}
+
+//TODO
+const activateUser = async (data: any) => {
+  if (confirm(`¿Quieres activar el usuario ${data.user_name}`)) {
+    await fetch(`${apiEndpoint}/users/activate`, {
+      method: "POST", headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
       }, body: JSON.stringify({ userId: data.user_id })
@@ -124,11 +160,11 @@ const logOut = () => {
         <li><button class="logOut-btn p-2" @click="logOut()">Cerrar Sesión</button></li>
       </ul>
     </header>
-    <div class="heading py-3">
-      <h1>Bienvenido al panel de control</h1>
+    <div class="heading display-6 px-3 py-3">
+      <p>Bienvenido al panel de control</p>
     </div>
-    <h2>Listado de usuarios</h2>
-    <DataTable :value="users" table-class="display">
+    <h2 v-if="!error">Listado de usuarios</h2>
+    <DataTable v-if="users" :value="users" table-class="display">
       <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header"></Column>
       <Column key="modify" header="Modificar">
         <template #body="slotProps">
@@ -139,8 +175,12 @@ const logOut = () => {
       </Column>
       <Column key="delete" header="Eliminar">
         <template #body="slotProps">
-          <button class="table-options select-delete" @click="deleteUser(slotProps.data)">
+          <button v-if="slotProps.data.user_active" class="table-options select-delete"
+            @click="deleteUser(slotProps.data)">
             <DeleteUser />
+          </button>
+          <button v-else class="table-options select-activate" @click="activateUser(slotProps.data)">
+            <ActivateUser />
           </button>
         </template>
       </Column>
@@ -164,6 +204,7 @@ const logOut = () => {
         </template>
       </Column>
     </DataTable>
+    <ErrorMessages :messages="errorMessages"></ErrorMessages>
     <template v-if="userSelected && complaints.length">
       <h2>Listado de denuncias de {{ userSelected }}</h2>
       <DataTable :value="complaints" table-class="display">
@@ -187,7 +228,7 @@ const logOut = () => {
         </Column>
       </DataTable>
     </template>
-    <div v-else>
+    <div v-else-if="userSelected && complaints.length === 0">
       Este usuario no ha enviado ninguna denuncia.
     </div>
   </main>
@@ -280,6 +321,10 @@ main h2 {
   color: #FF1493;
 }
 
+.select-activate:hover {
+  color: rgb(53, 162, 14);
+}
+
 main .heading {
   display: flex;
   align-items: center;
@@ -287,5 +332,6 @@ main .heading {
   background-color: #8a6cf6;
   color: white !important;
   border-radius: 10px;
+  font-weight: bold;
 }
 </style>

@@ -17,7 +17,7 @@ const star = ref(1);
                     shape="circle" /> -->
                 <router-link v-tooltip="'Ir al vendedor'" :to="{ name: 'vendor', params: { id: vendor.user_id } }"
                     class="avatar d-flex flex-column gap-1 justify-content-center align-items-center">
-                    <Avatar :label="vendor.user_name.substring(0, 1).toLocaleUpperCase()" class="mr-2" size="xlarge">
+                    <Avatar :image="vendor.user_photo" class="mr-2" size="xlarge">
                     </Avatar>
                     <p class="mb-0">{{ vendor.user_name }}</p>
                     <p class="d-flex gap-2">{{ vendor.user_ranking }}

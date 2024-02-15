@@ -1,4 +1,5 @@
-import { validateUploadedPost } from '../schemas/posts.js'
+import { validateUploadedReview } from '../schemas/reviews.js'
+
 import "dotenv/config";
 
 export class ReviewController {
@@ -13,6 +14,12 @@ export class ReviewController {
         const reviewTitle = req.body.title;
         const reviewDescription = req.body.description;
         const reviewPuntuaction = req.body.puntuaction;
+
+        const reviewValidated = validateUploadedReview(req.body);
+
+        if (!reviewValidated.success) {
+            return res.status(422).json({ error: JSON.parse(postValidated.error.message) })
+        }
 
         const newReview = await this.reviewModel.create(postId, userId, reviewTitle, reviewDescription, reviewPuntuaction);
 

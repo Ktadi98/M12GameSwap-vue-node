@@ -42,7 +42,8 @@ const validateRegister = () => {
   }
   if (
     formData.value.email.length === 0 ||
-    !formData.value.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+    !formData.value.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) ||
+    formData.value.email.length > 150
   ) {
     errorMessages.value.push("El email introducido no es válido.");
     error.value = true;
@@ -52,11 +53,11 @@ const validateRegister = () => {
     error.value = true;
   }
   if (formData.value.password !== formData.value.password2) {
-    errorMessages.value.push("Las constrseñas no coinciden.");
+    errorMessages.value.push("Las contraseñas no coinciden.");
     error.value = true;
   }
   if (!formData.value.checkbox) {
-    errorMessages.value.push("Debes aceptar las condiciones de uso y la Política de Provacidad.");
+    errorMessages.value.push("Debes aceptar las condiciones de uso y la Política de Privacidad.");
     error.value = true;
   }
 }
@@ -97,6 +98,7 @@ const sendData = async () => {
 
     authStore.setToken(data.token);
     emit('confirm');
+    await authStore.fetchUserData();
   } catch (err) {
     errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
   }
@@ -107,15 +109,15 @@ const sendData = async () => {
 <template>
   <VueFinalModal class="confirm-modal" content-class="confirm-modal-content" overlay-transition="vfm-fade"
     content-transition="vfm-fade">
-    <form @submit.prevent="sendData()">
+    <form @submit.prevent="sendData()" novalidate>
       <h1>DATE DE ALTA</h1>
 
-      <input v-model.trim="formData.username" type="name" name="name" id="name" placeholder="Nombre">
+      <input v-model.trim="formData.username" type="name" name="name" id="name" placeholder="Nombre" maxlength="20">
       <input v-model.trim="formData.email" type="email" name="email" id="email" placeholder="Correo">
-      <input v-model.trim="formData.password" type="password" name="password" id="password" placeholder="Contraseña">
+      <input v-model.trim="formData.password" type="password" name="password" id="password" placeholder="Contraseña"
+        maxlength="20">
       <input v-model.trim="formData.password2" type="password" name="password2" id="password2"
-        placeholder="Repite contraseña">
-
+        placeholder="Repite contraseña" maxlength="20">
       <div class="terms">
         <input v-model="formData.checkbox" type="checkbox" name="conditions" id="conditions-text">
         <label for="conditions" id="conditions">He leído y acepto las <u>Condiciones de uso</u> y la <u>Política de
@@ -172,7 +174,7 @@ form input {
   border: 3px solid #9F87F5;
   background: #F6F6F6;
   padding: 0.75rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 form input #placeholder {

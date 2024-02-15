@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Product } from '@/interfaces/Product';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, type Ref } from 'vue';
 import PostCard from '@/components/PostCard.vue';
 import ProgressSpinner from 'primevue/progressspinner';
-
+import ErrorMessages from '@/components/ErrorMessages.vue';
 
 const props = defineProps<{
     id: number,
@@ -15,10 +15,12 @@ const posts = ref<Product[]>([]);
 const filteredPosts = computed<Product[]>(() => filterTerm.value === "" ? posts.value : posts.value.filter(post => post.post_title.toLowerCase().startsWith(filterTerm.value)))
 
 const loading = ref<boolean>(true);
-
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 onMounted(async () => {
-
+    error.value = false;
+    errorMessages.value = [];
     loading.value = true;
     try {
         const response: Response = await fetch(`${apiEndpoint}/posts/vendor/${props.id}`);
@@ -28,8 +30,10 @@ onMounted(async () => {
         const data: { posts: Product[] } = await response.json();
 
         posts.value = data.posts;
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value.push("Ha habido un error al devolver los anuncios del vendedor. Por favor, inténtalo más tarde.");
     } finally {
         loading.value = false;
     }
@@ -62,6 +66,7 @@ watch(filterTerm, (newSearchterm, oldSearchTerm) => {
         <div v-else>
             <h2>No hay anuncios disponibles.</h2>
         </div>
+        <ErrorMessages :messages="errorMessages"></ErrorMessages>
     </section>
 </template>
 <style scoped></style>

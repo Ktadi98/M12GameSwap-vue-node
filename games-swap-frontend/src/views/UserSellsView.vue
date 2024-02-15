@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import Chart from 'primevue/chart';
 import ProgressSpinner from 'primevue/progressspinner';
 import type { Purchase } from '@/interfaces/Purchase';
 import PostRow from '@/components/PostRow.vue';
+import router from '@/router';
+import ErrorMessages from '@/components/ErrorMessages.vue';
+
 
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
@@ -14,9 +17,13 @@ const sells = ref<Purchase[]>([]);
 const chartData = ref();
 const chartOptions = ref();
 const loading = ref<boolean>(true);
+const { deleteToken } = useAuthStore();
+const error = ref<boolean>(false);
+const errorMessages: Ref<string[]> = ref([]);
 
 async function getPurchasedProducts() {
-
+    error.value = false;
+    errorMessages.value = [];
     try {
         loading.value = true;
         const response: Response = await fetch(`${apiEndpoint}/posts/sells`, {
@@ -27,13 +34,20 @@ async function getPurchasedProducts() {
             }
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            //throw new Error(`HTTP error! Status: ${response.status}`);
+            //Force to log out if token is modified or expired.
+            if (response.status === 401 || response.status === 403) {
+                deleteToken();
+                router.push("/");
+            }
         }
         const sellsData: { sellsData: Purchase[] } = await response.json();
         sells.value = sellsData.sellsData;
 
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
+        error.value = true;
+        errorMessages.value.push("Nos hemos podido recuperar tus ventas. Por favor, inténtalo más tarde.")
     } finally {
         loading.value = false;
     }
@@ -144,9 +158,10 @@ const categoriesToSalesMap = (categories: any, sales: any) => {
     <section v-else>
         No han habido ventas todavía.
         <div>
-            <img src="@/assets/no_data_found_GIF.gif" alt="not found GIF">
+            <img src="@/assets/not_data_outline.gif" alt="not found GIF">
         </div>
     </section>
+    <ErrorMessages :messages="errorMessages"></ErrorMessages>
 </template>
 
 <style scoped>

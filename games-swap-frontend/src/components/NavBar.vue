@@ -18,14 +18,14 @@
           <PostUploadIcon></PostUploadIcon>
         </router-link>
         <div v-if="authStore.userIsLoggedIn" class="profile-dropdown" @click="toggleDropdown">
-          <img src="@/assets/avatar-profile.svg" alt="Profile Image" class="profile-image" />
-          <div v-show="showDropdown" class="dropdown-menu">
-            <router-link to="/profileManagement">Editar perfil</router-link>
+          <img :src="(authStore.userPhoto as string)" alt="Profile Image"
+            :class="{ 'profile-border': showDropdown, 'profile-image': true }" />
+          <div v-if="showDropdown" class="dropdown-menu d-flex flex-column">
+            <router-link to="/profileManagement">Ver perfil</router-link>
             <router-link to="/postsList">Mis anuncios</router-link>
             <div @click="logOut">Cerrar sesión</div>
           </div>
         </div>
-
         <button v-else class="button access" @click="open">Acceder</button>
         <router-link v-tooltip.bottom="'Accede al carrito'" v-if="authStore.userIsLoggedIn" class="shopping_cart"
           to="/ShoppingCart">
@@ -145,14 +145,27 @@ const isProfileManagement = computed(() => {
   border-radius: 50%;
 }
 
+.profile-image:hover {
+  border: 4px solid black;
+}
+
+.profile-border {
+  border: 4px solid black;
+}
+
 .dropdown-menu {
   position: absolute;
   top: 100%;
-  right: 0;
+  right: -20;
   background-color: #ffffff;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1;
-  display: none;
+  padding: 0 !important;
+  min-width: 15vw;
+}
+
+.dropdown-menu>* {
+  font-size: larger;
 }
 
 
