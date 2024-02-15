@@ -96,6 +96,7 @@ import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import NavBar from '@/components/NavBar.vue';
 import BreadCrumbs from '@/components/BreadCrumbs.vue';
+import { usePostsHistoryStore } from '@/stores/postsHistory';
 
 const showEditPopup = ref(false);
 const editType = ref('');
@@ -117,7 +118,7 @@ const paymentPopupInput = ref('');
 const paymentInputError = ref(false);
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
 const { triggerToast } = useCustomToast("¡La compra se ha finalizado con éxito!");
-
+const { reset } = usePostsHistoryStore();
 
 const openEditPopup = (type: string) => {
   showEditPopup.value = true;
@@ -131,7 +132,6 @@ const closeEditPopup = () => {
 const saveShippingAddress = () => {
   console.log("Nueva dirección de envío:", newAddress.value);
   console.log("Nuevo código postal:", newPostalCode.value);
-  // Aquí puedes agregar manejo de errores y confirmaciones visuales
 };
 
 const saveEditedPaymentMethod = () => {
@@ -178,10 +178,12 @@ const makePurchase = async () => {
       return;
     }
 
-    //Toast success trigger
     triggerToast();
 
-    //We redirect to the user's posts list.
+    //Reset history to clean possible bought products.
+    reset();
+
+    //We redirect to the user's profile view.
     router.push("/userProfile/purchases");
 
   } catch (error) {

@@ -8,10 +8,12 @@ import { storeToRefs } from 'pinia';
 import type { Review } from '@/interfaces/Review';
 import { useRoute, useRouter } from 'vue-router';
 import useCustomToast from "@/composables/useCustomToast";
+import { useRankingStore } from '@/stores/ranking';
 
 const error: Ref<boolean> = ref(false);
 const errorMessages: Ref<string[]> = ref([]);
 const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+const { fetchTopVendors } = useRankingStore();
 
 const { token, userIsLoggedIn } = storeToRefs(useAuthStore());
 
@@ -74,6 +76,10 @@ async function sendReview() {
         console.log(data);
 
         triggerToast();
+
+        //We refresh vendor ranking to show the newest results.
+        fetchTopVendors();
+
         router.back();
     } catch (err) {
         errorMessages.value.push("Ha habido un problema con el servidor. Por favor, inténtalo más tarde.");
