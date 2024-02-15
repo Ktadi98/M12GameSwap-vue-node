@@ -28,7 +28,7 @@
 
         <button v-else class="button access" @click="open">Acceder</button>
         <router-link v-tooltip.bottom="'Accede al carrito'" v-if="authStore.userIsLoggedIn" class="shopping_cart"
-          to="/ShoppingCart">
+          to="/userProfile/reservations">
           <shoppingCart></shoppingCart>
         </router-link>
 

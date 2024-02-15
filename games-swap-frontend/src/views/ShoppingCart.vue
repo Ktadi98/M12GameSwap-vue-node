@@ -19,7 +19,7 @@
       <div class="payment-info">
         <img src="/imgs/visa.png" alt="Visa" class="payment-icon" />
         <p>{{ maskedPaymentMethod || 'VISA' }}</p>
-        <button class="edit-button" @click="openEditPopup('payment')">Editar</button>
+        <input type="button" class="edit-button" @click="openEditPopup('payment')" value="Editar">
       </div>
     </div>
     <hr class="divider" />
@@ -31,7 +31,7 @@
           <p>{{ newAddress || 'Carrer Major, 44' }}</p>
           <p>{{ newPostalCode || '08211, Castellar del Vallès' }}</p>
         </div>
-        <button class="edit-button" @click="openEditPopup('shipping')">Editar</button>
+        <input type= "button" class="edit-button" @click="openEditPopup('shipping')" value="Editar">
       </div>
     </div>
     <hr class="divider" />
@@ -41,7 +41,7 @@
       <p><strong>Total:</strong>{{ totalPrice }}€</p>
     </div>
     <hr class="divider" />
-    <button class="checkout-button">Continuar con el Pago</button>
+    <button class="checkout-button" @click="makePurchase">Continuar con el Pago</button>
   </div>
 
   <!-- Popup de Edición -->
@@ -78,20 +78,29 @@
 </template>
 
 <script setup lang="ts">
+import useCustomToast from '@/composables/useCustomToast';
+import router from '@/router';
 import { computed, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+
 
 const showEditPopup = ref(false);
 const editType = ref('');
 const newAddress = ref('Carrer Major, 44');
 const newPostalCode = ref('08211, Castellar del Vallès');
 const shippingCost = 3;
+const authStore = useAuthStore();
+
 const cartItems = ref([
   { name: 'Resident Evil 7', type: 'PS4, Videojuego', price: 10, image: 'backend/public/static/images/r4-remake.jpg' },
 ]);
 const maskedPaymentMethod = ref('');
 const paymentPopupInput = ref('');
 const paymentInputError = ref(false);
+const apiEndpoint = import.meta.env.VITE_API_ENDPOINT;
+const { triggerToast } = useCustomToast("¡La compra se ha finalizado con éxito!");
+
 
 const openEditPopup = (type: string) => {
   showEditPopup.value = true;
@@ -135,6 +144,34 @@ const validateCreditCard = () => {
   }
 };
 
+
+const makePurchase = async () =>
+{
+  try{
+
+    const response = await fetch(`${apiEndpoint}/posts/purchase/${route.query.id}`, {
+            method: 'POST',
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${authStore.getToken()}`
+            },
+        }
+        );
+
+        if (!response.ok) {
+            return;
+        }
+
+        //Toast success trigger
+        triggerToast();
+
+        //We redirect to the user's posts list.
+        router.push("/userProfile/purchases");
+
+  } catch (error){
+    console.error(error)
+  }
+}
 </script>
 
 

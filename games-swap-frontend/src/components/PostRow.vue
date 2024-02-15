@@ -179,7 +179,7 @@ function formatCreationDate(date: string) {
                 </div>
             </div>
             <div class="icon-box reserve d-flex py-1 px-2">
-                <router-link :to="{name:'cart', query: {title:props.post.post_title, photo: props.post.post_photos[0], price:props.post.post_price} }" >
+                <router-link :to="{name:'cart', query: {id:props.post.post_id, title:props.post.post_title, photo: props.post.post_photos[0], price:props.post.post_price} }" >
                 <div class="d-flex ">
                     Tramitar compra
                         <ShoppingCart></ShoppingCart>    
