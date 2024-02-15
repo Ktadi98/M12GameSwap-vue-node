@@ -469,4 +469,42 @@ export class PostModel {
 
         return 1;
     };
+
+    static async createPurchase(userId, postId) {
+
+        try {
+            //We set this post as buyed and not reserved.
+            const updatedStatus = await prismadb.post.update({
+                where: {
+                    post_id: postId
+                },
+                data: {
+                    post_buyed: true,
+                    post_reserved: false
+                }
+            });
+
+            //We drop the reservation registry of this post in the reservation table.
+            const dropStatus = await prismadb.reservation.delete({
+                where: {
+                    post_id: postId
+                }
+            });
+
+            //We add the purchase registry to the purchases table.
+            const newPurchase = await prismadb.purchase.create({
+                data: {
+                    user_buyer_id: userId,
+                    post_id: postId
+                }
+            })
+
+            if (newPurchase === null) return -1;
+
+            return 1;
+        } catch (error) {
+            throw new Error(error);
+        }
+
+    }
 }

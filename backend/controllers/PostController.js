@@ -231,4 +231,15 @@ export class PostController {
         return res.status(500).json({ error: "Post could not be deactivated" })
     };
 
+    createPurchase = async (req, res) => {
+        const postId = Number(req.params.id);
+        const exitState = await this.postModel.createPurchase(req.user_id, postId);
+
+        if (exitState === 1) {
+            return res.json({ message: "Post purchased successfully" });
+        }
+
+        return res.status(500).json({ error: "Post could not be purchased" })
+    };
+
 }
