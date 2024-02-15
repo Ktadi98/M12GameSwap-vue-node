@@ -485,7 +485,7 @@ export class PostModel {
             });
 
             //We drop the reservation registry of this post in the reservation table.
-            const dropStatus = await prismadb.reservation.delete({
+            const dropStatus = await prismadb.reservation.deleteMany({
                 where: {
                     post_id: postId
                 }

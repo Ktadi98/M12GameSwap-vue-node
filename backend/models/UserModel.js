@@ -364,9 +364,17 @@ export class UserModel {
             //Getting the favorites posts objects.
             const favoritesPosts = await prismadb.post.findMany({
                 where: {
-                    post_id: {
-                        in: favoritesPostsId
-                    }
+
+                    AND: [
+                        {
+                            post_id: {
+                                in: favoritesPostsId
+                            }
+                        },
+                        { post_buyed: false },
+                        { post_status: true }
+                    ]
+
                 }
             })
             return favoritesPosts.map(p => ({

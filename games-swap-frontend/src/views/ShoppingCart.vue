@@ -1,4 +1,9 @@
 <template>
+  <NavBar>
+  </NavBar>
+  <section class="ms-4">
+    <BreadCrumbs :items="items"></BreadCrumbs>
+  </section>
   <div class="cart-container">
     <div class="cart-header">
       <h2>Carrito de Compra</h2>
@@ -6,7 +11,8 @@
     <hr class="divider" />
     <div class="cart-items">
       <div class="cart-item" v-if="cartItems.length > 0">
-        <img :src="$route.query.photo as string || '/public/static/images/default.jpg'" :alt="'Imagen del producto'" class="product-image" />
+        <img :src="$route.query.photo as string || '/public/static/images/default.jpg'" :alt="'Imagen del producto'"
+          class="product-image" />
         <div class="product-details">
           <p><strong>Nombre:</strong> {{ $route.query.title }}</p>
           <p><strong>Precio:</strong> {{ $route.query.price }}€</p>
@@ -28,10 +34,10 @@
       <div class="address-info">
         <img src="/imgs/home.svg" alt="Dirección" class="address-icon" />
         <div>
-          <p>{{ newAddress || 'Carrer Major, 44' }}</p>
-          <p>{{ newPostalCode || '08211, Castellar del Vallès' }}</p>
+          <p>{{ newAddress || 'Carrer Aiguablava, 121 ' }}</p>
+          <p>{{ newPostalCode || '08033 Barcelona' }}</p>
         </div>
-        <input type= "button" class="edit-button" @click="openEditPopup('shipping')" value="Editar">
+        <input type="button" class="edit-button" @click="openEditPopup('shipping')" value="Editar">
       </div>
     </div>
     <hr class="divider" />
@@ -57,24 +63,29 @@
         <div class="divider"></div>
         <button type="submit" @click.prevent="saveShippingAddress">Guardar Cambios</button>
       </form>
-      <button @click="closeEditPopup">Cerrar</button>
+      <div class="d-flex flex-justify-center mt-3">
+        <button @click="closeEditPopup">Cerrar</button>
+      </div>
     </div>
   </div>
 
   <!-- Popup de Edición del Método de Pago -->
   <div v-if="editType === 'payment' && showEditPopup" class="edit-popup">
-      <div class="edit-popup-content">
-        <form id="edit-payment-form">
-          <label for="edit-card">Número de Tarjeta:</label>
-          <input type="text" id="edit-card" v-model="paymentPopupInput" name="edit-card"
-                 placeholder="Introduce el número de tarjeta" required inputmode="numeric" @input="validateCreditCard">
-          <p v-if="paymentInputError" class="error-message">Solo se admiten números</p>
-          <div class="divider"></div>
-          <button type="submit" @click.prevent="saveEditedPaymentMethod">Guardar Cambios</button>
-        </form>
+    <div class="edit-popup-content">
+      <form id="edit-payment-form d-flex flex-column">
+        <label for="edit-card">Número de Tarjeta:</label>
+        <input class="mt-2" type="text" id="edit-card" v-model="paymentPopupInput" name="edit-card"
+          placeholder="Introduce el número de tarjeta" required inputmode="numeric" @input="validateCreditCard">
+        <p v-if="paymentInputError" class="error-message">Solo se admiten números</p>
+        <div class="divider"></div>
+        <button type="submit" @click.prevent="saveEditedPaymentMethod">Guardar Cambios</button>
+      </form>
+      <div class="d-flex flex-justify-center mt-3">
         <button @click="closeEditPopup">Cerrar</button>
       </div>
+
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -83,14 +94,20 @@ import router from '@/router';
 import { computed, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-
+import NavBar from '@/components/NavBar.vue';
+import BreadCrumbs from '@/components/BreadCrumbs.vue';
 
 const showEditPopup = ref(false);
 const editType = ref('');
-const newAddress = ref('Carrer Major, 44');
-const newPostalCode = ref('08211, Castellar del Vallès');
+const newAddress = ref('');
+const newPostalCode = ref('');
 const shippingCost = 3;
 const authStore = useAuthStore();
+const items = ref([
+  { label: 'Home', route: '/' },
+  { label: 'Perfil', route: '/userProfile' },
+  { label: 'Tramitar compra' }
+]);
 
 const cartItems = ref([
   { name: 'Resident Evil 7', type: 'PS4, Videojuego', price: 10, image: 'backend/public/static/images/r4-remake.jpg' },
@@ -145,30 +162,29 @@ const validateCreditCard = () => {
 };
 
 
-const makePurchase = async () =>
-{
-  try{
+const makePurchase = async () => {
+  try {
 
     const response = await fetch(`${apiEndpoint}/posts/purchase/${route.query.id}`, {
-            method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Authorization": `Bearer ${authStore.getToken()}`
-            },
-        }
-        );
+      method: 'POST',
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${authStore.getToken()}`
+      },
+    }
+    );
 
-        if (!response.ok) {
-            return;
-        }
+    if (!response.ok) {
+      return;
+    }
 
-        //Toast success trigger
-        triggerToast();
+    //Toast success trigger
+    triggerToast();
 
-        //We redirect to the user's posts list.
-        router.push("/userProfile/purchases");
+    //We redirect to the user's posts list.
+    router.push("/userProfile/purchases");
 
-  } catch (error){
+  } catch (error) {
     console.error(error)
   }
 }
