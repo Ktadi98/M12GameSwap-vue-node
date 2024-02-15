@@ -26,6 +26,7 @@ export const createPostRouter = (postModel) => {
     postRouter.get("/category/:id", postController.getPostByCategory);
     postRouter.get("/category/auth/:id", authenticateToken, postController.getPostByCategoryLogIn);
     postRouter.patch("/update/:id", authenticateToken, upload.single('images'), postController.updatePost);
+    postRouter.post("/purchase/:id", authenticateToken, postController.createPurchase);
 
     postRouter.patch("/reservation/:postId", authenticateToken, postController.setReservation);
     postRouter.delete("/reservation/:id", authenticateToken, postController.deleteReservation);
