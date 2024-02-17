@@ -24,7 +24,20 @@ export class UserModel {
             });
 
             if (user !== null) {
-                console.log("User already exists!");
+                console.log("User email already exists!");
+                returnState = -1;
+                return [returnState, null];
+            };
+
+            //Check if the username is already registered in the database
+            const username = await prismadb.user.findFirst({
+                where: {
+                    user_name: user_data.username,
+                }
+            });
+
+            if (username !== null) {
+                console.log("Username already exists!");
                 returnState = -1;
                 return [returnState, null];
             };
@@ -455,10 +468,18 @@ export class UserModel {
                 }
             ],
             where: {
-                NOT: [{
-                    user_ranking: null
-                }
+                AND: [
+                    {
+                        NOT: [
+                            {
+                                user_ranking: null
+                            }
 
+                        ]
+                    },
+                    {
+                        user_status: true
+                    }
                 ]
             }
         })

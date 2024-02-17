@@ -422,7 +422,10 @@ export class PostModel {
             }
         });
 
-        return [1, reservations];
+        //We return the reservations that correspond to activated posts in the system.
+        const reservationsOfActivatedPosts = reservations.filter(reservations => reservations.post.post_status);
+
+        return [1, reservationsOfActivatedPosts];
     }
 
     static async deleteReservation(reservationIdToDelete) {

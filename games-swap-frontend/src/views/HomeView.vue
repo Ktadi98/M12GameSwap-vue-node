@@ -3,7 +3,6 @@ import NavBar from "../components/NavBar.vue";
 import SearchBar from "../components/SearchBar.vue";
 import Platforms from "../components/Platforms.vue";
 import Footer from "../components/Footer.vue";
-import AppBar from "../components/AppBar.vue";
 import VendorsRanking from "../components/VendorsRanking.vue";
 import PostsHistory from "@/components/PostsHistory.vue";
 </script>
@@ -17,7 +16,7 @@ import PostsHistory from "@/components/PostsHistory.vue";
         <h1 class="display-4 font-weight-bold">
           Aquí encontrarás lo que buscas
         </h1>
-        <p>Compra y vende juegos y consolas de segunda mano en GameSwap.</p>
+        <p>Compra y vende juegos de segunda mano en GameSwap. Ve a por nuevas experiencias.</p>
       </div>
     </div>
     <SearchBar />
@@ -77,8 +76,6 @@ import PostsHistory from "@/components/PostsHistory.vue";
     <VendorsRanking></VendorsRanking>
     <PostsHistory></PostsHistory>
   </main>
-  <!-- <AppBar></AppBar> -->
-
   <Footer></Footer>
 </template>
 <style scoped>

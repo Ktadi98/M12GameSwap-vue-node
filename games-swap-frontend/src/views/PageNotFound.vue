@@ -1,6 +1,7 @@
 <template>
-    <div>
+    <div class>
         <h1>404 | Not Found</h1>
+        <input type="button" @click="$router.push('/')" value="Volver a la página de inicio">
     </div>
 </template>
 
@@ -13,7 +14,14 @@ div {
     background-position: center;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
+
+input {
+    width: max-content;
+    height: max-content;
+}
+
 
 h1 {
     margin: 4rem;
