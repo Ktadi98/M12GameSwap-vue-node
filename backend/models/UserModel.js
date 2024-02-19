@@ -157,9 +157,6 @@ export class UserModel {
 
     static async delete(user_data) {
         try {
-
-            //console.log(user_data.userId);
-
             const deletedUser = await prismadb.user.update({
                 where: {
                     user_id: user_data.userId
@@ -169,8 +166,17 @@ export class UserModel {
                 }
             })
 
+            const deactivateduserClient = await prismadb.user_Client.updateMany({
+                where: {
+                    user_id: user_data.userId
+                },
+                data: {
+                    user_status: false
+                }
+            });
 
-            if (deletedUser === null) {
+
+            if (deletedUser === null || deactivateduserClient === null) {
                 throw new Error("Non existent user.");
             }
 
@@ -190,10 +196,18 @@ export class UserModel {
                 data: {
                     user_active: false
                 }
-            })
+            });
 
+            const deactivateduserClient = await prismadb.user_Client.updateMany({
+                where: {
+                    user_id: userId
+                },
+                data: {
+                    user_status: false
+                }
+            });
 
-            if (deletedUser === null) {
+            if (deletedUser === null || deactivateduserClient === null) {
                 throw new Error("Non existent user.");
             }
 
@@ -214,11 +228,20 @@ export class UserModel {
                 data: {
                     user_active: true
                 }
+            });
+
+            const activatedUserClient = await prismadb.user_Client.update({
+                where: {
+                    user_id: user_data.userId
+                },
+                data: {
+                    user_status: true
+                }
             })
 
 
-            if (activatedUser === null) {
-                console.log("entra aqui!")
+
+            if (activatedUser === null || activatedUserClient === null) {
                 throw new Error("Non existent user.");
             }
 

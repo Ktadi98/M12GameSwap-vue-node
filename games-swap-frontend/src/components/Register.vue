@@ -40,6 +40,10 @@ const validateRegister = () => {
     errorMessages.value.push("El nombre de usuario debe tener entre 3 y 20 carácteres.");
     error.value = true;
   }
+  if (/^[0-9]*$/.test(formData.value.username[0])) {
+    errorMessages.value.push("El nombre de usuario debe empezar por un carácter alfabético.");
+    error.value = true;
+  }
   if (
     formData.value.email.length === 0 ||
     !formData.value.email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) ||

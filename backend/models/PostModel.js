@@ -131,18 +131,7 @@ export class PostModel {
 
     static async getPostsByCategory(category_id) {
         try {
-            // const platform = await prismadb.post.findMany({
-            //     where: {
-            //         platform_id: {
-            //             contains: categoryName,
-            //             mode: "insensitive",
-            //         },
-            //     },
-            // });
-            // if (!platform) {
-            //     return [];
-            // }
-            const posts = await prismadb.post.findMany({
+            let posts = await prismadb.post.findMany({
                 where: {
                     AND: [
                         { platform_id: category_id },
@@ -151,9 +140,14 @@ export class PostModel {
                     ]
                 },
                 include: {
-                    genre: true
+                    genre: true,
+                    user_client: true
                 }
             });
+
+            //We only get the posts that correspond to activated users in the system.
+            posts = posts.filter(post => post.user_client.user_status);
+
 
             return posts;
         }
@@ -164,9 +158,7 @@ export class PostModel {
 
     static async getPostsByCategoryLogIn(category_id, userId) {
         try {
-
-
-            const posts = await prismadb.post.findMany({
+            let posts = await prismadb.post.findMany({
                 where: {
                     AND: [
                         { platform_id: category_id },
@@ -178,9 +170,13 @@ export class PostModel {
                     }
                 },
                 include: {
-                    genre: true
+                    genre: true,
+                    user_client: true
                 }
             });
+
+            //We only get the posts that correspond to activated users in the system.
+            posts = posts.filter(post => post.user_client.user_status);
 
             return posts;
         }
@@ -216,7 +212,7 @@ export class PostModel {
     };
 
     static async getPostsByQuery(query) {
-        const posts = await prismadb.post.findMany({
+        let posts = await prismadb.post.findMany({
             where: {
                 AND: [
                     {
@@ -234,15 +230,19 @@ export class PostModel {
             include:
             {
                 platform: true,
-                genre: true
+                genre: true,
+                user_client: true
             }
         });
+
+        //We only get the posts that correspond to activated users in the system.
+        posts = posts.filter(post => post.user_client.user_status);
 
         return posts;
     };
 
     static async getPostsByQueryLogIn(query, userId) {
-        const posts = await prismadb.post.findMany({
+        let posts = await prismadb.post.findMany({
             where: {
                 AND: [
                     {
@@ -263,9 +263,13 @@ export class PostModel {
             include:
             {
                 platform: true,
-                genre: true
+                genre: true,
+                user_client: true
             }
         });
+
+        //We only get the posts that correspond to activated users in the system.
+        posts = posts.filter(post => post.user_client.user_status);
 
         return posts;
     };

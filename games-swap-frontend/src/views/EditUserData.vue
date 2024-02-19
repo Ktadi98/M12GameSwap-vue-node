@@ -72,6 +72,10 @@ const validateUserName = () => {
     errorMessages.value.push("El nombre de usuario debe tener como mínimo 3 carácteres y como máximo 20");
   }
 
+  if (/^[0-9]*$/.test(userData.value.username[0])) {
+    errorMessages.value.push("El nombre de usuario debe empezar por un carácter alfabético.");
+    error.value = true;
+  }
 }
 
 const validateEmail = () => {
