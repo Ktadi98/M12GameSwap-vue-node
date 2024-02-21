@@ -61,10 +61,10 @@ Nuestro público objetivo son los adultos apasionados por los videojuegos, desde
 ![Gif de Demos](./readme_assets/subirProducto.gif)
 
 - ### Reserva de un producto
-  Al tener la sesión iniciada, dentro del detalle del anuncio que queramos, podemos realizar la reserva pulsando el botón de 'No Reservado' para realizar la comprar posteriormente. Nos aparecerá la reserva en 
-  nuestra lista de reservas en Perfil > Ver Reservas y Compras > Reservas. Cabe destacar que si el producto ya está reservado, no se puede volver a reservar hasta que el usuario que haya hecho la reserva la 
-  elimine.
-
+  Al tener la sesión iniciada, dentro del detalle del anuncio que queramos, podemos realizar la reserva pulsando el botón de 'No Reservado' para realizar la compra posteriormente. Nos aparecerá la reserva en 
+  nuestra lista de reservas en Perfil > Ver Reservas y Compras > Reservas. Cabe destacar que si el producto ya está reservado, no se puede volver a reservar hasta que el usuario correspondiente la elimine en su 
+  lista de reservas. 
+  
 ![Gif de Demos](./readme_assets/reservaProducto.gif)
 
 - ### Compra de un producto
