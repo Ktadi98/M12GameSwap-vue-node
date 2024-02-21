@@ -80,6 +80,12 @@ Nuestro público objetivo son los adultos apasionados por los videojuegos, desde
 
 ![Gif de Demos](./readme_assets/queja.gif)
 
+- ### Editar datos de la cuenta
+
+  Una vez iniciado sesión, en Perfil > Cambiar Datos de Perfil, podemos modificar nuestro nombre de usuario, correo electrónico y foto de perfil.
+      
+![Gif de Demos](./readme_assets/actulizacionPerfil.gif)
+
 - ### Panel de control del administrador
 
   Como administrador de la plataforma, una vez se ha iniciado sesión, desde el panel de control podemos dar de alta/baja a los usuarios clientes de GameSwap. También podemos ver las denuncias que han enviado los 
