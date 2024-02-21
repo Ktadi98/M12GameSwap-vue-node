@@ -4,7 +4,7 @@
 
 ## Descripción del Proyecto 💼
 
-GameSwap es una plataforma de compraventa de videojuegos de segunda mano para entusiastas de este tipo de producto. A diferencia de las plataformas genéricas, GameSwap se enfoca en proporcionar un catálogo diverso de videojuegos de diferentes plataformas, facilitando a los usuarios encontrar sus títulos favoritos.
+GameSwap es una plataforma de compraventa de videojuegos de segunda mano para entusiastas de este tipo de producto. A diferencia de otras plataformas genéricas de compraventa, GameSwap se enfoca en proporcionar un catálogo diverso de videojuegos de diferentes consolas, facilitando a los usuarios encontrar sus títulos favoritos.
 
 La plataforma ofrece un sistema de publicación de anuncios que permite a los usuarios vender sus juegos que ya no utiliza, además, los usuarios pueden calificar a los vendedores de la plataforma poniendo reseñas de sus compras. A partir de estas valoraciones la plataforma recomienda un top 3 de los vendedores con mejor puntuación. 🌟🛍️
 
