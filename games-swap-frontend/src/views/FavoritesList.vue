@@ -8,6 +8,7 @@ import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import useCustomToast from "@/composables/useCustomToast";
 import ErrorMessages from '@/components/ErrorMessages.vue';
 import router from '@/router';
+import Dropdown from 'primevue/dropdown';
 
 
 const articles = ref<any[]>([]);
@@ -122,7 +123,9 @@ const items = ref([
   <main>
     <div v-if="sortedArticles.length > 0" class="articles-grid">
       <article v-for="article of sortedArticles" :key="article.post_id">
-        <img class="article-image" :src="`data:image/png;base64, ${article.post_photos[0]}`" alt="portada" />
+        <RouterLink :to="{ name: 'adDetail', params: { id: article.post_id } }">
+          <img class="article-image" :src="`data:image/png;base64, ${article.post_photos[0]}`" alt="portada" />
+        </RouterLink>
         <div class="article-body">
           <span class="produc-price">{{ article.post_price }}€</span>
           <button v-tooltip.top="'Eliminar de favoritos'" class="like-heart" @click="removeFavorite(article.post_id)">
@@ -186,7 +189,7 @@ article {
 
 article img.article-image {
   height: 18rem;
-  width: auto;
+  width: 100%;
   object-fit: cover;
 }
 

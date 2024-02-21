@@ -1,6 +1,6 @@
 <template>
     <NavBar />
-    <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5 mt-5">
+    <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5">
         <SearchBar />
         <Divider></Divider>
         <BreadCrumbs :items="items"></BreadCrumbs>
@@ -18,12 +18,6 @@
         <Divider></Divider>
         <div class="w-100 criteria-box align-self-left">
             <Dropdown v-model="criteria" :options="filterCriterias" placeholder="Selecciona un filtro" />
-            <!-- <select v-model="criteria">
-                <option value="A-Z">A-Z</option>
-                <option value="Z-A" selected>Z-A</option>
-                <option value="priceDesc">Precio (menor a mayor)</option>
-                <option value="priceAsc">Precio (mayor a menor)</option>
-            </select> -->
         </div>
         <section class="post-box container-fluid">
             <div v-if="filteredProducts?.length" class="row">

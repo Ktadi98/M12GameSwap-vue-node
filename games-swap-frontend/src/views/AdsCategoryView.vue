@@ -1,7 +1,7 @@
 <template>
   <NavBar />
   <Platforms></Platforms>
-  <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5 mt-5">
+  <main class="d-flex flex-column gap-2 justify-content-center align-items-center px-5">
     <SearchBar />
     <Divider></Divider>
     <BreadCrumbs :items="items"></BreadCrumbs>
@@ -104,8 +104,8 @@ const genreToIcon: any = {
 const filterCriterias = ref<string[]>([
   "A-Z",
   "Z-A",
-  "priceDesc",
-  "priceAsc"
+  "Precio (menor a mayor)",
+  "Precio (mayor a menor)"
 ]);
 
 const filteredProducts = computed(() => {
@@ -125,10 +125,10 @@ const filteredProducts = computed(() => {
     else if (criteria.value === "Z-A") {
       return criteriaFilteredProducts.sort((a: Product, b: Product) => b.post_title.localeCompare(a.post_title));
     }
-    else if (criteria.value === "priceDesc") {
+    else if (criteria.value === "Precio (menor a mayor)") {
       return criteriaFilteredProducts.sort((a: Product, b: Product) => a.post_price - b.post_price);
     }
-    else if (criteria.value === "priceAsc") {
+    else if (criteria.value === "Precio (mayor a menor)") {
       return criteriaFilteredProducts.sort((a: Product, b: Product) => b.post_price - a.post_price);
     }
   }
@@ -141,10 +141,10 @@ const filteredProducts = computed(() => {
     else if (criteria.value === "Z-A") {
       criteriaFilteredProducts.sort((a: Product, b: Product) => b.post_title.localeCompare(a.post_title));
     }
-    else if (criteria.value === "priceDesc") {
+    else if (criteria.value === "Precio (menor a mayor)") {
       criteriaFilteredProducts.sort((a: Product, b: Product) => b.post_price - a.post_price);
     }
-    else if (criteria.value === "priceAsc") {
+    else if (criteria.value === "Precio (mayor a menor)") {
       criteriaFilteredProducts.sort((a: Product, b: Product) => a.post_price - b.post_price);
     }
     return criteriaFilteredProducts.filter((product: Product) => product.genre_id === genreFilter.value);
@@ -316,9 +316,5 @@ h1 {
   font-weight: bold;
   border-radius: 10px;
 }
-
-/* .criteria-box * {
-  border-color: #9f87f5 !important;
-} */
 </style>
 

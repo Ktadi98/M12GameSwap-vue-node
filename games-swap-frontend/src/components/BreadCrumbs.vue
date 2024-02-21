@@ -40,7 +40,7 @@ const props = defineProps<{
     padding: 0;
 }
 
-/* .p-menuitem-link {
-  color: #9f87f5 !important;
-} */
+.p-divider.p-divider-horizontal {
+    margin: 0.45rem;
+}
 </style>

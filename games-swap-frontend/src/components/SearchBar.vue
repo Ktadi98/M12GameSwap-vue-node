@@ -47,7 +47,7 @@ async function fetchResults() {
 </script> 
 
 <template>
-  <form class="d-flex mb-3 w-75 position-relative" @submit.prevent="fetchResults">
+  <form class="d-flex mb-3 mt-2 w-75 position-relative" @submit.prevent="fetchResults">
     <div class="search w-100 d-flex gap-2 flex-row align-items-center justify-content-center me-2">
       <div class="d-flex justify-content-center align-items-center">
         <img src="/imgs/search-icon.svg" alt="magnifying glass" />

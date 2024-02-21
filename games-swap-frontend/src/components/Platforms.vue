@@ -24,7 +24,7 @@ const nameToIcons: any = {
 
 </script>
 <template>
-  <section class="categories py-4 vh-25 w-100">
+  <section class="categories py-1 vh-25 w-100">
     <ul class="d-flex flex-column flex-md-row w-100 gap-4 justify-content-center align-items-center">
       <li v-for="(platform, index) in platforms" :key="platform.platform_id">
         <RouterLink class="svg-link" :to="{ name: 'adsCategory', params: { id: platform.platform_id } }">
