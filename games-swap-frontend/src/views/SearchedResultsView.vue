@@ -101,8 +101,8 @@ const items = ref([
 const filterCriterias = ref<string[]>([
     "A-Z",
     "Z-A",
-    "priceDesc",
-    "priceAsc"
+    "Precio (menor a mayor)",
+    "Precio (mayor a menor)"
 ]);
 
 
@@ -123,10 +123,10 @@ const filteredProducts = computed(() => {
         else if (criteria.value === "Z-A") {
             return criteriaFilteredProducts.sort((a: Product, b: Product) => b.post_title.localeCompare(a.post_title));
         }
-        else if (criteria.value === "priceDesc") {
+        else if (criteria.value === "Precio (menor a mayor)") {
             return criteriaFilteredProducts.sort((a: Product, b: Product) => a.post_price - b.post_price);
         }
-        else if (criteria.value === "priceAsc") {
+        else if (criteria.value === "Precio (mayor a menor)") {
             return criteriaFilteredProducts.sort((a: Product, b: Product) => b.post_price - a.post_price);
         }
     }
